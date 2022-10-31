@@ -1,0 +1,110 @@
+﻿{
+  "dances": [
+    {
+      "name": "LiGHTs - 私の名は、光",
+      "id": "MUSIC_0001",
+      "music": "413274000"
+    },
+    {
+      "name": "LiGHTs - Your Lights",
+      "id": "MUSIC_0002",
+      "music": "1017980350"
+    },
+    {
+      "name": "LiGHTs - ポラリス",
+      "id": "MUSIC_0003",
+      "music": "176367230"
+    },
+    {
+      "name": "LiGHTs - 700,000,000,000,000,000,000,000の空で",
+      "id": "MUSIC_0017",
+      "music": "378701293"
+    },
+    {
+      "name": "LiGHTs - プラネタリウム",
+      "id": "MUSIC_0026",
+      "music": "0001"
+    },
+
+    {
+      "name": "IV KROLE - Butterfly",
+      "id": "MUSIC_0004",
+      "music": "373094441"
+    },
+    {
+      "name": "IV KROLE - 禁忌の寓話",
+      "id": "MUSIC_0005",
+      "music": "360776092"
+    },
+    {
+      "name": "IV KROLE - Midnight Sapphire",
+      "id": "MUSIC_0027",
+      "music": "32611669"
+    },
+
+    {
+      "name": "Sadistic★Candy - Are Many Chance!!!",
+      "id": "MUSIC_0006",
+      "music": "802023161"
+    },
+    {
+      "name": "Sadistic★Candy - VIVIらぷ",
+      "id": "MUSIC_0007",
+      "music": "668400988"
+    },
+
+    {
+      "name": "supernova - Trinity",
+      "id": "MUSIC_0008",
+      "music": "535488345"
+    },
+    {
+      "name": "supernova - RISE",
+      "id": "MUSIC_0009",
+      "music": "925175617"
+    },
+    {
+      "name": "supernova - アオノショウドウ",
+      "id": "MUSIC_0018",
+      "music": "134322268"
+    },
+
+    {
+      "name": "この花は乙女 - いのち短し、繚乱乙女",
+      "id": "MUSIC_0010",
+      "music": "220133619"
+    },
+    {
+      "name": "この花は乙女 - 私の初恋をこの花に捧ぐ",
+      "id": "MUSIC_0011",
+      "music": "730966017"
+    },
+
+    {
+      "name": "シュガーポケッツ - シャノワール",
+      "id": "MUSIC_0012",
+      "music": "92356989"
+    },
+    {
+      "name": "シュガーポケッツ - knockin'on baby",
+      "id": "MUSIC_0013",
+      "music": "300089310"
+    },
+    {
+      "name": "シュガーポケッツ - #BFF",
+      "id": "MUSIC_0025",
+      "music": "717320407"
+    },
+
+    {
+      "name": "Ray - Beautiful World",
+      "id": "MUSIC_0028",
+      "music": "773226141"
+    },
+    {
+      "name": "Ray - HYBRID",
+      "id": "MUSIC_0029",
+      "music": "248729206"
+    }
+  ]
+}

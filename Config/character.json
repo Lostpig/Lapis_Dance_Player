@@ -1,0 +1,1423 @@
+{
+  "characters": [
+    {
+      "name": "Alpha",
+      "shortName": "alp",
+      "label": "あるふぁ / 埃尔法",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/alp/ava_alp_r001/ava_alp_suit_r001/ava_alp_suit_r001",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_r001/ava_alp_hat_r001/ava_alp_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/alp/ava_alp_r002/ava_alp_suit_r002/ava_alp_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/alp/ava_alp_sr001/ava_alp_suit_sr001/ava_alp_suit_sr001",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_sr001/ava_alp_hat_sr001/ava_alp_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/alp/ava_alp_ssr002/ava_alp_suit_ssr002/ava_alp_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_ssr002/ava_alp_hat_ssr002/ava_alp_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/alp/ava_alp_ur001/ava_alp_suit_ur001/ava_alp_suit_ur001",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_ur001/ava_alp_hat_ur001/ava_alp_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/alp/ava_alp_ur002/ava_alp_suit_ur002/ava_alp_suit_ur002",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_ur002/ava_alp_hat_ur002/ava_alp_hat_ur002"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/alp/ava_alp_eve003/ava_alp_suit_eve003/ava_alp_suit_eve003",
+          "eqiups": [
+            "actors/avatars/alp/ava_alp_eve003/ava_alp_hat_eve003/ava_alp_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Angelica",
+      "shortName": "ang",
+      "label": "アンジェリカ / 安吉莉卡",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/ang/ava_ang_r001/ava_ang_suit_r001/ava_ang_suit_r001",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_r001/ava_ang_hat_r001/ava_ang_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/ang/ava_ang_r002/ava_ang_suit_r002/ava_ang_suit_r002",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_hat_000/ava_ang_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/ang/ava_ang_sr001/ava_ang_suit_sr001/ava_ang_suit_sr001",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_sr001/ava_ang_hat_sr001/ava_ang_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/ang/ava_ang_ssr002/ava_ang_suit_ssr002/ava_ang_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_hat_000/ava_ang_hat_000"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/ang/ava_ang_ur001/ava_ang_suit_ur001/ava_ang_suit_ur001",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_ur001/ava_ang_hat_ur001/ava_ang_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/ang/ava_ang_ur002/ava_ang_suit_ur002/ava_ang_suit_ur002",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_ur002/ava_ang_hat_ur002/ava_ang_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/ang/ava_ang_ur003/ava_ang_suit_ur003/ava_ang_suit_ur003",
+          "eqiups": [
+            "actors/avatars/ang/ava_ang_ur003/ava_ang_hat_ur003/ava_ang_hat_ur003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Angers",
+      "shortName": "anl",
+      "label": "あんじぇ / 安洁",
+      "actors": [
+        {
+          "name": "001",
+          "body": "actors/avatars/anl/ava_anl_001/ava_anl_suit_001/ava_anl_suit_001",
+          "eqiups": [
+            "actors/avatars/anl/ava_anl_001/ava_anl_hat_001/ava_anl_hat_001"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/anl/ava_anl_sr001/ava_anl_suit_sr001/ava_anl_suit_sr001",
+          "eqiups": [
+            "actors/avatars/anl/ava_anl_sr001/ava_anl_hat_sr001/ava_anl_hat_sr001"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/anl/ava_anl_ur001/ava_anl_suit_ur001/ava_anl_suit_ur001",
+          "eqiups": [
+            "actors/avatars/anl/ava_anl_ur001/ava_anl_hat_ur001/ava_anl_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/anl/ava_anl_ur003/ava_anl_suit_ur003/ava_anl_suit_ur003",
+          "eqiups": [
+            "actors/avatars/anl/ava_anl_ur003/ava_anl_hat_ur003/ava_anl_hat_ur003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ashley",
+      "shortName": "ash",
+      "label": "アシュレイ / 艾什莉",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/ash/ava_ash_r001/ava_ash_suit_r001/ava_ash_suit_r001",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_r001/ava_ash_hat_r001/ava_ash_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/ash/ava_ash_r002/ava_ash_suit_r002/ava_ash_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/ash/ava_ash_sr001/ava_ash_suit_sr001/ava_ash_suit_sr001",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_sr001/ava_ash_hat_sr001/ava_ash_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/ash/ava_ash_ssr002/ava_ash_suit_ssr002/ava_ash_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_ssr002/ava_ash_hat_ssr002/ava_ash_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/ash/ava_ash_ur001/ava_ash_suit_ur001/ava_ash_suit_ur001",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_ur001/ava_ash_hat_ur001/ava_ash_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/ash/ava_ash_ur002/ava_ash_suit_ur002/ava_ash_suit_ur002",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_ur002/ava_ash_hat_ur002/ava_ash_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/ash/ava_ash_ur003/ava_ash_suit_ur003/ava_ash_suit_ur003",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_ur003/ava_ash_hat_ur003/ava_ash_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve005",
+          "body": "actors/avatars/ash/ava_ash_eve005/ava_ash_suit_eve005/ava_ash_suit_eve005",
+          "eqiups": [
+            "actors/avatars/ash/ava_ash_eve005/ava_ash_hat_eve005/ava_ash_hat_eve005"
+          ]
+        },
+        {
+          "name": "031",
+          "body": "actors/avatars/ash/ava_ash_031/ava_ash_suit_031/ava_ash_suit_031",
+          "eqiups": []
+        }
+      ]
+    },
+    {
+      "name": "Camilla",
+      "shortName": "cam",
+      "label": "カミラ / 卡米拉",
+      "actors": [
+        {
+          "name": "001",
+          "body": "actors/avatars/cam/ava_cam_001/ava_cam_suit_001/ava_cam_suit_001",
+          "eqiups": [
+            "actors/avatars/cam/ava_cam_001/ava_cam_hat_001/ava_cam_hat_001"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/cam/ava_cam_sr001/ava_cam_suit_sr001/ava_cam_suit_sr001",
+          "eqiups": [
+            "actors/avatars/cam/ava_cam_sr001/ava_cam_hat_sr001/ava_cam_hat_sr001"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/cam/ava_cam_ur001/ava_cam_suit_ur001/ava_cam_suit_ur001",
+          "eqiups": [
+            "actors/avatars/cam/ava_cam_ur001/ava_cam_hat_ur001/ava_cam_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/cam/ava_cam_ur003/ava_cam_suit_ur003/ava_cam_suit_ur003",
+          "eqiups": [
+            "actors/avatars/cam/ava_cam_ur003/ava_cam_hat_ur003/ava_cam_hat_ur003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Champe",
+      "shortName": "cha",
+      "label": "シャンペ / 香蓓",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/cha/ava_cha_r001/ava_cha_suit_r001/ava_cha_suit_r001",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_hat_000/ava_cha_hat_000"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/cha/ava_cha_r002/ava_cha_suit_r002/ava_cha_suit_r002",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_hat_000/ava_cha_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/cha/ava_cha_sr001/ava_cha_suit_sr001/ava_cha_suit_sr001",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_sr001/ava_cha_hat_sr001/ava_cha_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/cha/ava_cha_ssr002/ava_cha_suit_ssr002/ava_cha_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_ssr002/ava_cha_hat_ssr002/ava_cha_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/cha/ava_cha_ur001/ava_cha_suit_ur001/ava_cha_suit_ur001",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_ur001/ava_cha_hat_ur001/ava_cha_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/cha/ava_cha_ur002/ava_cha_suit_ur002/ava_cha_suit_ur002",
+          "eqiups": [
+            "actors/avatars/cha/ava_cha_ur002/ava_cha_hat_ur002/ava_cha_hat_ur002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chloe",
+      "shortName": "chl",
+      "label": "クロエ / 克洛伊",
+      "actors": [
+        {
+          "name": "001",
+          "body": "actors/avatars/chl/ava_chl_001/ava_chl_suit_001/ava_chl_suit_001",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_001/ava_chl_hat_001/ava_chl_hat_001",
+            "actors/avatars/chl/ava_chl_001/ava_chl_bac_001/ava_chl_bac_001"
+          ]
+        },
+        {
+          "name": "029",
+          "body": "actors/avatars/chl/ava_chl_029/ava_chl_suit_029/ava_chl_suit_029",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_029/ava_chl_hat_029/ava_chl_hat_029"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/chl/ava_chl_sr001/ava_chl_suit_sr001/ava_chl_suit_sr001",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_sr001/ava_chl_hat_sr001/ava_chl_hat_sr001"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/chl/ava_chl_ur001/ava_chl_suit_ur001/ava_chl_suit_ur001",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_ur001/ava_chl_hat_ur001/ava_chl_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/chl/ava_chl_ur003/ava_chl_suit_ur003/ava_chl_suit_ur003",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_ur003/ava_chl_hat_ur003/ava_chl_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/chl/ava_chl_eve001/ava_chl_suit_eve001/ava_chl_suit_eve001",
+          "eqiups": [
+            "actors/avatars/chl/ava_chl_eve001/ava_chl_hat_eve001/ava_chl_hat_eve001"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Eliza",
+      "shortName": "eli",
+      "label": "エリザ / 伊莉莎",
+      "actors": [
+        {
+          "name": "002",
+          "body": "actors/avatars/eli/ava_eli_002/ava_eli_suit_002/ava_eli_suit_002",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_002/ava_eli_hat_002/ava_eli_hat_002"
+          ]
+        },
+        {
+          "name": "029",
+          "body": "actors/avatars/eli/ava_eli_029/ava_eli_suit_029/ava_eli_suit_029",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_029/ava_eli_hat_029/ava_eli_hat_029"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/eli/ava_eli_sr001/ava_eli_suit_sr001/ava_eli_suit_sr001",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_sr001/ava_eli_hat_sr001/ava_eli_hat_sr001"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/eli/ava_eli_ur001/ava_eli_suit_ur001/ava_eli_suit_ur001",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_ur001/ava_eli_hat_ur001/ava_eli_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/eli/ava_eli_ur003/ava_eli_suit_ur003/ava_eli_suit_ur003",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_ur003/ava_eli_hat_ur003/ava_eli_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/eli/ava_eli_eve001/ava_eli_suit_eve001/ava_eli_suit_eve001",
+          "eqiups": [
+            "actors/avatars/eli/ava_eli_eve001/ava_eli_hat_eve001/ava_eli_hat_eve001"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Emilia",
+      "shortName": "emi",
+      "label": "エミリア / 艾米莉亚",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/emi/ava_emi_r001/ava_emi_suit_r001/ava_emi_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/emi/ava_emi_r002/ava_emi_suit_r002/ava_emi_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/emi/ava_emi_sr001/ava_emi_suit_sr001/ava_emi_suit_sr001",
+          "eqiups": [
+            "actors/avatars/emi/ava_emi_sr001/ava_emi_hat_sr001/ava_emi_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/emi/ava_emi_ssr002/ava_emi_suit_ssr002/ava_emi_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/emi/ava_emi_ssr002/ava_emi_hat_ssr002/ava_emi_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/emi/ava_emi_ur001/ava_emi_suit_ur001/ava_emi_suit_ur001",
+          "eqiups": [
+            "actors/avatars/emi/ava_emi_ur001/ava_emi_hat_ur001/ava_emi_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/emi/ava_emi_ur002/ava_emi_suit_ur002/ava_emi_suit_ur002",
+          "eqiups": [
+            "actors/avatars/emi/ava_emi_ur002/ava_emi_hat_ur002/ava_emi_hat_ur002"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/emi/ava_emi_eve003/ava_emi_suit_eve003/ava_emi_suit_eve003",
+          "eqiups": [
+            "actors/avatars/emi/ava_emi_eve003/ava_emi_hat_eve003/ava_emi_hat_eve003"
+          ]
+        },
+        {
+          "name": "014",
+          "body": "actors/avatars/emi/ava_emi_014/ava_emi_suit_014/ava_emi_suit_014",
+          "eqiups": []
+        }
+      ]
+    },
+    {
+      "name": "Fiona",
+      "shortName": "fio",
+      "label": "フィオナ / 费奥娜",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/fio/ava_fio_r001/ava_fio_suit_r001/ava_fio_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/fio/ava_fio_r002/ava_fio_suit_r002/ava_fio_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/fio/ava_fio_sr001/ava_fio_suit_sr001/ava_fio_suit_sr001",
+          "eqiups": [
+            "actors/avatars/fio/ava_fio_sr001/ava_fio_hat_sr001/ava_fio_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/fio/ava_fio_ssr002/ava_fio_suit_ssr002/ava_fio_suit_ssr002",
+          "eqiups": []
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/fio/ava_fio_ur001/ava_fio_suit_ur001/ava_fio_suit_ur001",
+          "eqiups": [
+            "actors/avatars/fio/ava_fio_ur001/ava_fio_hat_ur001/ava_fio_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/fio/ava_fio_ur002/ava_fio_suit_ur002/ava_fio_suit_ur002",
+          "eqiups": [
+            "actors/avatars/fio/ava_fio_ur002/ava_fio_hat_ur002/ava_fio_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/fio/ava_fio_ur003/ava_fio_suit_ur003/ava_fio_suit_ur003",
+          "eqiups": [
+            "actors/avatars/fio/ava_fio_ur003/ava_fio_hat_ur003/ava_fio_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/fio/ava_fio_eve003/ava_fio_suit_eve003/ava_fio_suit_eve003",
+          "eqiups": [
+            "actors/avatars/fio/ava_fio_eve003/ava_fio_hat_eve003/ava_fio_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Garnet",
+      "shortName": "gar",
+      "label": "ガーネット / 嘉奈特",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/gar/ava_gar_r001/ava_gar_suit_r001/ava_gar_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/gar/ava_gar_r002/ava_gar_suit_r002/ava_gar_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/gar/ava_gar_sr001/ava_gar_suit_sr001/ava_gar_suit_sr001",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_sr001/ava_gar_hat_sr001/ava_gar_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/gar/ava_gar_ssr002/ava_gar_suit_ssr002/ava_gar_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_ssr002/ava_gar_hat_ssr002/ava_gar_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/gar/ava_gar_ur001/ava_gar_suit_ur001/ava_gar_suit_ur001",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_ur001/ava_gar_hat_ur001/ava_gar_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/gar/ava_gar_ur002/ava_gar_suit_ur002/ava_gar_suit_ur002",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_ur002/ava_gar_hat_ur002/ava_gar_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/gar/ava_gar_ur003/ava_gar_suit_ur003/ava_gar_suit_ur003",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_ur003/ava_gar_hat_ur003/ava_gar_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/gar/ava_gar_eve001/ava_gar_suit_eve001/ava_gar_suit_eve001",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_eve001/ava_gar_hat_eve001/ava_gar_hat_eve001"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/gar/ava_gar_eve003/ava_gar_suit_eve003/ava_gar_suit_eve003",
+          "eqiups": [
+            "actors/avatars/gar/ava_gar_eve003/ava_gar_hat_eve003/ava_gar_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Kaede",
+      "shortName": "kae",
+      "label": "カエデ / 枫",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/kae/ava_kae_r001/ava_kae_suit_r001/ava_kae_suit_r001",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_r001/ava_kae_hat_r001/ava_kae_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/kae/ava_kae_r002/ava_kae_suit_r002/ava_kae_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/kae/ava_kae_sr001/ava_kae_suit_sr001/ava_kae_suit_sr001",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_sr001/ava_kae_hat_sr001/ava_kae_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/kae/ava_kae_ssr002/ava_kae_suit_ssr002/ava_kae_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_ssr002/ava_kae_hat_ssr002/ava_kae_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/kae/ava_kae_ur001/ava_kae_suit_ur001/ava_kae_suit_ur001",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_ur001/ava_kae_hat_ur001/ava_kae_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/kae/ava_kae_ur002/ava_kae_suit_ur002/ava_kae_suit_ur002",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_ur002/ava_kae_hat_ur002/ava_kae_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/kae/ava_kae_ur003/ava_kae_suit_ur003/ava_kae_suit_ur003",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_ur003/ava_kae_hat_ur003/ava_kae_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve002",
+          "body": "actors/avatars/kae/ava_kae_eve002/ava_kae_suit_eve002/ava_kae_suit_eve002",
+          "eqiups": [
+            "actors/avatars/kae/ava_kae_eve002/ava_kae_hat_eve002/ava_kae_hat_eve002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lavie",
+      "shortName": "lav",
+      "label": "ラヴィ / 拉薇",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/lav/ava_lav_r001/ava_lav_suit_r001/ava_lav_suit_r001",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_r001/ava_lav_hat_r001/ava_lav_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/lav/ava_lav_r002/ava_lav_suit_r002/ava_lav_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/lav/ava_lav_sr001/ava_lav_suit_sr001/ava_lav_suit_sr001",
+          "eqiups": []
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/lav/ava_lav_ssr002/ava_lav_suit_ssr002/ava_lav_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_ssr002/ava_lav_hat_ssr002/ava_lav_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/lav/ava_lav_ur001/ava_lav_suit_ur001/ava_lav_suit_ur001",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_ur001/ava_lav_hat_ur001/ava_lav_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/lav/ava_lav_ur002/ava_lav_suit_ur002/ava_lav_suit_ur002",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_ur002/ava_lav_hat_ur002/ava_lav_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/lav/ava_lav_ur003/ava_lav_suit_ur003/ava_lav_suit_ur003",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_ur003/ava_lav_hat_ur003/ava_lav_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/lav/ava_lav_eve003/ava_lav_suit_eve003/ava_lav_suit_eve003",
+          "eqiups": [
+            "actors/avatars/lav/ava_lav_eve003/ava_lav_hat_eve003/ava_lav_hat_eve003",
+            "actors/avatars/lav/ava_lav_eve003/ava_lav_bac_eve003/ava_lav_bac_eve003"
+          ]
+        },
+        {
+          "name": "014",
+          "body": "actors/avatars/lav/ava_lav_014/ava_lav_suit_014/ava_lav_suit_014",
+          "eqiups": []
+        }
+      ]
+    },
+    {
+      "name": "Lynette",
+      "shortName": "lin",
+      "label": "リネット / 莉奈特",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/lin/ava_lin_r001/ava_lin_suit_r001/ava_lin_suit_r001",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_r001/ava_lin_hat_r001/ava_lin_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/lin/ava_lin_r002/ava_lin_suit_r002/ava_lin_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/lin/ava_lin_sr001/ava_lin_suit_sr001/ava_lin_suit_sr001",
+          "eqiups": []
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/lin/ava_lin_ssr002/ava_lin_suit_ssr002/ava_lin_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_ssr002/ava_lin_hat_ssr002/ava_lin_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/lin/ava_lin_ur001/ava_lin_suit_ur001/ava_lin_suit_ur001",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_ur001/ava_lin_hat_ur001/ava_lin_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/lin/ava_lin_ur002/ava_lin_suit_ur002/ava_lin_suit_ur002",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_ur002/ava_lin_hat_ur002/ava_lin_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/lin/ava_lin_ur003/ava_lin_suit_ur003/ava_lin_suit_ur003",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_ur003/ava_lin_hat_ur003/ava_lin_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve002",
+          "body": "actors/avatars/lin/ava_lin_eve002/ava_lin_suit_eve002/ava_lin_suit_eve002",
+          "eqiups": [
+            "actors/avatars/lin/ava_lin_eve002/ava_lin_hat_eve002/ava_lin_hat_eve002"
+          ]
+        },
+        {
+          "name": "032",
+          "body": "actors/avatars/lin/ava_lin_032/ava_lin_suit_032/ava_lin_suit_032",
+          "eqiups": []
+        }
+      ]
+    },
+    {
+      "name": "Lucifer",
+      "shortName": "luc",
+      "label": "ルキフェル / 露西菲尔",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/luc/ava_luc_r001/ava_luc_suit_r001/ava_luc_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/luc/ava_luc_r002/ava_luc_suit_r002/ava_luc_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/luc/ava_luc_sr001/ava_luc_suit_sr001/ava_luc_suit_sr001",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_sr001/ava_luc_hat_sr001/ava_luc_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/luc/ava_luc_ssr002/ava_luc_suit_ssr002/ava_luc_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_ssr002/ava_luc_hat_ssr002/ava_luc_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/luc/ava_luc_ur001/ava_luc_suit_ur001/ava_luc_suit_ur001",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_ur001/ava_luc_hat_ur001/ava_luc_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/luc/ava_luc_ur002/ava_luc_suit_ur002/ava_luc_suit_ur002",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_ur002/ava_luc_hat_ur002/ava_luc_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/luc/ava_luc_ur003/ava_luc_suit_ur003/ava_luc_suit_ur003",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_ur003/ava_luc_hat_ur003/ava_luc_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve002",
+          "body": "actors/avatars/luc/ava_luc_eve002/ava_luc_suit_eve002/ava_luc_suit_eve002",
+          "eqiups": [
+            "actors/avatars/luc/ava_luc_eve002/ava_luc_hat_eve002/ava_luc_hat_eve002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maryberry",
+      "shortName": "mar",
+      "label": "メアリーベリー / 玛莉贝丽",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/mar/ava_mar_r001/ava_mar_suit_r001/ava_mar_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/mar/ava_mar_r002/ava_mar_suit_r002/ava_mar_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/mar/ava_mar_sr001/ava_mar_suit_sr001/ava_mar_suit_sr001",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_sr001/ava_mar_hat_sr001/ava_mar_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/mar/ava_mar_ssr002/ava_mar_suit_ssr002/ava_mar_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_ssr002/ava_mar_hat_ssr002/ava_mar_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/mar/ava_mar_ur001/ava_mar_suit_ur001/ava_mar_suit_ur001",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_ur001/ava_mar_hat_ur001/ava_mar_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/mar/ava_mar_ur002/ava_mar_suit_ur002/ava_mar_suit_ur002",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_ur002/ava_mar_hat_ur002/ava_mar_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/mar/ava_mar_ur003/ava_mar_suit_ur003/ava_mar_suit_ur003",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_ur003/ava_mar_hat_ur003/ava_mar_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/mar/ava_mar_eve003/ava_mar_suit_eve003/ava_mar_suit_eve003",
+          "eqiups": [
+            "actors/avatars/mar/ava_mar_eve003/ava_mar_hat_eve003/ava_mar_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Millefeuille",
+      "shortName": "mil",
+      "label": "ミルフィーユ / 米露菲",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/mil/ava_mil_r001/ava_mil_suit_r001/ava_mil_suit_r001",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_r001/ava_mil_hat_r001/ava_mil_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/mil/ava_mil_r002/ava_mil_suit_r002/ava_mil_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/mil/ava_mil_sr001/ava_mil_suit_sr001/ava_mil_suit_sr001",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_sr001/ava_mil_hat_sr001/ava_mil_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/mil/ava_mil_ssr002/ava_mil_suit_ssr002/ava_mil_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_ssr002/ava_mil_hat_ssr002/ava_mil_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/mil/ava_mil_ur001/ava_mil_suit_ur001/ava_mil_suit_ur001",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_ur001/ava_mil_hat_ur001/ava_mil_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/mil/ava_mil_ur002/ava_mil_suit_ur002/ava_mil_suit_ur002",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_ur002/ava_mil_hat_ur002/ava_mil_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/mil/ava_mil_ur003/ava_mil_suit_ur003/ava_mil_suit_ur003",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_ur003/ava_mil_hat_ur003/ava_mil_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/mil/ava_mil_eve001/ava_mil_suit_eve001/ava_mil_suit_eve001",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_eve001/ava_mil_hat_eve001/ava_mil_hat_eve001"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/mil/ava_mil_eve003/ava_mil_suit_eve003/ava_mil_suit_eve003",
+          "eqiups": [
+            "actors/avatars/mil/ava_mil_eve003/ava_mil_hat_eve003/ava_mil_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Nadeshiko",
+      "shortName": "nad",
+      "label": "ナデシコ / 抚子",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/nad/ava_nad_r001/ava_nad_suit_r001/ava_nad_suit_r001",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_r001/ava_nad_hat_r001/ava_nad_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/nad/ava_nad_r002/ava_nad_suit_r002/ava_nad_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/nad/ava_nad_sr001/ava_nad_suit_sr001/ava_nad_suit_sr001",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_sr001/ava_nad_hat_sr001/ava_nad_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/nad/ava_nad_ssr002/ava_nad_suit_ssr002/ava_nad_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_ssr002/ava_nad_hat_ssr002/ava_nad_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/nad/ava_nad_ur001/ava_nad_suit_ur001/ava_nad_suit_ur001",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_ur001/ava_nad_hat_ur001/ava_nad_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/nad/ava_nad_ur002/ava_nad_suit_ur002/ava_nad_suit_ur002",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_ur002/ava_nad_hat_ur002/ava_nad_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/nad/ava_nad_ur003/ava_nad_suit_ur003/ava_nad_suit_ur003",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_ur003/ava_nad_hat_ur003/ava_nad_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve004",
+          "body": "actors/avatars/nad/ava_nad_eve004/ava_nad_suit_eve004/ava_nad_suit_eve004",
+          "eqiups": [
+            "actors/avatars/nad/ava_nad_eve004/ava_nad_hat_eve004/ava_nad_hat_eve004"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ratura",
+      "shortName": "rat",
+      "label": "ラトゥーラ / 菈图菈",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/rat/ava_rat_r001/ava_rat_suit_r001/ava_rat_suit_r001",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_r001/ava_rat_hat_r001/ava_rat_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/rat/ava_rat_r002/ava_rat_suit_r002/ava_rat_suit_r002",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_hat_000/ava_rat_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/rat/ava_rat_sr001/ava_rat_suit_sr001/ava_rat_suit_sr001",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_sr001/ava_rat_hat_sr001/ava_rat_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/rat/ava_rat_ssr002/ava_rat_suit_ssr002/ava_rat_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_ssr002/ava_rat_hat_ssr002/ava_rat_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/rat/ava_rat_ur001/ava_rat_suit_ur001/ava_rat_suit_ur001",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_ur001/ava_rat_hat_ur001/ava_rat_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/rat/ava_rat_ur002/ava_rat_suit_ur002/ava_rat_suit_ur002",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_ur002/ava_rat_hat_ur002/ava_rat_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/rat/ava_rat_ur003/ava_rat_suit_ur003/ava_rat_suit_ur003",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_ur003/ava_rat_hat_ur003/ava_rat_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/rat/ava_rat_eve003/ava_rat_suit_eve003/ava_rat_suit_eve003",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_eve003/ava_rat_hat_eve003/ava_rat_hat_eve003"
+          ]
+        },
+        {
+          "name": "014",
+          "body": "actors/avatars/rat/ava_rat_014/ava_rat_suit_014/ava_rat_suit_014",
+          "eqiups": [
+            "actors/avatars/rat/ava_rat_014/ava_rat_hat_014/ava_rat_hat_014"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rosetta",
+      "shortName": "ros",
+      "label": "ロゼッタ / 洛赛塔",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/ros/ava_ros_r001/ava_ros_suit_r001/ava_ros_suit_r001",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_hat_000/ava_ros_hat_000"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/ros/ava_ros_r002/ava_ros_suit_r002/ava_ros_suit_r002",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_hat_000/ava_ros_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/ros/ava_ros_sr001/ava_ros_suit_sr001/ava_ros_suit_sr001",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_hat_000/ava_ros_hat_000"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/ros/ava_ros_ssr002/ava_ros_suit_ssr002/ava_ros_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_hat_000/ava_ros_hat_000"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/ros/ava_ros_ur001/ava_ros_suit_ur001/ava_ros_suit_ur001",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_ur001/ava_ros_hat_ur001/ava_ros_hat_ur001",
+            "actors/avatars/ros/ava_ros_ur001/ava_ros_vis_ur001/ava_ros_vis_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/ros/ava_ros_ur002/ava_ros_suit_ur002/ava_ros_suit_ur002",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_ur002/ava_ros_hat_ur002/ava_ros_hat_ur002"
+          ]
+        },
+        {
+          "name": "eve002",
+          "body": "actors/avatars/ros/ava_ros_eve002/ava_ros_suit_eve002/ava_ros_suit_eve002",
+          "eqiups": [
+            "actors/avatars/ros/ava_ros_eve002/ava_ros_hat_eve002/ava_ros_hat_eve002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Salsa",
+      "shortName": "sal",
+      "label": "サルサ / 赛露莎",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/sal/ava_sal_r001/ava_sal_suit_r001/ava_sal_suit_r001",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_r001/ava_sal_hat_r001/ava_sal_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/sal/ava_sal_r002/ava_sal_suit_r002/ava_sal_suit_r002",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_hat_000/ava_sal_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/sal/ava_sal_sr001/ava_sal_suit_sr001/ava_sal_suit_sr001",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_sr001/ava_sal_hat_sr001/ava_sal_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/sal/ava_sal_ssr002/ava_sal_suit_ssr002/ava_sal_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_ssr002/ava_sal_hat_ssr002/ava_sal_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/sal/ava_sal_ur001/ava_sal_suit_ur001/ava_sal_suit_ur001",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_ur001/ava_sal_hat_ur001/ava_sal_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/sal/ava_sal_ur002/ava_sal_suit_ur002/ava_sal_suit_ur002",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_ur002/ava_sal_hat_ur002/ava_sal_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/sal/ava_sal_ur003/ava_sal_suit_ur003/ava_sal_suit_ur003",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_ur003/ava_sal_hat_ur003/ava_sal_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve002",
+          "body": "actors/avatars/sal/ava_sal_eve002/ava_sal_suit_eve002/ava_sal_suit_eve002",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_eve002/ava_sal_hat_eve002/ava_sal_hat_eve002"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/sal/ava_sal_eve003/ava_sal_suit_eve003/ava_sal_suit_eve003",
+          "eqiups": [
+            "actors/avatars/sal/ava_sal_eve003/ava_sal_hat_eve003/ava_sal_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tiara",
+      "shortName": "tia",
+      "label": "ティアラ / 缇亚拉",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/tia/ava_tia_r001/ava_tia_suit_r001/ava_tia_suit_r001",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_r001/ava_tia_hat_r001/ava_tia_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/tia/ava_tia_r002/ava_tia_suit_r002/ava_tia_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/tia/ava_tia_sr001/ava_tia_suit_sr001/ava_tia_suit_sr001",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_sr001/ava_tia_hat_sr001/ava_tia_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/tia/ava_tia_ssr002/ava_tia_suit_ssr002/ava_tia_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_ssr002/ava_tia_hat_ssr002/ava_tia_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/tia/ava_tia_ur001/ava_tia_suit_ur001/ava_tia_suit_ur001",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_ur001/ava_tia_hat_ur001/ava_tia_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/tia/ava_tia_ur002/ava_tia_suit_ur002/ava_tia_suit_ur002",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_ur002/ava_tia_hat_ur002/ava_tia_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/tia/ava_tia_ur003/ava_tia_suit_ur003/ava_tia_suit_ur003",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_ur003/ava_tia_hat_ur003/ava_tia_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/tia/ava_tia_eve001/ava_tia_suit_eve001/ava_tia_suit_eve001",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_eve001/ava_tia_hat_eve001/ava_tia_hat_eve001"
+          ]
+        },
+        {
+          "name": "eve003",
+          "body": "actors/avatars/tia/ava_tia_eve003/ava_tia_suit_eve003/ava_tia_suit_eve003",
+          "eqiups": [
+            "actors/avatars/tia/ava_tia_eve003/ava_tia_hat_eve003/ava_tia_hat_eve003"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tsubaki",
+      "shortName": "tsu",
+      "label": "ツバキ / 椿",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/tsu/ava_tsu_r001/ava_tsu_suit_r001/ava_tsu_suit_r001",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_r001/ava_tsu_hat_r001/ava_tsu_hat_r001"
+          ]
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/tsu/ava_tsu_r002/ava_tsu_suit_r002/ava_tsu_suit_r002",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_hat_000/ava_tsu_hat_000"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/tsu/ava_tsu_sr001/ava_tsu_suit_sr001/ava_tsu_suit_sr001",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_sr001/ava_tsu_hat_sr001/ava_tsu_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/tsu/ava_tsu_ssr002/ava_tsu_suit_ssr002/ava_tsu_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_ssr002/ava_tsu_hat_ssr002/ava_tsu_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/tsu/ava_tsu_ur001/ava_tsu_suit_ur001/ava_tsu_suit_ur001",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_ur001/ava_tsu_hat_ur001/ava_tsu_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/tsu/ava_tsu_ur002/ava_tsu_suit_ur002/ava_tsu_suit_ur002",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_ur002/ava_tsu_hat_ur002/ava_tsu_hat_ur002"
+          ]
+        },
+        {
+          "name": "eve004",
+          "body": "actors/avatars/tsu/ava_tsu_eve004/ava_tsu_suit_eve004/ava_tsu_suit_eve004",
+          "eqiups": [
+            "actors/avatars/tsu/ava_tsu_eve004/ava_tsu_hat_eve004/ava_tsu_hat_eve004"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yue",
+      "shortName": "yue",
+      "label": "ユエ / 月",
+      "actors": [
+        {
+          "name": "r001",
+          "body": "actors/avatars/yue/ava_yue_r001/ava_yue_suit_r001/ava_yue_suit_r001",
+          "eqiups": []
+        },
+        {
+          "name": "r002",
+          "body": "actors/avatars/yue/ava_yue_r002/ava_yue_suit_r002/ava_yue_suit_r002",
+          "eqiups": []
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/yue/ava_yue_sr001/ava_yue_suit_sr001/ava_yue_suit_sr001",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_sr001/ava_yue_hat_sr001/ava_yue_hat_sr001"
+          ]
+        },
+        {
+          "name": "ssr002",
+          "body": "actors/avatars/yue/ava_yue_ssr002/ava_yue_suit_ssr002/ava_yue_suit_ssr002",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_ssr002/ava_yue_hat_ssr002/ava_yue_hat_ssr002"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/yue/ava_yue_ur001/ava_yue_suit_ur001/ava_yue_suit_ur001",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_ur001/ava_yue_hat_ur001/ava_yue_hat_ur001"
+          ]
+        },
+        {
+          "name": "ur002",
+          "body": "actors/avatars/yue/ava_yue_ur002/ava_yue_suit_ur002/ava_yue_suit_ur002",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_ur002/ava_yue_hat_ur002/ava_yue_hat_ur002"
+          ]
+        },
+        {
+          "name": "ur003",
+          "body": "actors/avatars/yue/ava_yue_ur003/ava_yue_suit_ur003/ava_yue_suit_ur003",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_ur003/ava_yue_hat_ur003/ava_yue_hat_ur003"
+          ]
+        },
+        {
+          "name": "eve001",
+          "body": "actors/avatars/yue/ava_yue_eve001/ava_yue_suit_eve001/ava_yue_suit_eve001",
+          "eqiups": [
+            "actors/avatars/yue/ava_yue_eve001/ava_yue_hat_eve001/ava_yue_hat_eve001"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yuzuriha",
+      "shortName": "yuz",
+      "label": "ユズリハ / 让叶",
+      "actors": [
+        {
+          "name": "001",
+          "body": "actors/avatars/yuz/ava_yuz_001/ava_yuz_suit_001/ava_yuz_suit_001",
+          "eqiups": [
+            "actors/avatars/yuz/ava_yuz_001/ava_yuz_hat_001/ava_yuz_hat_001"
+          ]
+        },
+        {
+          "name": "sr001",
+          "body": "actors/avatars/yuz/ava_yuz_sr001/ava_yuz_suit_sr001/ava_yuz_suit_sr001",
+          "eqiups": [
+            "actors/avatars/yuz/ava_yuz_sr001/ava_yuz_hat_sr001/ava_yuz_hat_sr001"
+          ]
+        },
+        {
+          "name": "ur001",
+          "body": "actors/avatars/yuz/ava_yuz_ur001/ava_yuz_suit_ur001/ava_yuz_suit_ur001",
+          "eqiups": [
+            "actors/avatars/yuz/ava_yuz_ur001/ava_yuz_hat_ur001/ava_yuz_hat_ur001"
+          ]
+        }
+      ]
+    }
+  ]
+}
