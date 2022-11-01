@@ -53,7 +53,7 @@ namespace LapisPlayer
             characterSetting.Name = charaToken.Value<string>("name");
             characterSetting.ShortName = charaToken.Value<string>("shortName");
             characterSetting.Label = charaToken.Value<string>("label");
-            _charaDict.Add(characterSetting.Name, characterSetting);
+            _charaDict.Add(characterSetting.Name.ToLower(), characterSetting);
 
             var actors = charaToken["actors"].Children().ToList();
             foreach (var actor in actors)
@@ -68,9 +68,18 @@ namespace LapisPlayer
             }
         }
 
+        public string[] GetActors()
+        {
+            return _actorDict.Keys.ToArray();
+        }
+        public CharacterActor LoadActor(string actorKey)
+        {
+            string[] p = actorKey.Split('/');
+            return LoadActor(p[0], p[1]);
+        }
         public CharacterActor LoadActor(string characterName, string actorName)
         {
-            var charaSetting = _charaDict[characterName];
+            var charaSetting = _charaDict[characterName.ToLower()];
 
             string key = characterName + "/" + actorName;
             var actorSetting = _actorDict[key.ToLower()];

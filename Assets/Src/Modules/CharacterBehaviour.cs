@@ -19,6 +19,15 @@ namespace LapisPlayer
             Facial = new(facialSetting, face);
 
             _heel = heelSetting;
+            if (_heel == null)
+            {
+                _heel = new HeelSetting()
+                {
+                    tweakFootAngle = 0,
+                    tweakFootHeight = 0
+                };
+            }
+
             var originPos = gameObject.transform.position;
             gameObject.transform.position = new(originPos.x, originPos.y + heelSetting.tweakFootHeight, originPos.z);
 

@@ -13,32 +13,41 @@ namespace LapisPlayer
             _danceManager = new(dance);
             await _danceManager.Initialize();
 
-            var actor1 = CharactersStore.Instance.LoadActor("Nadeshiko", "UR002");
-            var actor2 = CharactersStore.Instance.LoadActor("Tsubaki", "UR002");
-            var actor3 = CharactersStore.Instance.LoadActor("Kaede", "UR002");
-            _danceManager.AddCharacter(actor1);
-            _danceManager.AddCharacter(actor2);
-            _danceManager.AddCharacter(actor3);
+            var camare = GameObject.Find("Main Camera");
+            var camCtrl = camare.AddComponent<CameraController>();
+            camCtrl.Initialize(_danceManager.Root.transform);
 
+            var uiManager = new UIManager();
+            uiManager.Initialize();
+
+            uiManager.OnUiAction += UiManager_OnAction;
+        }
+
+        private void UiManager_OnAction(UIActions action ,string param)
+        {
+            switch (action) {
+                case UIActions.ActorChange:
+                    ChangeActor(param); break;
+                case UIActions.PlayDance:
+                    _danceManager.Play(); break;
+                case UIActions.StopDance:
+                    _danceManager.Stop(); break;
+                default:
+                    break;
+            }
+        }
+
+        private void ChangeActor (string actorKey)
+        {
+            _danceManager.ClearCharacters();
+            var chara = CharactersStore.Instance.LoadActor(actorKey);
+            _danceManager.AddCharacter(chara);
             _danceManager.SetCharacterPosition();
         }
 
         private void Update()
         {
             _danceManager.Update();
-        }
-
-        private void OnGUI()
-        {
-            if (GUILayout.Button("Start"))
-            {
-                _danceManager.Play();
-            }
-
-            if (GUILayout.Button("Stop"))
-            {
-                _danceManager.Stop();
-            }
         }
     }
 }

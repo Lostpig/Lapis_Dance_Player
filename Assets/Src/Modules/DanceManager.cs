@@ -5,6 +5,8 @@ using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.TextCore.Text;
+using static Unity.VisualScripting.Member;
 
 namespace LapisPlayer
 {
@@ -22,9 +24,13 @@ namespace LapisPlayer
         GameObject _timelineRoot;
         PlayableDirector _director;
         AudioSource _audio;
-        AnimationTrack[] _animationTracks;
+        AnimationTrack _animationTrack;
+        GroupTrack _animationGroupTrack;
+
         double _lastClipStart = 0.0;
         double _lastClipEnd = 0.0;
+
+        public GameObject Root => _timelineRoot;
 
         public DanceManager(DanceSetting setting)
         {
@@ -34,6 +40,7 @@ namespace LapisPlayer
         {
             GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"ar/song/{_setting.ID}/CM_Timeline_AR");
             _timelineRoot = GameObject.Instantiate(timelinePrefab);
+            _timelineRoot.transform.position = Vector3.zero;
             _director = _timelineRoot.GetComponent<PlayableDirector>();
             _director.extrapolationMode = DirectorWrapMode.Hold;
 
@@ -44,18 +51,27 @@ namespace LapisPlayer
             _audio = audioSource;
 
             var timeline = _director.playableAsset as TimelineAsset;
-            List<AnimationTrack> animTracks = new();
             foreach (var rootTrack in timeline.GetRootTracks())
             {
                 foreach (var track in rootTrack.GetChildTracks())
                 {
                     if (track is AnimationTrack aniTrack)
                     {
-                        animTracks.Add(aniTrack);
+                        _animationTrack = aniTrack;
+                        _animationGroupTrack = rootTrack as GroupTrack;
+                        break;
                     }
                 }
+                if (_animationTrack != null) break;
             }
-            _animationTracks = animTracks.ToArray();
+            foreach (var clip in _animationTrack.GetClips())
+            {
+                if (clip.end > _lastClipEnd)
+                {
+                    _lastClipStart = clip.start;
+                    _lastClipEnd = clip.end;
+                }
+            }
 
             var lysTexts = _director.GetComponentsInChildren<Text>(true);
             var runner = GameObject.Find("Launcher");
@@ -68,19 +84,53 @@ namespace LapisPlayer
 
         public void AddCharacter(CharacterActor character)
         {
-            var timeline = _director.playableAsset as TimelineAsset;
-
-            character.Parts.ForEach((part) => {
-                foreach (var track in _animationTracks)
-                {
-                    var newTrack = CloneAnimationTrack(timeline, track.parent as TrackAsset, track);
-                    var animator = part.Model.GetComponent<Animator>();
-                    _director.SetGenericBinding(newTrack, animator);
-                }
-            });
-
+            BindAnimationTrack(character);
             character.Root.transform.SetParent(_timelineRoot.transform);
             _characters.Add(character);
+        }
+        public void RemoveCharacter(CharacterActor character)
+        {
+            _characters.Remove(character);
+            GameObject.Destroy(character.Root);
+            // _director.remo
+        }
+        public void ClearCharacters()
+        {
+            foreach(var chara in _characters)
+            {
+                GameObject.Destroy(chara.Root);
+            }
+            _characters.Clear();
+        }
+        
+        private void BindAnimationTrack(CharacterActor character)
+        {
+            var timeline = _director.playableAsset as TimelineAsset;
+            var count = character.Parts.Count;
+            var tracks = new AnimationTrack[count];
+
+            int idx = 0;
+            foreach (var track in _animationGroupTrack.GetChildTracks())
+            {
+                if (track == _animationTrack) continue;
+                var bind = _director.GetGenericBinding(track);
+                if (bind == null)
+                {
+                    tracks[idx] = track as AnimationTrack;
+                    idx++;
+                }
+                if (idx >= count) break;
+            }
+            for (; idx < count; idx++)
+            {
+                tracks[idx] = CloneAnimationTrack(timeline, _animationGroupTrack, _animationTrack);
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var animator = character.Parts[i].Model.GetComponent<Animator>();
+                _director.SetGenericBinding(tracks[i], animator);
+            }
         }
         private AnimationTrack CloneAnimationTrack(TimelineAsset parent, TrackAsset rootTrack, AnimationTrack source)
         {
@@ -90,11 +140,6 @@ namespace LapisPlayer
             foreach (var clip in source.GetClips())
             {
                 newTrack.CreateClip(clip.animationClip);
-                if (clip.end > _lastClipEnd)
-                {
-                    _lastClipStart = clip.start;
-                    _lastClipEnd = clip.end;
-                }
             }
             return newTrack;
         }

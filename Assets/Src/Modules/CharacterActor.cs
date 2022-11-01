@@ -16,9 +16,19 @@ namespace LapisPlayer
             Model = GameObject.Instantiate(setting.Prefab);
         }
 
-        public void BindDynamicBone(GameObject root)
+        public void BindDynamicBone()
         {
-            var dynamicBone = root.GetComponent<DynamicBone>();
+            DynamicBone dynamicBone = Model.AddComponent<DynamicBone>();
+            dynamicBone.m_Radius = 0.04f;
+            dynamicBone.m_RadiusDistrib = AnimationCurve.Linear(0f, 0.33f, 1f, 1f);
+            dynamicBone.m_Damping = 0.33f;
+            dynamicBone.m_Elasticity = 0.05f;
+            dynamicBone.m_Stiffness = 0.05f;
+            dynamicBone.m_Friction = 0.25f;
+            dynamicBone.m_Gravity = new Vector3(0, -0.04f, 0);
+
+            dynamicBone.m_Roots = new();
+            dynamicBone.m_Colliders = new();
 
             var springSetting = Setting.SpringSetting;
             if (springSetting == null) return;
@@ -38,7 +48,7 @@ namespace LapisPlayer
             foreach (var collider in springSetting.colliderParameters)
             {
                 var node = Utility.FindNodeByPath(Model, collider.nodeName);
-                if (node == null) node = Utility.FindNodeByPath(root, collider.nodeName);
+                if (node == null) node = Utility.FindNodeByPath(Model, collider.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("Collider node not found:" + collider.nodeName);
@@ -53,7 +63,7 @@ namespace LapisPlayer
                 if (!string.IsNullOrEmpty(collider.sibilingPath))
                 {
                     var slblingNode = Utility.FindNodeByPath(Model, collider.sibilingPath);
-                    if (slblingNode == null) slblingNode = Utility.FindNodeByPath(root, collider.sibilingPath);
+                    if (slblingNode == null) slblingNode = Utility.FindNodeByPath(Model, collider.sibilingPath);
                     if (slblingNode == null)
                     {
                         Debug.LogWarning("Collider slbling node not found:" + collider.sibilingPath);
@@ -185,21 +195,9 @@ namespace LapisPlayer
         // 看有没有更好的解决方案
         private void BindDynamicBone()
         {
-            DynamicBone dynamicBone = Root.AddComponent<DynamicBone>();
-            dynamicBone.m_Radius = 0.04f;
-            dynamicBone.m_RadiusDistrib = AnimationCurve.Linear(0f, 0.33f, 1f, 1f);
-            dynamicBone.m_Damping = 0.33f;
-            dynamicBone.m_Elasticity = 0.05f;
-            dynamicBone.m_Stiffness = 0.05f;
-            dynamicBone.m_Friction = 0.25f;
-            dynamicBone.m_Gravity = new Vector3(0, -0.04f, 0);
-
-            dynamicBone.m_Roots = new();
-            dynamicBone.m_Colliders = new();
-
             foreach(var part in _parts)
             {
-                part.BindDynamicBone(Root);
+                part.BindDynamicBone();
             }
         }
     }
