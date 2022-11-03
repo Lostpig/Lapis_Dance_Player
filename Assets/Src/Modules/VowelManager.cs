@@ -89,7 +89,6 @@ namespace LapisPlayer
                     endTime = now + mixIn,
                     weight = weight
                 };
-
                 if (!vowelList.ContainsKey(mixInRecord.startTime))
                 {
                     vowelList.Add(mixInRecord.startTime, mixInRecord);
@@ -129,8 +128,6 @@ namespace LapisPlayer
                 endTime = now + mixIn + contentDuration,
                 weight = weight
             };
-            vowelList.Add(contentRecord.startTime, contentRecord);
-
             if (!vowelList.ContainsKey(contentRecord.startTime))
             {
                 vowelList.Add(contentRecord.startTime, contentRecord);

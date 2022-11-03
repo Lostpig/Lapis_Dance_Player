@@ -18,7 +18,7 @@ namespace LapisPlayer
 
     public class DanceManager
     {
-        List<CharacterActor> _characters = new();
+        CharacterActor[] _characters = new CharacterActor[5];
         DanceState _state = DanceState.Stop;
         DanceSetting _setting;
         GameObject _timelineRoot;
@@ -32,12 +32,13 @@ namespace LapisPlayer
 
         public GameObject Root => _timelineRoot;
 
-        public DanceManager(DanceSetting setting)
+        public async Task InitializeDance(DanceSetting setting)
         {
+            if (_state == DanceState.Playing) Stop();
+
             _setting = setting;
-        }
-        public async Task Initialize()
-        {
+            var originDanceObject = _timelineRoot;
+
             GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"ar/song/{_setting.ID}/CM_Timeline_AR");
             _timelineRoot = GameObject.Instantiate(timelinePrefab);
             _timelineRoot.transform.position = Vector3.zero;
@@ -64,6 +65,9 @@ namespace LapisPlayer
                 }
                 if (_animationTrack != null) break;
             }
+
+            _lastClipStart = 0;
+            _lastClipEnd = 0;
             foreach (var clip in _animationTrack.GetClips())
             {
                 if (clip.end > _lastClipEnd)
@@ -80,27 +84,51 @@ namespace LapisPlayer
             {
                 text.font = runnerText.font;
             }
+
+            BindCharacters();
+            if (originDanceObject != null)
+            {
+                GameObject.Destroy(originDanceObject);
+            }
+        }
+        private void BindCharacters ()
+        {
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                if (_characters[i] == null) continue;
+                BindAnimationTrack(_characters[i]);
+                _characters[i].Root.transform.SetParent(_timelineRoot.transform);
+            }
         }
 
-        public void AddCharacter(CharacterActor character)
+        public void SetCharacter(int characterPos, CharacterActor character)
         {
+            RemoveCharacter(characterPos);
+
             BindAnimationTrack(character);
             character.Root.transform.SetParent(_timelineRoot.transform);
-            _characters.Add(character);
+            _characters[characterPos] = character;
+
+            if (_state != DanceState.Playing)
+            {
+                character.PlayBaseAnimation();
+            }
         }
-        public void RemoveCharacter(CharacterActor character)
+        public void RemoveCharacter(int characterPos)
         {
-            _characters.Remove(character);
-            GameObject.Destroy(character.Root);
-            // _director.remo
+            if (_characters[characterPos] != null)
+            {
+                var character = _characters[characterPos];
+                _characters[characterPos] = null;
+                character.Destroy();
+            }
         }
         public void ClearCharacters()
         {
-            foreach(var chara in _characters)
+            for (int i = 0; i < _characters.Length; i++)
             {
-                GameObject.Destroy(chara.Root);
+                RemoveCharacter(i);
             }
-            _characters.Clear();
         }
         
         private void BindAnimationTrack(CharacterActor character)
@@ -146,13 +174,15 @@ namespace LapisPlayer
 
         public void SetCharacterPosition()
         {
-            for (int i = 0; i < _characters.Count; i++)
+            for (int i = 0; i < _characters.Length; i++)
             {
                 var chara = _characters[i];
+                if (chara == null) continue;
+
                 var n = (i % 2) == 0 ? 1 : -1;
                 var x = (float)Math.Ceiling(i / 2.0);
                 chara.Root.transform.position = new Vector3(x * n * 1.4f, 0, -x * 0.6f);
-                chara.Root.transform.Rotate(0, x * n * -10f, 0);
+                // chara.Root.transform.RotateAround(0, x * n * -10f, 0);
             }
         }
 
@@ -171,11 +201,6 @@ namespace LapisPlayer
         }
         public void Play()
         {
-            if (_characters.Count == 0)
-            {
-                Debug.LogWarning("Dance have no binding character");
-                return;
-            }
             if (_state != DanceState.Stop)
             {
                 Debug.Log("Dance already playing");
@@ -195,6 +220,12 @@ namespace LapisPlayer
             _audio.time = 0;
 
             _state = DanceState.Stop;
+
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                var chara = _characters[i];
+                if (chara != null) chara.PlayBaseAnimation();
+            }
         }
     }
 }

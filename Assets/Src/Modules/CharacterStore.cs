@@ -68,9 +68,17 @@ namespace LapisPlayer
             }
         }
 
-        public string[] GetActors()
+        public CharacterSetting[] GetCharacters()
         {
-            return _actorDict.Keys.ToArray();
+            return _charaDict.Values.ToArray();
+        }
+        public ActorSetting[] GetActors(string charaName)
+        {
+            string name = charaName.ToLower();
+            return _actorDict
+                .Where(n => n.Key.StartsWith(name))
+                .Select(n => n.Value)
+                .ToArray();
         }
         public CharacterActor LoadActor(string actorKey)
         {

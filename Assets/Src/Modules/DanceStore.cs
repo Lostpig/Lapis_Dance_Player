@@ -48,5 +48,9 @@ namespace LapisPlayer
         {
             return _danceDict[id];
         }
+        public DanceSetting[] GetAllDance()
+        {
+            return _danceDict.Values.ToArray();
+        }
     }
 }

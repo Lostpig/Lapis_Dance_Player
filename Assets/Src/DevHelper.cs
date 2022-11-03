@@ -1,7 +1,5 @@
 using UnityEngine;
 using LapisPlayer;
-using Oz.GameKit.Version;
-using Oz.GameFramework.Runtime;
 
 public class DevHelper : MonoBehaviour
 {
@@ -17,13 +15,11 @@ public class DevHelper : MonoBehaviour
         
     }
 
-    [ContextMenu("Read Manifest")]
-    public void ReadManifest()
+    [ContextMenu("Load Scene")]
+    public void LoadScene()
     {
-        string manifestPath = ConfigManager.Instance.Manifest;
-        var manifest = ManifestReader.Read(manifestPath);
-
-        Debug.Log("Manifest loaded, version = " + manifest.Version);
+        var scene = AssetBundleLoader.Instance.LoadAsset<GameObject>("SceneAssets/Scene_stage/BG301/Prefab/BG301");
+        Instantiate(scene);
     }
 
     [ContextMenu("Print dataPath")]

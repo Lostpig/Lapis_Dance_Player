@@ -8,12 +8,12 @@
 ### 所需资源
 依赖游戏的 AssetBundles, manifest.json, SoundBank  
   
-manifest.json 需要将游戏的manifest.xml解密,并转为json  
-AssetBundles 游戏的部分AssetBundle是加密的,需要提前解密;AssetBundles的目录结构不可修改  
-SoundBank 目前不支持wwise,需要提取出wav文件,提取后的目录结构为`原bnk文件名/(wwise number).wav`,如`MUSIC_0001/413274000.wav`  
-> 如果提取为其他格式，可以在`SoundBankLoader.LoadAudioClip`里修改相关代码
+manifest.json: 需要将游戏的manifest.xml解密,并转为json  
+AssetBundles: 游戏的部分AssetBundle是加密的,需要提前解密;AssetBundles的目录结构不可修改  
+SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结构为`原bnk文件名/(wwise number).wav`,如`MUSIC_0001/413274000.wav`  
+> 如果提取为其他格式，可以在`SoundBankLoader.LoadAudioClip`里修改相关代码  
   
-解包/提取方面的详情请参考[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23.github.io/lapis-datamine-notes/lapis-datamine-notes.html)  
+解包/提取方面的更多详情请参考[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23.github.io/lapis-datamine-notes/lapis-datamine-notes.html)  
   
 ---
 
@@ -81,5 +81,5 @@ SoundBank 目前不支持wwise,需要提取出wav文件,提取后的目录结构
 + 物理碰撞系统
   > 基于 DynamicBone 实现了一个基础版本，但穿模问题严重
 + wwise集成
-+ 一个简单的控制UI
++ 一个简单的UI
 

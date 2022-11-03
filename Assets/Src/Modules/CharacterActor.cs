@@ -70,7 +70,7 @@ namespace LapisPlayer
                         continue;
                     }
 
-                    var slblingParam = springSetting.colliderParameters.First(p => p.nodeName == collider.sibilingPath);
+                    var slblingParam = springSetting.colliderParameters.FirstOrDefault(p => p.nodeName == collider.sibilingPath);
                     var radiusDef = slblingParam == null ? 0 : slblingParam.radius - collider.radius;
                     var mediumRadius = collider.radius + (radiusDef / 2);
 
@@ -118,6 +118,8 @@ namespace LapisPlayer
 
         CharacterSetting _chara;
         ActorSetting _actor;
+
+
         private List<AvatarPart> _parts = new();
         public List<AvatarPart> Parts => _parts;
 
@@ -130,6 +132,10 @@ namespace LapisPlayer
             _actor = actor;
 
             BuildModel();
+        }
+        public void Destroy()
+        {
+            GameObject.Destroy(Root);
         }
 
         private void BuildModel()
@@ -179,15 +185,34 @@ namespace LapisPlayer
                 var skeletonAnimator = SkeletonRoot.GetComponent<Animator>();
                 Animator animator = part.Model.GetComponent<Animator>();
                 if (animator == null) animator = part.Model.AddComponent<Animator>();
-                animator.avatar = skeletonAnimator.avatar; 
+                animator.avatar = skeletonAnimator.avatar;
+                animator.runtimeAnimatorController = LoadBaseController();
             } 
             else
             {
                 // TODO 类型为Attach 的应该是需要添加到某个骨骼节点上,暂时不知道怎么实现
             }
 
-
             _parts.Add(part);
+        }
+
+        public void PlayBaseAnimation()
+        {
+            foreach(var part in _parts)
+            {
+                Animator animator = part.Model.GetComponent<Animator>();
+                if (animator != null) animator.Play("Body@Idle");
+            }
+        }
+
+        private AnimatorOverrideController LoadBaseController()
+        {
+            var controller = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>("Actors/AnimationController/Common@AR");
+            var ctrlInstance = new AnimatorOverrideController(controller);
+
+            ctrlInstance["Body@Idle"] = AssetBundleLoader.Instance.LoadAsset<AnimationClip>("Actors/Animations/Actor/Favor/Clothes/Ani_Nor_Ash_Idle002");
+
+            return ctrlInstance;
         }
 
         // TODO
