@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace LapisPlayer
@@ -10,15 +9,18 @@ namespace LapisPlayer
     public class UIManager
     {
         GameObject _uiCanvas;
+        GameObject _baseContainer;
         GameObject _charaListView;
         GameObject _actorListView;
         GameObject _danceListView;
         GameObject _stageListView;
+        GameObject _poseListView;
         GameObject _danceText;
         GameObject _btnPlay;
         GameObject _btnStop;
 
-        int _activeCharacterPos = 0;
+        int _activeCharacterPos = -1;
+        int _activePosePos = -1;
         string _selectedCharacterName = "";
         List<(CharacterSetting, ActorSetting)> actorList = new();
 
@@ -26,7 +28,8 @@ namespace LapisPlayer
         public event Action<int, CharacterSetting, ActorSetting, UIManager> OnActorChange;
         public event Action<int, UIManager> OnActorRemove;
         public event Action<DanceSetting, UIManager> OnDanceChange;
-        public event Action<string, UIManager> OnStageChange;
+        public event Action<StageData, UIManager> OnStageChange;
+        public event Action<int, string, UIManager> OnPoseChange;
 
         public UnityAction BindIndexAction(int index, Action<int> action)
         {
@@ -36,12 +39,9 @@ namespace LapisPlayer
         public void Initialize()
         {
             _uiCanvas = GameObject.Find("UICanvas");
-            _charaListView = Utility.FindObject(_uiCanvas, "CharaListView");
-            _actorListView = Utility.FindObject(_uiCanvas, "ActorListView");
-            _danceListView = Utility.FindObject(_uiCanvas, "DanceListView");
-            _danceText = Utility.FindObject(_uiCanvas, "DanceText");
+            _baseContainer = Utility.FindObject(_uiCanvas, "BaseContainer");
 
-            _btnPlay = Utility.FindObject(_uiCanvas, "BtnPlay");
+            _btnPlay = Utility.FindObject(_baseContainer, "BtnPlay");
             _btnStop = Utility.FindObject(_uiCanvas, "BtnStop");
             _btnPlay.GetComponent<Button>().onClick.AddListener(StartDance);
             _btnStop.GetComponent<Button>().onClick.AddListener(StopDance);
@@ -50,20 +50,24 @@ namespace LapisPlayer
             InitCharaListView();
             InitDanceListView();
             InitStageListView();
+            InitPoseListView();
         }
         private void InitializeCharaterPositions()
         {
             for (int i = 0; i < 5; i++)
             {
-                var btn = Utility.FindNodeByName(_uiCanvas, $"Character{i}");
+                var btn = Utility.FindNodeByName(_baseContainer, $"Character{i}");
                 var mbtn = btn.GetComponent<Button>();
                 mbtn.onClick.AddListener(BindIndexAction(i, ShowCharaListView));
             }
         }
         private void InitCharaListView()
         {
+            _charaListView = Utility.FindObject(_baseContainer, "CharaListView");
+            _actorListView = Utility.FindObject(_baseContainer, "ActorListView");
+
             var characters = CharactersStore.Instance.GetCharacters();
-            int height = (int)Math.Ceiling(characters.Length / 2.0) * 70 + 20;
+            int height = (int)Math.Ceiling(characters.Length / 2.0) * 80 + 20;
 
             var backBtn = Utility.FindNodeByRecursion(_charaListView, "CharaBack");
             backBtn.GetComponent<Button>().onClick.AddListener(HideCharaListView);
@@ -97,6 +101,9 @@ namespace LapisPlayer
         }
         private void InitDanceListView()
         {
+            _danceListView = Utility.FindObject(_baseContainer, "DanceListView");
+            _danceText = Utility.FindObject(_baseContainer, "DanceText");
+
             var dances = DanceStore.Instance.GetAllDance();
             int height = dances.Length * 40 + 20;
 
@@ -111,7 +118,7 @@ namespace LapisPlayer
                 danceBtn.transform.SetParent(content.transform);
 
                 var rect = danceBtn.GetComponent<RectTransform>();
-                rect.sizeDelta = new Vector2(190, 30);
+                rect.sizeDelta = new Vector2(330, 30);
                 rect.pivot = new Vector2(0, 1);
                 rect.anchorMin = new Vector2(0, 1);
                 rect.anchorMax = new Vector2(0, 1);
@@ -126,15 +133,16 @@ namespace LapisPlayer
                 index++;
             }
 
-            var btnDance = Utility.FindNodeByName(_uiCanvas, "BtnDance");
+            var btnDance = Utility.FindNodeByName(_baseContainer, "BtnDance");
             btnDance.GetComponent<Button>().onClick.AddListener(ToggleDanceListView);
         }
         private void InitStageListView()
         {
+            _stageListView = Utility.FindObject(_baseContainer, "StageListView");
+
             var stages = StageManager.GetAllStages();
             int height = stages.Length * 40 + 20;
 
-            _stageListView = Utility.FindObject(_uiCanvas, "StageListView");
             var content = Utility.FindNodeByRecursion(_stageListView, "Content");
             var contentRect = content.GetComponent<RectTransform>();
             contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, height);
@@ -155,16 +163,53 @@ namespace LapisPlayer
                 float top = index * 40 + 20;
                 rect.anchoredPosition = new Vector2(left, -top);
 
-                danceBtn.GetComponentInChildren<Text>().text = stage;
+                danceBtn.GetComponentInChildren<Text>().text = stage.Name;
                 danceBtn.GetComponent<Button>().onClick.AddListener(() => ChangeStagee(stage));
 
                 index++;
             }
 
-            var btnStage = Utility.FindNodeByName(_uiCanvas, "BtnStage");
+            var btnStage = Utility.FindNodeByName(_baseContainer, "BtnStage");
             btnStage.GetComponent<Button>().onClick.AddListener(ToggleStageListView);
         }
+        private void InitPoseListView()
+        {
+            _poseListView = Utility.FindObject(_baseContainer, "PoseListView");
+            var poses = PoseStore.Instance.GetAllPose();
+            int height = poses.Length * 40 + 20;
 
+            var content = Utility.FindNodeByRecursion(_poseListView, "Content");
+            var contentRect = content.GetComponent<RectTransform>();
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, height);
+
+            int index = 0;
+            foreach (var pose in poses)
+            {
+                var button = DefaultControls.CreateButton(new DefaultControls.Resources());
+                button.transform.SetParent(content.transform);
+
+                var rect = button.GetComponent<RectTransform>();
+                rect.sizeDelta = new Vector2(220, 30);
+                rect.pivot = new Vector2(0, 1);
+                rect.anchorMin = new Vector2(0, 1);
+                rect.anchorMax = new Vector2(0, 1);
+
+                int left = 10;
+                float top = index * 40 + 20;
+                rect.anchoredPosition = new Vector2(left, -top);
+
+                button.GetComponentInChildren<Text>().text = pose;
+                button.GetComponent<Button>().onClick.AddListener(() => ChangePose(pose));
+
+                index++;
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                var btnPose = Utility.FindNodeByName(_baseContainer, "Pose" + i);
+                btnPose.GetComponent<Button>().onClick.AddListener(BindIndexAction(i, TogglePoseListView));
+            }
+        }
 
         private void SelectCharacter(CharacterSetting character)
         {
@@ -237,7 +282,7 @@ namespace LapisPlayer
         }
         private void HideCharaListView()
         {
-            _activeCharacterPos = 0;
+            _activeCharacterPos = -1;
             _charaListView.SetActive(false);
         }
         private void ToggleDanceListView()
@@ -248,10 +293,27 @@ namespace LapisPlayer
         {
             _stageListView.SetActive(!_stageListView.activeSelf);
         }
+        private void TogglePoseListView(int pos)
+        {
+            var visible = _poseListView.activeSelf;
+            if (visible && pos == _activePosePos)
+            {
+                _activePosePos = -1;
+                _poseListView.SetActive(false);
+            }
+            else
+            {
+                _activePosePos = pos;
+                _poseListView.SetActive(true);
+
+                var rect = _poseListView.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -(90 * pos + 10));
+            }
+        }
 
         public void ChangeActorSuccess(int pos, CharacterSetting character, ActorSetting actor)
         {
-            var btn = Utility.FindNodeByName(_uiCanvas, $"Character{pos}");
+            var btn = Utility.FindNodeByName(_baseContainer, $"Character{pos}");
             var image = Utility.FindNodeByName(btn, "Image");
             image.GetComponent<Image>().sprite = UIUtility.LoadCharacterIcon(character.ShortName);
 
@@ -260,7 +322,7 @@ namespace LapisPlayer
         }
         public void RemoveActorSuccess(int pos)
         {
-            var btn = Utility.FindNodeByName(_uiCanvas, $"Character{pos}");
+            var btn = Utility.FindNodeByName(_baseContainer, $"Character{pos}");
             var image = Utility.FindNodeByName(btn, "Image");
             image.GetComponent<Image>().sprite = null;
 
@@ -273,7 +335,7 @@ namespace LapisPlayer
         }
         public void DancePlayingChangeSuccess(bool playing)
         {
-            _btnPlay.SetActive(!playing);
+            _baseContainer.SetActive(!playing);
             _btnStop.SetActive(playing);
         }
 
@@ -303,7 +365,11 @@ namespace LapisPlayer
             HideCharaListView();
         }
 
-        private void ChangeStagee(string stage)
+        private void ChangePose(string pose)
+        {
+            OnPoseChange?.Invoke(_activePosePos, pose, this);
+        }
+        private void ChangeStagee(StageData stage)
         {
             OnStageChange?.Invoke(stage, this);
         }

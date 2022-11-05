@@ -28,13 +28,23 @@ namespace LapisPlayer
             uiManager.OnActorRemove += UiManager_OnActorRemove;
             uiManager.OnDanceChange += UiManager_OnDanceChange;
             uiManager.OnStageChange += UiManager_OnStageChange;
+            uiManager.OnPoseChange += UiManager_OnPoseChange;
 
             uiManager.DanceChangeSuccess(defaultDance);
         }
 
-        private void UiManager_OnStageChange(string stage, UIManager sender)
+        private void UiManager_OnPoseChange(int index, string poseName, UIManager sender)
         {
-            _stageManager.LoadStage(stage);
+            var character = _danceManager.GetCharacter(index);
+            if (character != null)
+            {
+                character.SetPose(poseName);
+            }
+        }
+
+        private void UiManager_OnStageChange(StageData stage, UIManager sender)
+        {
+            _stageManager.LoadStage(stage.ID);
         }
 
         private async void UiManager_OnDanceChange(DanceSetting dance, UIManager sender)
@@ -52,6 +62,8 @@ namespace LapisPlayer
         private void UiManager_OnActorChange(int characterPos, CharacterSetting charaSetting, ActorSetting actorSetting, UIManager sender)
         {
             var character = CharactersStore.Instance.LoadActor(charaSetting.Name, actorSetting.Name);
+            character.SetPose("Stand");
+
             _danceManager.SetCharacter(characterPos, character);
             _danceManager.SetCharacterPosition();
 

@@ -7,6 +7,9 @@ namespace LapisPlayer
 {
     public static class Utility
     {
+        /*
+         * 获取inactive的子对象
+         */
         public static GameObject FindObject(GameObject parent, string name)
         {
             Transform[] trs = parent.GetComponentsInChildren<Transform>(true);

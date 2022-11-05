@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f87284b87b8be7c4b9708f25ddb6669b, type: 3}
+  m_Name: VLBEditorData
+  m_EditorClassIdentifier: 
+  buttonAddDustParticles: {fileID: 2800000, guid: eae0c95c9c12c4e40a87d028b6e5aaad,
+    type: 3}
+  buttonAddDynamicOcclusion: {fileID: 2800000, guid: c0b232bfb34a77a4a84fdc476cfedea4,
+    type: 3}
+  buttonAddTriggerZone: {fileID: 2800000, guid: 3fcfb96a95b4b82439ae47f4f060137c,
+    type: 3}
+  buttonAddEffect: {fileID: 2800000, guid: 1a5ba5df396106d4cafd5a96415ffb6c, type: 3}
+  buttonFromSpotLight: {fileID: 2800000, guid: 350d4bb70b7205342aefcb03e66a7dcb, type: 3}

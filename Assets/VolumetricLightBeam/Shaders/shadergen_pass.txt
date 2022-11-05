@@ -1,0 +1,26 @@
+            Pass
+            {
+                Cull {VLB_GEN_CULLING}
+
+                {VLB_GEN_PROGRAM_PRE}
+                #if !defined(SHADER_API_METAL) // Removed shader model spec for Metal support https://github.com/keijiro/Cloner/commit/1120493ca2df265d450de3ec1b38a1d388468964
+                #pragma target 3.0
+                #endif
+                #pragma vertex vert
+                #pragma fragment frag
+                {VLB_GEN_PRAGMA_FOG}
+                {VLB_GEN_PRAGMA_INSTANCING}
+{VLB_GEN_PRAGMA_MULTI_COMPILE_VARIANTS}
+
+{VLB_GEN_PRE}
+
+                #include "ShaderDefines.cginc"
+                #include "ShaderProperties.cginc"
+                #include "{VLB_GEN_SPECIFIC_INCLUDE}"
+                #include "VolumetricLightBeamShared.cginc"
+
+                v2f vert(vlb_appdata v)         { return vertShared(v, {VLB_GEN_INPUT_VS}); }
+                half4 frag(v2f i) : SV_Target   { return fragShared(i, {VLB_GEN_INPUT_FS}); }
+
+                {VLB_GEN_PROGRAM_POST}
+            }

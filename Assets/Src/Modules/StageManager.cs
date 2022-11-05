@@ -1,55 +1,73 @@
-﻿using LapisPlayer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VLB;
 
 namespace LapisPlayer
 {
+    public class StageData
+    {
+        public string ID { get; private set; }
+        public string Name { get; private set; }
+        public string Asset { get; private set; }
+
+        public StageData(string id, string name, string asset)
+        {
+            ID = id;
+            Name = name;
+            Asset = asset;
+        }
+    }
     public class StageManager
     {
         // 一共就7个舞台，直接写死了
-        static readonly string[] assets = new string[]
+        static readonly StageData[] stages = new StageData[]
         {
-            "SceneAssets/Scene_stage/BG301/Prefab/BG301",
-            "SceneAssets/Scene_stage/BG302/Prefab/BG302",
-            "SceneAssets/Scene_stage/BG303/Prefab/BG303",
-            "SceneAssets/Scene_stage/BG304/Prefab/BG304",
-            "SceneAssets/Scene_stage/BG305/Prefab/BG305",
-            "SceneAssets/Scene_stage/BG306/Prefab/BG306",
-            "SceneAssets/Scene_stage/BG307/Prefab/BG307",
+            new StageData("BG301", "supernova 舞台", "SceneAssets/Scene_stage/BG301/Prefab/BG301"),
+            new StageData("BG302", "IV KROLE 舞台", "SceneAssets/Scene_stage/BG302/Prefab/BG302_Mix"),
+            new StageData("BG2004", "LiGHTs 舞台", "SceneAssets/Scene_stage/BG2004/Prefab/BG2004"),
+            new StageData("BG304", "この花は乙女 舞台", "SceneAssets/Scene_stage/BG304/Prefab/BG304"),
+            new StageData("BG305", "Sugar Pockets 舞台", "SceneAssets/Scene_stage/BG305/Prefab/BG305"),
+            new StageData("BG306", "Sadistic★Candy 舞台", "SceneAssets/Scene_stage/BG306/Prefab/BG306"),
+            new StageData("BG307", "Ray 舞台", "SceneAssets/Scene_stage/BG307/Prefab/BG307"),
+            new StageData("BG303", "废案(BG303)", "SceneAssets/Scene_stage/BG303/Prefab/BG303"),
+
+            new StageData("BG105", "魔法研究室", "SceneAssets/Scene_main/BG105/Prefab/BG105"),
+            new StageData("BG106", "餐厅", "SceneAssets/Scene_main/BG106/Prefab/BG106"),
+            new StageData("BG107", "卧室", "SceneAssets/Scene_main/BG107/Prefab/BG107"),
+            new StageData("BG108", "游戏室(未实装)", "SceneAssets/Scene_main/BG108/Prefab/BG108"),
         };
-        public static string[] GetAllStages()
+        public static StageData[] GetAllStages()
         {
-            return assets.Select(asset => asset.Substring(asset.LastIndexOf("/"))).ToArray();
+            return stages;
         }
 
         GameObject _current;
-        Dictionary<string, string> stages = new();
+        Dictionary<string, StageData> _stageDict = new();
 
-        public StageManager ()
+        public StageManager()
         {
-            foreach(string asset in assets)
+            foreach (StageData stage in stages)
             {
-                string name = asset.Substring(asset.LastIndexOf("/"));
-                stages.Add(name, asset);
+                _stageDict.Add(stage.ID, stage);
             }
         }
 
-        public string[] GetStages()
+        public StageData[] GetStages()
         {
-            return stages.Keys.ToArray();
+            return stages;
         }
         public void LoadStage(string key)
         {
             DestroyScene();
 
-            string asset = stages[key];
-            if (string.IsNullOrEmpty(asset))
+            StageData stage = _stageDict[key];
+            if (stage == null)
             {
                 return;
             }
 
-            var prefab = AssetBundleLoader.Instance.LoadAsset<GameObject>(asset);
+            var prefab = AssetBundleLoader.Instance.LoadAsset<GameObject>(stage.Asset);
             _current = GameObject.Instantiate(prefab);
         }
         public void DestroyScene()

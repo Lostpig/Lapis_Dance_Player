@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0074f2031380c488da5e38151a7a47, type: 3}
+  m_Name: ShaderGenerator
+  m_EditorClassIdentifier: 
+  m_Base: {fileID: 4900000, guid: 08ac1efda1d05b44287ea2dd367f9d5e, type: 3}
+  m_Pass: {fileID: 4900000, guid: b6eb5846ef7ddc640b6a24b36de75bda, type: 3}
+  m_IncludesBuiltin: {fileID: 4900000, guid: ee8814b2cee7fd144a04d6a24551c48b, type: 3}
+  m_IncludesURP: {fileID: 4900000, guid: 63a637fa650f3444d93ad1bcb6b45d28, type: 3}
+  m_IncludesHDRP: {fileID: 4900000, guid: 30c63e832e947354e8a77d5e829fffeb, type: 3}
+  outputLocation: {fileID: 4900000, guid: 4ee4a786af721354884879633db96691, type: 3}

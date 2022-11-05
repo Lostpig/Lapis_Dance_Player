@@ -118,7 +118,7 @@ namespace LapisPlayer
 
         CharacterSetting _chara;
         ActorSetting _actor;
-
+        RuntimeAnimatorController _baseController;
 
         private List<AvatarPart> _parts = new();
         public List<AvatarPart> Parts => _parts;
@@ -142,6 +142,7 @@ namespace LapisPlayer
         {
             Root = new GameObject($"{_chara.Name}_{_actor.Name}_Root");
 
+            _baseController = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>("Actors/AnimationController/Common@AR");
             GameObject skl_std = AssetBundleLoader.Instance.LoadAsset<GameObject>(Skeleton);
             SkeletonRoot = GameObject.Instantiate(skl_std);
             SkeletonRoot.transform.SetParent(Root.transform);
@@ -186,7 +187,6 @@ namespace LapisPlayer
                 Animator animator = part.Model.GetComponent<Animator>();
                 if (animator == null) animator = part.Model.AddComponent<Animator>();
                 animator.avatar = skeletonAnimator.avatar;
-                animator.runtimeAnimatorController = LoadBaseController();
             } 
             else
             {
@@ -204,15 +204,23 @@ namespace LapisPlayer
                 if (animator != null) animator.Play("Body@Idle");
             }
         }
-
-        private AnimatorOverrideController LoadBaseController()
+        public void SetBaseAnimationClip (AnimationClip clip)
         {
-            var controller = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>("Actors/AnimationController/Common@AR");
-            var ctrlInstance = new AnimatorOverrideController(controller);
-
-            ctrlInstance["Body@Idle"] = AssetBundleLoader.Instance.LoadAsset<AnimationClip>("Actors/Animations/Actor/Favor/Clothes/Ani_Nor_Ash_Idle002");
-
-            return ctrlInstance;
+            var ctrlInstance = new AnimatorOverrideController(_baseController);
+            ctrlInstance["Body@Idle"] = clip;
+            foreach (var part in _parts)
+            {
+                Animator animator = part.Model.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.runtimeAnimatorController = ctrlInstance;
+                }
+            }
+        }
+        public void SetPose(string poseName)
+        {
+            var clip = PoseStore.Instance.LoadPoseClip(poseName);
+            SetBaseAnimationClip(clip);
         }
 
         // TODO

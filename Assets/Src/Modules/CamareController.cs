@@ -27,7 +27,7 @@ namespace LapisPlayer
 
         private void Cam_Ctrl_Move()
         {
-            transform.Translate(Input.GetAxis("Mouse ScrollWheel") * Vector3.forward);
+            transform.Translate(Input.GetAxis("Mouse ScrollWheel") * Vector3.forward * 2);
             // if (distance <= 0.6f || distance >= 1.49f)
             // {
             //     moveSpeed = 0f;

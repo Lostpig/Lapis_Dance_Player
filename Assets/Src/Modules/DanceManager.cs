@@ -114,6 +114,10 @@ namespace LapisPlayer
                 character.PlayBaseAnimation();
             }
         }
+        public CharacterActor GetCharacter(int characterPos)
+        {
+            return _characters[characterPos];
+        }
         public void RemoveCharacter(int characterPos)
         {
             if (_characters[characterPos] != null)
