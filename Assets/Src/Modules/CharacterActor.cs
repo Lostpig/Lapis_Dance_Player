@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Animations.SpringBones;
 using UnityEngine;
+using UnityEngine.U2D;
 
 namespace LapisPlayer
 {
@@ -16,8 +18,40 @@ namespace LapisPlayer
             Model = GameObject.Instantiate(setting.Prefab);
         }
 
+        public SpringBone[] BindSpringBone()
+        {
+            var springSetting = Setting.SpringSetting;
+            if (springSetting == null) return Array.Empty<SpringBone>();
+
+            List<SpringBone> boneList = new();
+            foreach (var bone in springSetting.boneParameters)
+            {
+                var node = Utility.FindNodeByPath(Model, bone.nodeName);
+                if (node == null)
+                {
+                    Debug.LogWarning("[" + Model.name + "]Bone node not found:" + bone.nodeName);
+                    continue;
+                }
+                var springBone = node.AddComponent<SpringBone>();
+                springBone.radius = bone.radius;
+                springBone.dragForce = bone.dragForce;
+                springBone.stiffnessForce = bone.stiffnessForce * 10000f;
+
+                springBone.sphereColliders = Array.Empty<SpringSphereCollider>();
+                springBone.capsuleColliders = Array.Empty<SpringCapsuleCollider>();
+                springBone.panelColliders = Array.Empty<SpringPanelCollider>();
+
+                boneList.Add(springBone);
+            }
+
+            return boneList.ToArray();
+        }
+
         public void BindDynamicBone()
         {
+            var springSetting = Setting.SpringSetting;
+            if (springSetting == null) return;
+
             DynamicBone dynamicBone = Model.AddComponent<DynamicBone>();
             dynamicBone.m_Radius = 0.04f;
             dynamicBone.m_RadiusDistrib = AnimationCurve.Linear(0f, 0.33f, 1f, 1f);
@@ -29,9 +63,6 @@ namespace LapisPlayer
 
             dynamicBone.m_Roots = new();
             dynamicBone.m_Colliders = new();
-
-            var springSetting = Setting.SpringSetting;
-            if (springSetting == null) return;
 
             foreach (var bone in springSetting.boneParameters)
             {
@@ -119,6 +150,7 @@ namespace LapisPlayer
         CharacterSetting _chara;
         ActorSetting _actor;
         RuntimeAnimatorController _baseController;
+        FacialBehaviour _faceBehaviour;
 
         private List<AvatarPart> _parts = new();
         public List<AvatarPart> Parts => _parts;
@@ -161,12 +193,20 @@ namespace LapisPlayer
                 var partSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(equip);
                 BuildAvatarPart(partSetting);
             }
-            BindDynamicBone();
+
+            BindSpringBone();
+            // BindDynamicBone();
 
             var vowelSetting = AssetBundleLoader.Instance.LoadAsset<VowelSetting>($"{human}/VOW_{_chara.ShortName}000");
             var facialSetting = AssetBundleLoader.Instance.LoadAsset<FacialSettings>($"{human}/FAC_{_chara.ShortName}000");
-            var behaviour = Root.AddComponent<CharacterBehaviour>();
-            behaviour.ApplySettings(vowelSetting, facialSetting, bodySetting.HeelSetting);
+
+            var face = Utility.FindNodeByName(Root, "Face");
+            _faceBehaviour = face.AddComponent<FacialBehaviour>();
+            _faceBehaviour.ApplySettings(vowelSetting, facialSetting);
+
+            var body = Utility.FindNodeByName(Root, "Body");
+            var _heelBehaviour = body.AddComponent<HeelBehaviour>();
+            _heelBehaviour.ApplySettings(bodySetting.HeelSetting);
 
             var scaleSetting = AssetBundleLoader.Instance.LoadAsset<ScaleSettings>($"{human}/SCL_{_chara.ShortName}000");
             Root.transform.localScale = new Vector3(scaleSetting.ScaleRatio, scaleSetting.ScaleRatio, scaleSetting.ScaleRatio);
@@ -175,7 +215,6 @@ namespace LapisPlayer
         {
             var part = new AvatarPart(setting);
 
-            part.Model.transform.SetParent(Root.transform);
             if (!string.IsNullOrEmpty(rename))
             {
                 part.Model.transform.name = rename;
@@ -183,6 +222,9 @@ namespace LapisPlayer
 
             if (setting.Type == eAvatarType.Skinning)
             {
+                part.Model.transform.SetParent(Root.transform);
+                part.Model.transform.localPosition = Vector3.zero;
+
                 var skeletonAnimator = SkeletonRoot.GetComponent<Animator>();
                 Animator animator = part.Model.GetComponent<Animator>();
                 if (animator == null) animator = part.Model.AddComponent<Animator>();
@@ -190,15 +232,33 @@ namespace LapisPlayer
             } 
             else
             {
-                // TODO 类型为Attach 的应该是需要添加到某个骨骼节点上,暂时不知道怎么实现
+                // 类型为Attach 的需要添加到骨骼节点上
+                var point = Utility.FindNodeByRecursion(SkeletonRoot, part.Setting.Dummy);
+                if (point == null)
+                {
+                    Debug.LogError("Attach avatar part dummy node not found:" + part.Setting.Dummy);
+                }
+                part.Model.transform.SetParent(point.transform);
+                part.Model.transform.localPosition = Vector3.zero;
             }
 
             _parts.Add(part);
         }
 
+        public void SetPlaying(bool playing)
+        {
+            _faceBehaviour.SetPlayingState(playing);
+
+            if (!playing)
+            {
+                PlayBaseAnimation();
+                SetExpression(eFaceExpression.USUALLY, MouthState.CLOSE);
+            }
+        }
         public void PlayBaseAnimation()
         {
-            foreach(var part in _parts)
+            SkeletonRoot.GetComponent<Animator>().Play("Body@Idle");
+            foreach (var part in _parts)
             {
                 Animator animator = part.Model.GetComponent<Animator>();
                 if (animator != null) animator.Play("Body@Idle");
@@ -208,6 +268,8 @@ namespace LapisPlayer
         {
             var ctrlInstance = new AnimatorOverrideController(_baseController);
             ctrlInstance["Body@Idle"] = clip;
+
+            SkeletonRoot.GetComponent<Animator>().runtimeAnimatorController = ctrlInstance;
             foreach (var part in _parts)
             {
                 Animator animator = part.Model.GetComponent<Animator>();
@@ -222,6 +284,23 @@ namespace LapisPlayer
             var clip = PoseStore.Instance.LoadPoseClip(poseName);
             SetBaseAnimationClip(clip);
         }
+        public void SetExpression(eFaceExpression expression, MouthState mouthstate)
+        {
+            _faceBehaviour.Facial.SetExpression(expression, mouthstate);
+        }
+        public void SetExpression(eFaceExpression expression)
+        {
+            _faceBehaviour.Facial.SetExpression(expression);
+        }
+        public void SetMouthState(MouthState mouthstate)
+        {
+            _faceBehaviour.Facial.SetMouthState(mouthstate);
+        }
+
+        public eFaceExpression[] GetExpressions()
+        {
+            return _faceBehaviour.Facial.GetAllExpressions();
+        }
 
         // TODO
         // DynamicBone 可以实现简单的头发/衣物物理效果了,但是穿模比较严重
@@ -232,6 +311,18 @@ namespace LapisPlayer
             {
                 part.BindDynamicBone();
             }
+        }
+
+        private void BindSpringBone()
+        {
+            var bontList = new List<SpringBone>();
+            foreach (var part in _parts)
+            {
+                bontList.AddRange(part.BindSpringBone());
+            }
+
+            var manager = Root.AddComponent<SpringManager>();
+            manager.springBones = bontList.ToArray();
         }
     }
 }

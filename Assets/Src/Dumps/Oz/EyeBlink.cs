@@ -18,7 +18,7 @@ namespace Oz.Timeline
         }
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var characters = owner.GetComponentsInChildren<CharacterBehaviour>();
+            var characters = owner.GetComponentsInChildren<FacialBehaviour>();
 
             EyeBlinkPlayableBehaviour behaviour = new()
             {
@@ -48,7 +48,7 @@ namespace Oz.Timeline
     {
         public AnimationCurve BlinkCurve { get; set; }
         public EyeBlinkPlayableAsset Asset { get; set; }
-        public CharacterBehaviour[] Characters { get; set; }
+        public FacialBehaviour[] Characters { get; set; }
         private float elapsed = 0f;
 
         public override void OnBehaviourPlay(Playable playable, FrameData info)

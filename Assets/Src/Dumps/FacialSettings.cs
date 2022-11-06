@@ -34,13 +34,13 @@ public class FacialSettings : ScriptableObject
 public class FacialData
 {
     // Fields
-    private eFaceExpression expression; // 0x10
-    private bool blink; // 0x14
-    private List<BlendData> blendData; // 0x18
-    private float cheekPower; // 0x20
-    private float foreheadShade; // 0x24
-    private float eyeHighlight; // 0x28
-    private float eyeScale; // 0x2c
+    [SerializeField] private eFaceExpression expression; // 0x10
+    [SerializeField] private bool blink; // 0x14
+    [SerializeField] private List<BlendData> blendData; // 0x18
+    [SerializeField] private float cheekPower; // 0x20
+    [SerializeField] private float foreheadShade; // 0x24
+    [SerializeField] private float eyeHighlight; // 0x28
+    [SerializeField] private float eyeScale; // 0x2c
 
     // Properties
     public eFaceExpression Expression

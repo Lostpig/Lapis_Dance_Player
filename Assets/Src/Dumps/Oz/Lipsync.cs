@@ -19,7 +19,7 @@ namespace Oz.Timeline
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var characters = owner.GetComponentsInChildren<CharacterBehaviour>();
+            var characters = owner.GetComponentsInChildren<FacialBehaviour>();
 
             LipsyncBehaviour behaviour = new()
             {
@@ -47,7 +47,7 @@ namespace Oz.Timeline
     public class LipsyncBehaviour : PlayableBehaviour
     {
         public LipsyncAsset Asset { get; set; }
-        public CharacterBehaviour[] Characters { get; set; }
+        public FacialBehaviour[] Characters { get; set; }
 
         public override void OnBehaviourPlay(Playable playable, FrameData info)
         {

@@ -29,8 +29,29 @@ namespace LapisPlayer
             uiManager.OnDanceChange += UiManager_OnDanceChange;
             uiManager.OnStageChange += UiManager_OnStageChange;
             uiManager.OnPoseChange += UiManager_OnPoseChange;
+            uiManager.OnLoadExpression += UiManager_OnLoadExpression;
+            uiManager.OnExpressionChange += UiManager_OnExpressionChange;
 
             uiManager.DanceChangeSuccess(defaultDance);
+        }
+
+        private void UiManager_OnExpressionChange(int index, eFaceExpression expression, MouthState mouthState, UIManager sender)
+        {
+            var character = _danceManager.GetCharacter(index);
+            if (character != null)
+            {
+                character.SetExpression(expression, mouthState);
+            }
+        }
+
+        private void UiManager_OnLoadExpression(int index, UIManager sender)
+        {
+            var character = _danceManager.GetCharacter(index);
+            if (character != null)
+            {
+                var expressions = character.GetExpressions();
+                sender.SetExpressionList(expressions);
+            }
         }
 
         private void UiManager_OnPoseChange(int index, string poseName, UIManager sender)

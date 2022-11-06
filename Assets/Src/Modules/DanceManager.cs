@@ -138,7 +138,7 @@ namespace LapisPlayer
         private void BindAnimationTrack(CharacterActor character)
         {
             var timeline = _director.playableAsset as TimelineAsset;
-            var count = character.Parts.Count;
+            var count = character.Parts.Count + 1;
             var tracks = new AnimationTrack[count];
 
             int idx = 0;
@@ -158,10 +158,12 @@ namespace LapisPlayer
                 tracks[idx] = CloneAnimationTrack(timeline, _animationGroupTrack, _animationTrack);
             }
 
-            for (int i = 0; i < count; i++)
+            var sklAnimator = character.SkeletonRoot.GetComponent<Animator>();
+            _director.SetGenericBinding(tracks[0], sklAnimator);
+            for (int i = 0; i < count - 1; i++)
             {
                 var animator = character.Parts[i].Model.GetComponent<Animator>();
-                _director.SetGenericBinding(tracks[i], animator);
+                _director.SetGenericBinding(tracks[i + 1], animator);
             }
         }
         private AnimationTrack CloneAnimationTrack(TimelineAsset parent, TrackAsset rootTrack, AnimationTrack source)
@@ -171,7 +173,9 @@ namespace LapisPlayer
             var newTrack = parent.CreateTrack<AnimationTrack>(rootTrack, source.name);
             foreach (var clip in source.GetClips())
             {
-                newTrack.CreateClip(clip.animationClip);
+                var tclip = newTrack.CreateClip(clip.animationClip);
+                tclip.clipIn = clip.clipIn;
+                tclip.duration = clip.duration;
             }
             return newTrack;
         }
@@ -189,17 +193,27 @@ namespace LapisPlayer
                 // chara.Root.transform.RotateAround(0, x * n * -10f, 0);
             }
         }
+        public void SetCharacterState(bool playing)
+        {
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                var chara = _characters[i];
+                if (chara == null) continue;
+                chara.SetPlaying(playing);
+            }
+        }
 
         public void Update()
         {
             if (_state == DanceState.Playing)
             {
                 double time = _director.time;
-                bool finished = _lastClipEnd - time < 0.01667;
+                bool finished = _lastClipEnd - time < 0.01667; // || _audio.clip.length - time < 0.01667;
                 if (finished)
                 {
                     _director.time = _lastClipStart;
                     _audio.time = (float)_lastClipStart;
+                    if (!_audio.isPlaying) _audio.Play();
                 }
             }
         }
@@ -213,6 +227,7 @@ namespace LapisPlayer
 
             _director.Play();
             _audio.Play();
+            SetCharacterState(true);
 
             _state = DanceState.Playing;
         }
@@ -222,14 +237,9 @@ namespace LapisPlayer
             _director.time = 0;
             _audio.Stop();
             _audio.time = 0;
+            SetCharacterState(false);
 
             _state = DanceState.Stop;
-
-            for (int i = 0; i < _characters.Length; i++)
-            {
-                var chara = _characters[i];
-                if (chara != null) chara.PlayBaseAnimation();
-            }
         }
     }
 }
