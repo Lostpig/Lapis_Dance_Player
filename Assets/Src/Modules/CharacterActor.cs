@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Animations.SpringBones;
 using UnityEngine;
 using UnityEngine.U2D;
+using UnityEngine.XR;
 
 namespace LapisPlayer
 {
@@ -18,7 +19,7 @@ namespace LapisPlayer
             Model = GameObject.Instantiate(setting.Prefab);
         }
 
-        public SpringBone[] BindSpringBone()
+        public SpringBone[] BindSpringBone(Dictionary<string, SpringSphereCollider> sphereList, Dictionary<string, SpringCapsuleCollider> capsuleList)
         {
             var springSetting = Setting.SpringSetting;
             if (springSetting == null) return Array.Empty<SpringBone>();
@@ -35,16 +36,96 @@ namespace LapisPlayer
                 var springBone = node.AddComponent<SpringBone>();
                 springBone.radius = bone.radius;
                 springBone.dragForce = bone.dragForce;
-                springBone.stiffnessForce = bone.stiffnessForce * 10000f;
+                springBone.stiffnessForce = Math.Min(bone.stiffnessForce * 16000f, 2000f);
 
-                springBone.sphereColliders = Array.Empty<SpringSphereCollider>();
-                springBone.capsuleColliders = Array.Empty<SpringCapsuleCollider>();
+                if (!string.IsNullOrEmpty(bone.sibilingPath))
+                {
+                    var sibilingNode = Utility.FindNodeByPath(Model, bone.sibilingPath);
+                    if (sibilingNode != null)
+                    {
+                        // Transform[] trs = sibilingNode.GetComponentsInChildren<Transform>(true);
+                        springBone.lengthLimitTargets = new Transform[] { sibilingNode.transform };
+                    }
+                }
+
+                List<SpringSphereCollider> spheres = new();
+                List<SpringCapsuleCollider> capsules = new();
+                foreach (var id in bone.colliderIDs)
+                {
+                    var name = Enum.GetName(typeof(SpringColliderID), (SpringColliderID)id);
+                    var sp = sphereList.GetValueOrDefault(name);
+                    var cap = capsuleList.GetValueOrDefault(name);
+
+                    if (sp != null) spheres.Add(sp);
+                    if (cap != null) capsules.Add(cap);
+                }
+
+                springBone.sphereColliders = spheres.ToArray();
+                springBone.capsuleColliders = capsules.ToArray();
                 springBone.panelColliders = Array.Empty<SpringPanelCollider>();
 
                 boneList.Add(springBone);
             }
 
             return boneList.ToArray();
+        }
+        public void CreateSpringColiier(GameObject SklRoot, ref Dictionary<string, SpringSphereCollider> sphereList, ref Dictionary<string, SpringCapsuleCollider> capsuleList)
+        {
+            var springSetting = Setting.SpringSetting;
+            if (springSetting == null) return;
+
+            foreach (var colliderParam in springSetting.colliderParameters)
+            {
+                var node = Utility.FindNodeByPath(Model, colliderParam.nodeName);
+                if (node == null) node = Utility.FindNodeByPath(SklRoot, colliderParam.nodeName);
+                if (node == null)
+                {
+                    Debug.LogWarning("[" + Model.name + "]Collider node not found:" + colliderParam.nodeName);
+                    continue;
+                }
+
+                var idName = colliderParam.nodeName.Split('/').Last();
+                if (!sphereList.ContainsKey(idName))
+                {
+                    var collider = node.AddComponent<SpringSphereCollider>();
+                    collider.radius = colliderParam.radius;
+                    sphereList.Add(idName, collider);
+                }
+
+                if (!string.IsNullOrEmpty(colliderParam.sibilingPath) && !capsuleList.ContainsKey(idName))
+                {
+                    var slblingNode = Utility.FindNodeByPath(Model, colliderParam.sibilingPath);
+                    if (slblingNode == null) slblingNode = Utility.FindNodeByPath(SklRoot, colliderParam.sibilingPath);
+                    if (slblingNode == null)
+                    {
+                        Debug.LogWarning("[" + Model.name + "]Sibiling collider node not found:" + colliderParam.sibilingPath);
+                        continue;
+                    }
+
+                    var curr = node;
+                    var target = slblingNode;
+                    if (Utility.IsParentNode(node.transform, slblingNode.transform))
+                    {
+                        curr = slblingNode;
+                        target = node;
+                    }
+                    var sibilingObject = new GameObject("Sibiling");
+                    sibilingObject.transform.SetParent(curr.transform);
+                    sibilingObject.transform.localPosition = Vector3.zero;
+                    sibilingObject.transform.localRotation = Quaternion.identity;
+
+                    var capsule = sibilingObject.AddComponent<SpringCapsuleCollider>();
+                    capsule.radius = colliderParam.radius;
+
+                    var relativeVec = curr.transform.InverseTransformPoint(target.transform.position);
+                    var length = relativeVec.magnitude;
+                    capsule.height = length;
+
+                    Vector3 dif = target.transform.position - curr.transform.position;
+                    sibilingObject.transform.rotation = Utility.YLookRotation(dif, Vector3.up);
+                    capsuleList.Add(idName, capsule);
+                }
+            }
         }
 
         public void BindDynamicBone()
@@ -79,7 +160,6 @@ namespace LapisPlayer
             foreach (var collider in springSetting.colliderParameters)
             {
                 var node = Utility.FindNodeByPath(Model, collider.nodeName);
-                if (node == null) node = Utility.FindNodeByPath(Model, collider.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("Collider node not found:" + collider.nodeName);
@@ -158,7 +238,7 @@ namespace LapisPlayer
         public GameObject Root { get; private set; }
         public GameObject SkeletonRoot { get; private set; }
 
-        public CharacterActor (CharacterSetting chara, ActorSetting actor)
+        public CharacterActor(CharacterSetting chara, ActorSetting actor)
         {
             _chara = chara;
             _actor = actor;
@@ -188,14 +268,11 @@ namespace LapisPlayer
             BuildAvatarPart(hairSetting, "Hair");
             BuildAvatarPart(bodySetting, "Body");
 
-            foreach(var equip in _actor.Equips)
+            foreach (var equip in _actor.Equips)
             {
                 var partSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(equip);
                 BuildAvatarPart(partSetting);
             }
-
-            BindSpringBone();
-            // BindDynamicBone();
 
             var vowelSetting = AssetBundleLoader.Instance.LoadAsset<VowelSetting>($"{human}/VOW_{_chara.ShortName}000");
             var facialSetting = AssetBundleLoader.Instance.LoadAsset<FacialSettings>($"{human}/FAC_{_chara.ShortName}000");
@@ -210,8 +287,10 @@ namespace LapisPlayer
 
             var scaleSetting = AssetBundleLoader.Instance.LoadAsset<ScaleSettings>($"{human}/SCL_{_chara.ShortName}000");
             Root.transform.localScale = new Vector3(scaleSetting.ScaleRatio, scaleSetting.ScaleRatio, scaleSetting.ScaleRatio);
+
+            BindPhysicalBones();
         }
-        private void BuildAvatarPart (AvatarSetting setting, string rename = "")
+        private void BuildAvatarPart(AvatarSetting setting, string rename = "")
         {
             var part = new AvatarPart(setting);
 
@@ -229,7 +308,7 @@ namespace LapisPlayer
                 Animator animator = part.Model.GetComponent<Animator>();
                 if (animator == null) animator = part.Model.AddComponent<Animator>();
                 animator.avatar = skeletonAnimator.avatar;
-            } 
+            }
             else
             {
                 // 类型为Attach 的需要添加到骨骼节点上
@@ -264,7 +343,7 @@ namespace LapisPlayer
                 if (animator != null) animator.Play("Body@Idle");
             }
         }
-        public void SetBaseAnimationClip (AnimationClip clip)
+        public void SetBaseAnimationClip(AnimationClip clip)
         {
             var ctrlInstance = new AnimatorOverrideController(_baseController);
             ctrlInstance["Body@Idle"] = clip;
@@ -302,23 +381,34 @@ namespace LapisPlayer
             return _faceBehaviour.Facial.GetAllExpressions();
         }
 
+        private void BindPhysicalBones()
+        {
+            BindSpringBone();
+            // BindDynamicBone();
+        }
         // TODO
-        // DynamicBone 可以实现简单的头发/衣物物理效果了,但是穿模比较严重
-        // 看有没有更好的解决方案
+        // DynamicBone / SpringBone 都会有穿模问题
+        // 但是暂时没有更好的解决方案
         private void BindDynamicBone()
         {
-            foreach(var part in _parts)
+            foreach (var part in _parts)
             {
                 part.BindDynamicBone();
             }
         }
-
         private void BindSpringBone()
         {
+            Dictionary<string, SpringSphereCollider> sphereList = new();
+            Dictionary<string, SpringCapsuleCollider> capsuleList = new();
+            foreach (var part in _parts)
+            {
+                part.CreateSpringColiier(SkeletonRoot, ref sphereList, ref capsuleList);
+            }
+
             var bontList = new List<SpringBone>();
             foreach (var part in _parts)
             {
-                bontList.AddRange(part.BindSpringBone());
+                bontList.AddRange(part.BindSpringBone(sphereList, capsuleList));
             }
 
             var manager = Root.AddComponent<SpringManager>();

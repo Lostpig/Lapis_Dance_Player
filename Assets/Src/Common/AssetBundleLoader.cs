@@ -3,6 +3,7 @@ using UnityEngine;
 using Oz.GameKit.Version;
 using System.IO;
 using System;
+using Unity.VisualScripting;
 
 namespace LapisPlayer
 {
@@ -57,12 +58,16 @@ namespace LapisPlayer
         }
         public AssetBundle LoadAssetbundle(string packageName)
         {
-            bool loaded = _loadedBundles.TryGetValue(packageName, out var bundle);
-            if (loaded) return bundle;
+            string bundleName = packageName + ".bdl";
+            bool loaded = _loadedBundles.TryGetValue(bundleName, out var bundle);
+            if (loaded && !bundle.IsDestroyed())
+            {
+                return bundle;
+            }
 
-            string fullPath = ConfigManager.Instance.AssetBundles + "/" + packageName + ".bdl" ;
+            string fullPath = ConfigManager.Instance.AssetBundles + "/" + bundleName;
             bundle = AssetBundle.LoadFromFile(fullPath);
-            _loadedBundles.Add(packageName, bundle);
+            _loadedBundles.Add(bundleName, bundle);
             LoadDependencies(packageName);
 
             return bundle;

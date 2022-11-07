@@ -189,7 +189,7 @@ namespace LapisPlayer
 
                 var n = (i % 2) == 0 ? 1 : -1;
                 var x = (float)Math.Ceiling(i / 2.0);
-                chara.Root.transform.position = new Vector3(x * n * 1.4f, 0, -x * 0.6f);
+                chara.Root.transform.localPosition = new Vector3(x * n * 1.4f, 0, -x * 0.6f);
                 // chara.Root.transform.RotateAround(0, x * n * -10f, 0);
             }
         }

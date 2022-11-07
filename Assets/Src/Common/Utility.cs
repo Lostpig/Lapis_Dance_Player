@@ -96,6 +96,21 @@ namespace LapisPlayer
             return new Vector3(x, y, z);
         }
 
+        public static Quaternion YLookRotation(Vector3 right, Vector3 up)
+        {
+            Quaternion rightToForward = Quaternion.Euler(90f, 0f, 0f);
+            Quaternion forwardToTarget = Quaternion.LookRotation(right, up);
+
+            return forwardToTarget * rightToForward;
+        }
+        public static Quaternion XLookRotation(Vector3 right, Vector3 up)
+        {
+            Quaternion rightToForward = Quaternion.Euler(0f, -90f, 0f);
+            Quaternion forwardToTarget = Quaternion.LookRotation(right, up);
+
+            return forwardToTarget * rightToForward;
+        }
+
         public static bool IsParentNode(Transform self, Transform aParent)
         {
             Transform parent = self.parent;

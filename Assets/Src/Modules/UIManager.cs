@@ -11,6 +11,8 @@ namespace LapisPlayer
     {
         GameObject _uiCanvas;
         GameObject _baseContainer;
+        GameObject _buttonsContainer;
+        GameObject _panelsContainer;
         GameObject _charaListView;
         GameObject _actorListView;
         GameObject _danceListView;
@@ -45,8 +47,10 @@ namespace LapisPlayer
         {
             _uiCanvas = GameObject.Find("UICanvas");
             _baseContainer = Utility.FindObject(_uiCanvas, "BaseContainer");
+            _buttonsContainer = Utility.FindObject(_baseContainer, "Buttons");
+            _panelsContainer = Utility.FindObject(_baseContainer, "Panels");
 
-            _btnPlay = Utility.FindObject(_baseContainer, "BtnPlay");
+            _btnPlay = Utility.FindObject(_buttonsContainer, "BtnPlay");
             _btnStop = Utility.FindObject(_uiCanvas, "BtnStop");
             _btnPlay.GetComponent<Button>().onClick.AddListener(StartDance);
             _btnStop.GetComponent<Button>().onClick.AddListener(StopDance);
@@ -62,15 +66,15 @@ namespace LapisPlayer
         {
             for (int i = 0; i < 5; i++)
             {
-                var btn = Utility.FindNodeByName(_baseContainer, $"Character{i}");
+                var btn = Utility.FindNodeByName(_buttonsContainer, $"Character{i}");
                 var mbtn = btn.GetComponent<Button>();
                 mbtn.onClick.AddListener(BindIndexAction(i, ShowCharaListView));
             }
         }
         private void InitCharaListView()
         {
-            _charaListView = Utility.FindObject(_baseContainer, "CharaListView");
-            _actorListView = Utility.FindObject(_baseContainer, "ActorListView");
+            _charaListView = Utility.FindObject(_panelsContainer, "CharaListView");
+            _actorListView = Utility.FindObject(_panelsContainer, "ActorListView");
 
             var characters = CharactersStore.Instance.GetCharacters();
             int height = (int)Math.Ceiling(characters.Length / 2.0) * 80 + 20;
@@ -107,7 +111,7 @@ namespace LapisPlayer
         }
         private void InitDanceListView()
         {
-            _danceListView = Utility.FindObject(_baseContainer, "DanceListView");
+            _danceListView = Utility.FindObject(_panelsContainer, "DanceListView");
             _danceText = Utility.FindObject(_baseContainer, "DanceText");
 
             var dances = DanceStore.Instance.GetAllDance();
@@ -139,12 +143,12 @@ namespace LapisPlayer
                 index++;
             }
 
-            var btnDance = Utility.FindNodeByName(_baseContainer, "BtnDance");
+            var btnDance = Utility.FindNodeByName(_buttonsContainer, "BtnDance");
             btnDance.GetComponent<Button>().onClick.AddListener(ToggleDanceListView);
         }
         private void InitStageListView()
         {
-            _stageListView = Utility.FindObject(_baseContainer, "StageListView");
+            _stageListView = Utility.FindObject(_panelsContainer, "StageListView");
 
             var stages = StageManager.GetAllStages();
             int height = stages.Length * 40 + 20;
@@ -175,12 +179,12 @@ namespace LapisPlayer
                 index++;
             }
 
-            var btnStage = Utility.FindNodeByName(_baseContainer, "BtnStage");
+            var btnStage = Utility.FindNodeByName(_buttonsContainer, "BtnStage");
             btnStage.GetComponent<Button>().onClick.AddListener(ToggleStageListView);
         }
         private void InitPoseListView()
         {
-            _poseListView = Utility.FindObject(_baseContainer, "PoseListView");
+            _poseListView = Utility.FindObject(_panelsContainer, "PoseListView");
             var poses = PoseStore.Instance.GetAllPose();
             int height = poses.Length * 40 + 20;
 
@@ -212,19 +216,19 @@ namespace LapisPlayer
 
             for (int i = 0; i < 5; i++)
             {
-                var btnPose = Utility.FindObject(_baseContainer, "Pose" + i);
+                var btnPose = Utility.FindObject(_buttonsContainer, "Pose" + i);
                 btnPose.GetComponent<Button>().onClick.AddListener(BindIndexAction(i, TogglePoseListView));
             }
         }
         private void InitExpressionView()
         {
-            _expressionListView = Utility.FindObject(_baseContainer, "ExpressionListView");
+            _expressionListView = Utility.FindObject(_panelsContainer, "ExpressionListView");
             for (int i =0; i < 5; i++)
             {
                 var button = DefaultControls.CreateButton(new DefaultControls.Resources());
                 button.name = "Expression" + i;
                 button.SetActive(false);
-                button.transform.SetParent(_baseContainer.transform);
+                button.transform.SetParent(_buttonsContainer.transform);
 
                 var rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = new Vector2(0, 1);
@@ -416,32 +420,32 @@ namespace LapisPlayer
 
         public void ChangeActorSuccess(int pos, CharacterSetting character, ActorSetting actor)
         {
-            var btn = Utility.FindNodeByName(_baseContainer, $"Character{pos}");
+            var btn = Utility.FindNodeByName(_buttonsContainer, $"Character{pos}");
             var image = Utility.FindNodeByName(btn, "Image");
             image.GetComponent<Image>().sprite = UIUtility.LoadCharacterIcon(character.ShortName);
 
             var text = btn.GetComponentInChildren<Text>();
             text.text = actor.Name;
 
-            var btnPose = Utility.FindObject(_baseContainer, "Pose" + pos);
+            var btnPose = Utility.FindObject(_buttonsContainer, "Pose" + pos);
             btnPose.SetActive(true);
 
-            var btnExpression = Utility.FindObject(_baseContainer, "Expression" + pos);
+            var btnExpression = Utility.FindObject(_buttonsContainer, "Expression" + pos);
             btnExpression.SetActive(true);
         }
         public void RemoveActorSuccess(int pos)
         {
-            var btn = Utility.FindNodeByName(_baseContainer, $"Character{pos}");
+            var btn = Utility.FindNodeByName(_buttonsContainer, $"Character{pos}");
             var image = Utility.FindNodeByName(btn, "Image");
             image.GetComponent<Image>().sprite = null;
 
             var text = btn.GetComponentInChildren<Text>();
             text.text = "Empty";
 
-            var btnPose = Utility.FindObject(_baseContainer, "Pose" + pos);
+            var btnPose = Utility.FindObject(_buttonsContainer, "Pose" + pos);
             btnPose.SetActive(false);
 
-            var btnExpression = Utility.FindObject(_baseContainer, "Expression" + pos);
+            var btnExpression = Utility.FindObject(_buttonsContainer, "Expression" + pos);
             btnExpression.SetActive(false);
         }
         public void DanceChangeSuccess(DanceSetting dance)

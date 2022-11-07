@@ -15,6 +15,12 @@ public class DevHelper : MonoBehaviour
         
     }
 
+    [ContextMenu("Load Character")]
+    public void LoadCharacter()
+    {
+        CharactersStore.Instance.LoadActor("Alpha/r002");
+    }
+
     [ContextMenu("Load Scene")]
     public void LoadScene()
     {
