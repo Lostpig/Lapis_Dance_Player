@@ -9,10 +9,12 @@
 依赖游戏的 AssetBundles, manifest.json, SoundBank  
   
 manifest.json: 需要将游戏的manifest.xml解密,并转为json  
+
 AssetBundles: 游戏的部分AssetBundle是加密的,需要提前解密;AssetBundles的目录结构不可修改  
 > 在unity editor里可以直接用游戏的AssetBundle运行，editor可无视平台限制读取AB包  
 > 但是build为windows平台可执行程序后，由于原AB包的target platform是Android  
 > 所以需要使用[AssetTool.Net](https://github.com/nesrak1/AssetsTools.NET)修改原AssetBundle文件后才能读取  
+
 SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结构为`原bnk文件名/(wwise number).wav`,如`MUSIC_0001/413274000.wav`  
 > 如果提取为其他格式，可以在`SoundBankLoader.LoadAudioClip`里修改相关代码  
   
