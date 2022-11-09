@@ -15,16 +15,30 @@ public class DevHelper : MonoBehaviour
         
     }
 
+    [ContextMenu("Load Battle Song")]
+    public void LoadBattleSong()
+    {
+        GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"battle/song/MUSIC_0012/CM Timeline");
+        var obj = GameObject.Instantiate(timelinePrefab);
+
+        var ctrl = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>($"battle/common/animations/CM View");
+        var anis = obj.GetComponentsInChildren<Animator>();
+        foreach(var ani in anis)
+        {
+            ani.runtimeAnimatorController = ctrl;
+        }
+    }
+
     [ContextMenu("Load Character")]
     public void LoadCharacter()
     {
-        CharactersStore.Instance.LoadActor("Alpha/r002");
+        CharactersStore.Instance.LoadActor("Alpha/rabbit");
     }
 
     [ContextMenu("Load Scene")]
     public void LoadScene()
     {
-        var scene = AssetBundleLoader.Instance.LoadAsset<GameObject>("SceneAssets/Scene_stage/BG301/Prefab/BG301");
+        var scene = AssetBundleLoader.Instance.LoadAsset<GameObject>("SceneAssets/Scene_stage/BG305/Prefab/BG305");
         Instantiate(scene);
     }
 
@@ -35,18 +49,13 @@ public class DevHelper : MonoBehaviour
         Debug.Log("Application Dir:" + System.Environment.CurrentDirectory);
     }
 
-    [ContextMenu("Compute WWISE")]
-    public void ComputeWwise()
+    [ContextMenu("Print Config")]
+    public void PrintConfig()
     {
-        uint num = fnv(2166136261, "Play_MUSIC_0025");
-        Debug.Log(num);
-    }
-    private uint fnv (uint h, string s)
-    {
-        foreach(char c in s)
-        {
-            h = (h * 16777619) ^ c;
-        }
-        return h;
+        Debug.Log(ConfigManager.Instance.Manifest);
+        Debug.Log(ConfigManager.Instance.AssetBundles);
+        Debug.Log(ConfigManager.Instance.SoundBanks);
+        Debug.Log(ConfigManager.Instance.SoundExtension);
+        Debug.Log(ConfigManager.Instance.PhysicalType);
     }
 }

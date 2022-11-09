@@ -10,6 +10,8 @@ namespace LapisPlayer
 
         private async void Start()
         {
+            QualitySettings.SetQualityLevel(ConfigManager.Instance.QualityLevel);
+
             var defaultDance = DanceStore.Instance.GetDance("MUSIC_0001");
             _danceManager = new();
             await _danceManager.InitializeDance(defaultDance);
@@ -66,6 +68,7 @@ namespace LapisPlayer
         private void UiManager_OnStageChange(StageData stage, UIManager sender)
         {
             _stageManager.LoadStage(stage.ID);
+            _danceManager.SetPostion(new Vector3(0, stage.DefaultHeight, 0));
         }
 
         private async void UiManager_OnDanceChange(DanceSetting dance, UIManager sender)
@@ -77,6 +80,8 @@ namespace LapisPlayer
         private void UiManager_OnActorRemove(int characterPos, UIManager sender)
         {
             _danceManager.RemoveCharacter(characterPos);
+            _danceManager.SetCharacterPosition();
+
             sender.RemoveActorSuccess(characterPos);
         }
 
@@ -91,18 +96,22 @@ namespace LapisPlayer
             sender.ChangeActorSuccess(characterPos, charaSetting, actorSetting);
         }
 
-        private void UiManager_OnDancePlay(bool play, UIManager sender)
+        private void UiManager_OnDancePlay(DanceState state, UIManager sender)
         {
-            if (play)
+            switch (state)
             {
-                _danceManager.Play();
-            }
-            else
-            {
-                _danceManager.Stop();
+                case DanceState.Play:
+                    _danceManager.Play();
+                    break;
+                case DanceState.Pause:
+                    _danceManager.Pause();
+                    break;
+                case DanceState.Stop:
+                    _danceManager.Stop();
+                    break;
             }
 
-            sender.DancePlayingChangeSuccess(play);
+            sender.DancePlayingChangeSuccess(state);
         }
 
         private void Update()

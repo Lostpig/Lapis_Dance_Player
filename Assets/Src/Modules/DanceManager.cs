@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.TextCore.Text;
-using static Unity.VisualScripting.Member;
+using System.Linq;
 
 namespace LapisPlayer
 {
-    enum DanceState
+    public enum DanceState
     {
         Stop,
-        Playing,
+        Play,
+        Pause,
     }
 
     public class DanceManager
@@ -34,14 +32,14 @@ namespace LapisPlayer
 
         public async Task InitializeDance(DanceSetting setting)
         {
-            if (_state == DanceState.Playing) Stop();
+            if (_state != DanceState.Stop) Stop();
 
             _setting = setting;
             var originDanceObject = _timelineRoot;
 
             GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"ar/song/{_setting.ID}/CM_Timeline_AR");
             _timelineRoot = GameObject.Instantiate(timelinePrefab);
-            _timelineRoot.transform.position = Vector3.zero;
+            _timelineRoot.transform.position = originDanceObject?.transform.position ?? Vector3.zero;
             _director = _timelineRoot.GetComponent<PlayableDirector>();
             _director.extrapolationMode = DirectorWrapMode.Hold;
 
@@ -91,13 +89,13 @@ namespace LapisPlayer
                 GameObject.Destroy(originDanceObject);
             }
         }
-        private void BindCharacters ()
+        private void BindCharacters()
         {
             for (int i = 0; i < _characters.Length; i++)
             {
                 if (_characters[i] == null) continue;
                 BindAnimationTrack(_characters[i]);
-                _characters[i].Root.transform.SetParent(_timelineRoot.transform);
+                _characters[i].Root.transform.SetParent(_timelineRoot.transform, false);
             }
         }
 
@@ -108,11 +106,7 @@ namespace LapisPlayer
             BindAnimationTrack(character);
             character.Root.transform.SetParent(_timelineRoot.transform);
             _characters[characterPos] = character;
-
-            if (_state != DanceState.Playing)
-            {
-                character.PlayBaseAnimation();
-            }
+            character.PlayBaseAnimation();
         }
         public CharacterActor GetCharacter(int characterPos)
         {
@@ -134,7 +128,7 @@ namespace LapisPlayer
                 RemoveCharacter(i);
             }
         }
-        
+
         private void BindAnimationTrack(CharacterActor character)
         {
             var timeline = _director.playableAsset as TimelineAsset;
@@ -182,15 +176,34 @@ namespace LapisPlayer
 
         public void SetCharacterPosition()
         {
+            int avtiveCount = _characters.Where(c => c != null).Count();
+            float[] xpos = avtiveCount switch
+            {
+                2 => new float[] { 0.9f, -0.9f },
+                3 => new float[] { 0, 1.5f, -1.5f },
+                4 => new float[] { 0.7f, -0.7f, 2.1f, -2.1f },
+                5 => new float[] { 0, 1.1f, -1.1f, 2.2f, -2.2f },
+                _ => new float[] { 0 },
+            };
+            float[] zpos = avtiveCount switch
+            {
+                2 => new float[] { 0, 0 },
+                3 => new float[] { 0.3f, -0.4f, -0.4f },
+                4 => new float[] { 0, 0, 0, 0 },
+                5 => new float[] { 0.6f, 0, 0, -0.6f, -0.6f },
+                _ => new float[] { 0 },
+            };
+
+            int idx = 0;
             for (int i = 0; i < _characters.Length; i++)
             {
                 var chara = _characters[i];
                 if (chara == null) continue;
 
-                var n = (i % 2) == 0 ? 1 : -1;
-                var x = (float)Math.Ceiling(i / 2.0);
-                chara.Root.transform.localPosition = new Vector3(x * n * 1.4f, 0, -x * 0.6f);
-                // chara.Root.transform.RotateAround(0, x * n * -10f, 0);
+                // float y = (1 - chara.Scales.ScaleRatio) / 4f + chara.Heel.tweakFootHeight;
+                float y = chara.Heel.tweakFootHeight;
+                chara.Root.transform.localPosition = new Vector3(xpos[idx], y, zpos[idx]);
+                idx++;
             }
         }
         public void SetCharacterState(bool playing)
@@ -202,10 +215,14 @@ namespace LapisPlayer
                 chara.SetPlaying(playing);
             }
         }
+        public void SetPostion(Vector3 position)
+        {
+            _timelineRoot.transform.position = position;
+        }
 
         public void Update()
         {
-            if (_state == DanceState.Playing)
+            if (_state == DanceState.Play)
             {
                 double time = _director.time;
                 bool finished = _lastClipEnd - time < 0.01667; // || _audio.clip.length - time < 0.01667;
@@ -219,20 +236,42 @@ namespace LapisPlayer
         }
         public void Play()
         {
-            if (_state != DanceState.Stop)
+            if (_state == DanceState.Stop)
             {
-                Debug.Log("Dance already playing");
-                return;
+                _director.Play();
+                _audio.Play();
+                SetCharacterState(true);
+            }
+            else if (_state == DanceState.Pause)
+            {
+                Time.timeScale = 1;
             }
 
-            _director.Play();
-            _audio.Play();
-            SetCharacterState(true);
-
-            _state = DanceState.Playing;
+            _state = DanceState.Play;
+        }
+        public void Pause()
+        {
+            if (_state == DanceState.Play)
+            {
+                _audio.Pause();
+                Time.timeScale = 0;
+                _state = DanceState.Pause;
+            }
+            else if (_state == DanceState.Pause)
+            {
+                _audio.UnPause();
+                _audio.time = (float)_director.time;
+                Time.timeScale = 1;
+                _state = DanceState.Play;
+            }
         }
         public void Stop()
         {
+            if (_state == DanceState.Pause)
+            {
+                Time.timeScale = 1;
+            }
+
             _director.Stop();
             _director.time = 0;
             _audio.Stop();

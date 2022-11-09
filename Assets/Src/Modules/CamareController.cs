@@ -27,11 +27,11 @@ namespace LapisPlayer
 
         private void Cam_Ctrl_Move()
         {
-            transform.Translate(Input.GetAxis("Mouse ScrollWheel") * Vector3.forward * 2);
-            // if (distance <= 0.6f || distance >= 1.49f)
-            // {
-            //     moveSpeed = 0f;
-            // }
+            float wheel = Input.GetAxis("Mouse ScrollWheel");
+            if (Input.GetKey(KeyCode.LeftControl)) wheel *= 5;
+            else wheel *= 0.5f;
+
+            transform.Translate(wheel * Vector3.forward);
         }
 
         public void Cam_Ctrl_Rotate()

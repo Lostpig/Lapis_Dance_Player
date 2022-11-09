@@ -24,8 +24,8 @@ public class ScaleSettings : ScriptableObject
 [Serializable]
 public class ScaleData
 {
-    private string m_BoneName; // 0x10
-    private Vector3 m_Scale; // 0x18
+    [SerializeField] private string m_BoneName; // 0x10
+    [SerializeField] private Vector3 m_Scale; // 0x18
 
     public String BoneName { get => m_BoneName; }
     public Vector3 Scale { get => m_Scale; }

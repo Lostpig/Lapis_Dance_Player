@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace LapisPlayer
 {
@@ -20,10 +19,16 @@ namespace LapisPlayer
         string _assetBundles;
         string _soundBanks;
         string _manifest;
+        string _soundExt;
+        int _physicalType;
+        int _qualityLevel;
 
         public string AssetBundles => _assetBundles;
         public string SoundBanks => _soundBanks;
         public string Manifest => _manifest;
+        public string SoundExtension => _soundExt;
+        public int PhysicalType => _physicalType;
+        public int QualityLevel => _qualityLevel;
 
         private ConfigManager()
         {
@@ -33,11 +38,25 @@ namespace LapisPlayer
         {
             string configPath = Path.Combine(System.Environment.CurrentDirectory, "Config", "config.json");
             string configText = File.ReadAllText(configPath, Encoding.UTF8);
-            var configDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(configText);
+            JObject configJson = JObject.Parse(configText);
 
-            _assetBundles = configDict["assetbundles"];
-            _soundBanks = configDict["soundbanks"];
-            _manifest = configDict["manifest"];
+            _assetBundles = GetPath(configJson.Value<string>("assetbundles"));
+            _soundBanks = GetPath(configJson.Value<string>("soundbanks"));
+            _manifest = GetPath(configJson.Value<string>("manifest"));
+            _soundExt = configJson.Value<string>("soundExt");
+            _physicalType = configJson.Value<int>("physicalType");
+            _qualityLevel = configJson.Value<int>("qualityLevel");
+        }
+
+        private string GetPath (string p)
+        {
+            if (p.StartsWith("."))
+            {
+                string combPath = Path.Combine(System.Environment.CurrentDirectory, "Config", p);
+                return Path.GetFullPath(combPath);
+            }
+
+            return p;
         }
     }
 }

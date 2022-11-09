@@ -13,11 +13,14 @@ namespace LapisPlayer
         public string Body { get; set; }
         public string[] Equips { get; set; }
     }
+
     public class CharacterSetting
     {
         public string Name { get; set; }
         public string ShortName { get; set; }
         public string Label { get; set; }
+
+        public ActorSetting[] actors { get; set; }
     }
     public class CharactersStore
     {
@@ -32,7 +35,7 @@ namespace LapisPlayer
         }
 
         Dictionary<string, CharacterSetting> _charaDict = new();
-        Dictionary<string, ActorSetting> _actorDict = new();
+        Dictionary<string, ActorSetting> _commonActorDict = new();
 
         private CharactersStore()
         {
@@ -45,6 +48,12 @@ namespace LapisPlayer
             {
                 CreateCharacter(chara);
             }
+
+            var commonActors = charaJson["common_actors"].Children().ToList();
+            foreach (var actor in commonActors)
+            {
+                CreateCommonActor(actor);
+            }
         }
 
         private void CreateCharacter(JToken charaToken)
@@ -53,19 +62,29 @@ namespace LapisPlayer
             characterSetting.Name = charaToken.Value<string>("name");
             characterSetting.ShortName = charaToken.Value<string>("shortName");
             characterSetting.Label = charaToken.Value<string>("label");
-            _charaDict.Add(characterSetting.Name.ToLower(), characterSetting);
+
 
             var actors = charaToken["actors"].Children().ToList();
-            foreach (var actor in actors)
+            characterSetting.actors = actors.Select(actor =>
             {
                 ActorSetting actorSetting = new();
                 actorSetting.Name = actor.Value<string>("name");
                 actorSetting.Body = actor.Value<string>("body");
                 actorSetting.Equips = actor["eqiups"].ToObject<string[]>();
 
-                string key = characterSetting.Name + "/" + actorSetting.Name;
-                _actorDict.Add(key.ToLower(), actorSetting);
-            }
+                return actorSetting;
+            }).ToArray();
+
+            _charaDict.Add(characterSetting.Name.ToLower(), characterSetting);
+        }
+        private void CreateCommonActor(JToken actorToken)
+        {
+            ActorSetting actor = new();
+            actor.Name = actorToken.Value<string>("name");
+            actor.Body = actorToken.Value<string>("body");
+            actor.Equips = actorToken["eqiups"].ToObject<string[]>();
+
+            _commonActorDict.Add(actor.Name.ToLower(), actor);
         }
 
         public CharacterSetting[] GetCharacters()
@@ -75,10 +94,7 @@ namespace LapisPlayer
         public ActorSetting[] GetActors(string charaName)
         {
             string name = charaName.ToLower();
-            return _actorDict
-                .Where(n => n.Key.StartsWith(name))
-                .Select(n => n.Value)
-                .ToArray();
+            return _charaDict[name].actors.Concat(_commonActorDict.Values).ToArray();
         }
         public CharacterActor LoadActor(string actorKey)
         {
@@ -87,17 +103,25 @@ namespace LapisPlayer
         }
         public CharacterActor LoadActor(string characterName, string actorName)
         {
+            bool isCommonActor = false;
             var charaSetting = _charaDict[characterName.ToLower()];
+            if (charaSetting == null)
+            {
+                throw new ArgumentException(nameof(characterName), $"Character not found: {characterName}");
+            }
 
-            string key = characterName + "/" + actorName;
-            var actorSetting = _actorDict[key.ToLower()];
-
-            if (charaSetting == null || actorSetting == null)
+            var actorSetting = charaSetting?.actors.FirstOrDefault(a => a.Name == actorName);
+            if (actorSetting == null)
+            {
+                actorSetting = _commonActorDict.GetValueOrDefault(actorName);
+                isCommonActor = true;
+            }
+            if (actorSetting == null)
             {
                 throw new ArgumentException(nameof(actorName), $"Actor not found: {characterName}/{actorName}");
             }
 
-            var actor = new CharacterActor(charaSetting, actorSetting);
+            var actor = new CharacterActor(charaSetting, actorSetting, isCommonActor);
             return actor;
         }
     }

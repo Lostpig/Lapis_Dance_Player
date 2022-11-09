@@ -1,5 +1,8 @@
 ﻿{
-  "manifest": "E:/Lapis Re Lights/Data/manifest.json",
+  "manifest": "./manifest.json",
   "assetbundles": "E:/Lapis Re Lights/Data/AssetBundles",
-  "soundbanks": "E:/Lapis Re Lights/Data/SoundBanks_Extract"
+  "soundbanks": "E:/Lapis Re Lights/Data/SoundBanks_Extract",
+  "soundExt": "wav",
+  "physicalType": 1,
+  "qualityLevel": 5
 }

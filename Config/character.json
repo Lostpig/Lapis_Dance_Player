@@ -1414,5 +1414,193 @@
         }
       ]
     }
+  ],
+  "common_actors": [
+    {
+      "name": "all_002",
+      "body": "actors/avatars/all/ava_all_002/ava_all_suit_002/ava_all_suit_002",
+      "eqiups": [
+        "actors/avatars/all/ava_all_002/ava_all_hat_002/ava_{0}_hat_002"
+      ]
+    },
+    {
+      "name": "all_003",
+      "body": "actors/avatars/all/ava_all_003/ava_all_suit_003/ava_all_suit_003",
+      "eqiups": [
+        "actors/avatars/all/ava_all_003/ava_all_hat_003/ava_all_hat_003"
+      ]
+    },
+    {
+      "name": "all_005",
+      "body": "actors/avatars/all/ava_all_005/ava_all_suit_005/ava_all_suit_005",
+      "eqiups": [
+        "actors/avatars/all/ava_all_005/ava_all_hat_005/ava_{0}_hat_005"
+      ]
+    },
+    {
+      "name": "all_009",
+      "body": "actors/avatars/all/ava_all_009/ava_all_suit_009/ava_all_suit_009",
+      "eqiups": [
+        "actors/avatars/all/ava_all_009/ava_all_hat_009/ava_all_hat_009"
+      ]
+    },
+    {
+      "name": "all_010",
+      "body": "actors/avatars/all/ava_all_010/ava_all_suit_010/ava_all_suit_010",
+      "eqiups": [
+        "actors/avatars/all/ava_all_010/ava_all_hat_010/ava_{0}_hat_010"
+      ]
+    },
+    {
+      "name": "兔女郎",
+      "body": "actors/avatars/all/ava_all_011/ava_all_suit_011/ava_all_suit_011",
+      "eqiups": [
+        "actors/avatars/all/ava_all_011/ava_all_hat_011/ava_{0}_hat_011"
+      ]
+    },
+    {
+      "name": "all_015",
+      "body": "actors/avatars/all/ava_all_015/ava_all_suit_015/ava_all_suit_015",
+      "eqiups": []
+    },
+    {
+      "name": "all_016",
+      "body": "actors/avatars/all/ava_all_016/ava_all_suit_016/ava_all_suit_016",
+      "eqiups": [
+        "actors/avatars/all/ava_all_016/ava_all_hat_016/ava_{0}_hat_016"
+      ]
+    },
+    {
+      "name": "all_017",
+      "body": "actors/avatars/all/ava_all_017/ava_all_suit_017/ava_all_suit_017",
+      "eqiups": [
+        "actors/avatars/all/ava_all_017/ava_all_bac_017/ava_all_bac_017",
+        "actors/avatars/all/ava_all_017/ava_all_face_017/ava_all_face_017",
+        "actors/avatars/all/ava_all_017/ava_all_hat_017/ava_{0}_hat_017",
+        "actors/avatars/all/ava_all_017/ava_all_mask_017/ava_{0}_mask_017",
+        "actors/avatars/all/ava_all_017/ava_all_tail_017/ava_all_tail_017",
+        "actors/avatars/all/ava_all_017/ava_all_vis_017/ava_{0}_vis_017"
+      ]
+    },
+    {
+      "name": "all_019",
+      "body": "actors/avatars/all/ava_all_019/ava_all_suit_019/ava_all_suit_019",
+      "eqiups": [
+        "actors/avatars/all/ava_all_019/ava_all_hat_019/ava_{0}_hat_019"
+      ]
+    },
+    {
+      "name": "all_020",
+      "body": "actors/avatars/all/ava_all_020/ava_all_suit_020/ava_all_suit_020",
+      "eqiups": [
+        "actors/avatars/all/ava_all_020/ava_all_hat_020/ava_{0}_hat_020"
+      ]
+    },
+    {
+      "name": "all_022",
+      "body": "actors/avatars/all/ava_all_022/ava_all_suit_022/ava_all_suit_022",
+      "eqiups": [
+        "actors/avatars/all/ava_all_022/ava_all_hat_022/ava_{0}_hat_022"
+      ]
+    },
+    {
+      "name": "all_024",
+      "body": "actors/avatars/all/ava_all_024/ava_all_suit_024/ava_all_suit_024",
+      "eqiups": [
+        "actors/avatars/all/ava_all_024/ava_all_hat_024/ava_{0}_hat_024"
+      ]
+    },
+    {
+      "name": "all_025",
+      "body": "actors/avatars/all/ava_all_025/ava_all_suit_025/ava_all_suit_025",
+      "eqiups": [
+        "actors/avatars/all/ava_all_025/ava_all_hat_025/ava_{0}_hat_025"
+      ]
+    },
+    {
+      "name": "all_026",
+      "body": "actors/avatars/all/ava_all_026/ava_all_suit_026/ava_all_suit_026",
+      "eqiups": [
+        "actors/avatars/all/ava_all_026/ava_all_hat_026/ava_{0}_hat_026"
+      ]
+    },
+    {
+      "name": "all_027",
+      "body": "actors/avatars/all/ava_all_027/ava_all_suit_027/ava_all_suit_027",
+      "eqiups": [
+        "actors/avatars/all/ava_all_027/ava_all_hat_027/ava_{0}_hat_027"
+      ]
+    },
+    {
+      "name": "all_028",
+      "body": "actors/avatars/all/ava_all_028/ava_all_suit_028/ava_all_suit_028",
+      "eqiups": [
+        "actors/avatars/all/ava_all_028/ava_all_hat_028/ava_{0}_hat_028"
+      ]
+    },
+    {
+      "name": "all_029",
+      "body": "actors/avatars/all/ava_all_029/ava_all_suit_029/ava_all_suit_029",
+      "eqiups": [
+        "actors/avatars/all/ava_all_029/ava_all_hat_029/ava_{0}_hat_029"
+      ]
+    },
+    {
+      "name": "all_030",
+      "body": "actors/avatars/all/ava_all_030/ava_all_suit_030/ava_all_suit_030",
+      "eqiups": [
+        "actors/avatars/all/ava_all_030/ava_all_hat_030/ava_{0}_hat_030"
+      ]
+    },
+    {
+      "name": "all_031",
+      "body": "actors/avatars/all/ava_all_031/ava_all_suit_031/ava_all_suit_031",
+      "eqiups": [
+        "actors/avatars/all/ava_all_031/ava_all_hat_031/ava_{0}_hat_031"
+      ]
+    },
+    {
+      "name": "all_032",
+      "body": "actors/avatars/all/ava_all_032/ava_all_suit_032/ava_all_suit_032",
+      "eqiups": [
+        "actors/avatars/all/ava_all_032/ava_all_hat_032/ava_{0}_hat_032"
+      ]
+    },
+    {
+      "name": "all_033",
+      "body": "actors/avatars/all/ava_all_033/ava_all_suit_033/ava_all_suit_033",
+      "eqiups": []
+    },
+    {
+      "name": "all_034",
+      "body": "actors/avatars/all/ava_all_034/ava_all_suit_034/ava_all_suit_034",
+      "eqiups": []
+    },
+    {
+      "name": "all_036",
+      "body": "actors/avatars/all/ava_all_036/ava_all_suit_036/ava_all_suit_036",
+      "eqiups": []
+    },
+    {
+      "name": "all_037",
+      "body": "actors/avatars/all/ava_all_037/ava_all_suit_037/ava_all_suit_037",
+      "eqiups": [
+        "actors/avatars/all/ava_all_037/ava_all_hat_037/ava_{0}_hat_037"
+      ]
+    },
+    {
+      "name": "all_038",
+      "body": "actors/avatars/all/ava_all_038/ava_all_suit_038/ava_all_suit_038",
+      "eqiups": [
+        "actors/avatars/all/ava_all_038/ava_all_hat_038/ava_{0}_hat_038"
+      ]
+    },
+    {
+      "name": "all_044",
+      "body": "actors/avatars/all/ava_all_044/ava_all_suit_044/ava_all_suit_044",
+      "eqiups": [
+        "actors/avatars/all/ava_all_044/ava_all_hat_044/ava_{0}_hat_044"
+      ]
+    }
   ]
 }

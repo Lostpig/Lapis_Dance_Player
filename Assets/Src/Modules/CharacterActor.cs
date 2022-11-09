@@ -35,7 +35,7 @@ namespace LapisPlayer
                 }
                 var springBone = node.AddComponent<SpringBone>();
                 springBone.radius = bone.radius;
-                springBone.dragForce = bone.dragForce;
+                springBone.dragForce = bone.dragForce * 0.8f;
                 springBone.stiffnessForce = Math.Min(bone.stiffnessForce * 16000f, 2000f);
 
                 if (!string.IsNullOrEmpty(bone.sibilingPath))
@@ -109,7 +109,7 @@ namespace LapisPlayer
                         curr = slblingNode;
                         target = node;
                     }
-                    var sibilingObject = new GameObject("Sibiling");
+                    var sibilingObject = new GameObject("Sibiling_" + slblingNode.name);
                     sibilingObject.transform.SetParent(curr.transform);
                     sibilingObject.transform.localPosition = Vector3.zero;
                     sibilingObject.transform.localRotation = Quaternion.identity;
@@ -231,17 +231,21 @@ namespace LapisPlayer
         ActorSetting _actor;
         RuntimeAnimatorController _baseController;
         FacialBehaviour _faceBehaviour;
+        bool _isCommonActor = false;
 
         private List<AvatarPart> _parts = new();
         public List<AvatarPart> Parts => _parts;
 
         public GameObject Root { get; private set; }
         public GameObject SkeletonRoot { get; private set; }
+        public ScaleSettings Scales { get; private set; }
+        public HeelSetting Heel { get; private set; }
 
-        public CharacterActor(CharacterSetting chara, ActorSetting actor)
+        public CharacterActor(CharacterSetting chara, ActorSetting actor, bool isCommonActor = false)
         {
             _chara = chara;
             _actor = actor;
+            _isCommonActor = isCommonActor;
 
             BuildModel();
         }
@@ -260,17 +264,27 @@ namespace LapisPlayer
             SkeletonRoot.transform.SetParent(Root.transform);
 
             string human = $"Actors/Avatars/{_chara.ShortName}/Human";
+            Scales = AssetBundleLoader.Instance.LoadAsset<ScaleSettings>($"{human}/SCL_{_chara.ShortName}000");
+            string bodyAvatarPath = _isCommonActor ? (_actor.Body + (Scales.IsLoli ? "_l" : "_r")) : _actor.Body;
 
             var faceSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>($"{human}/Hum_{_chara.ShortName}_Face_00");
             var hairSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>($"{human}/Hum_{_chara.ShortName}_Hair_00");
-            var bodySetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(_actor.Body);
+            var bodySetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(bodyAvatarPath);
+            Heel = bodySetting.HeelSetting;
             BuildAvatarPart(faceSetting, "Face");
             BuildAvatarPart(hairSetting, "Hair");
             BuildAvatarPart(bodySetting, "Body");
 
             foreach (var equip in _actor.Equips)
             {
-                var partSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(equip);
+                string equipPath = _isCommonActor ? string.Format(equip, _chara.ShortName) : equip;
+                var partSetting = AssetBundleLoader.Instance.LoadAsset<AvatarSetting>(equipPath);
+
+                if (partSetting == null)
+                {
+                    Debug.LogError("Equip avatar part not found: " + equipPath);
+                    continue;
+                }
                 BuildAvatarPart(partSetting);
             }
 
@@ -285,8 +299,14 @@ namespace LapisPlayer
             var _heelBehaviour = body.AddComponent<HeelBehaviour>();
             _heelBehaviour.ApplySettings(bodySetting.HeelSetting);
 
-            var scaleSetting = AssetBundleLoader.Instance.LoadAsset<ScaleSettings>($"{human}/SCL_{_chara.ShortName}000");
-            Root.transform.localScale = new Vector3(scaleSetting.ScaleRatio, scaleSetting.ScaleRatio, scaleSetting.ScaleRatio);
+            Root.transform.localScale = new Vector3(Scales.ScaleRatio, Scales.ScaleRatio, Scales.ScaleRatio);
+            // 添加了这段反而显示不正常
+            // 不确定 scaleSetting.ListScaleData 是如何生效的
+            /* foreach (var scl in scaleSetting.ListScaleData)
+            {
+                var sclBone = Utility.FindNodeByRecursion(body, scl.BoneName);
+                sclBone.transform.localScale = scl.Scale;
+            } */
 
             BindPhysicalBones();
         }
@@ -328,7 +348,11 @@ namespace LapisPlayer
         {
             _faceBehaviour.SetPlayingState(playing);
 
-            if (!playing)
+            if (playing)
+            {
+                StopBaseAnimation();
+            }
+            else
             {
                 PlayBaseAnimation();
                 SetExpression(eFaceExpression.USUALLY, MouthState.CLOSE);
@@ -343,6 +367,16 @@ namespace LapisPlayer
                 if (animator != null) animator.Play("Body@Idle");
             }
         }
+        public void StopBaseAnimation()
+        {
+            SkeletonRoot.GetComponent<Animator>().Play("Body@Idle1");
+            foreach (var part in _parts)
+            {
+                Animator animator = part.Model.GetComponent<Animator>();
+                if (animator != null) animator.Play("Body@Idle1");
+            }
+        }
+
         public void SetBaseAnimationClip(AnimationClip clip)
         {
             var ctrlInstance = new AnimatorOverrideController(_baseController);
@@ -383,8 +417,14 @@ namespace LapisPlayer
 
         private void BindPhysicalBones()
         {
-            BindSpringBone();
-            // BindDynamicBone();
+            if (ConfigManager.Instance.PhysicalType == 1)
+            {
+                BindDynamicBone();
+            }
+            else
+            {
+                BindSpringBone();
+            }
         }
         // TODO
         // DynamicBone / SpringBone 都会有穿模问题

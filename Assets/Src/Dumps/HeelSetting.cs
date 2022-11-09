@@ -3,8 +3,8 @@
 public class HeelSetting : ScriptableObject
 {
     [SerializeField]
-    public float tweakFootAngle;
+    public float tweakFootAngle = 0;
     [SerializeField]
-    public float tweakFootHeight;
+    public float tweakFootHeight = 0;
 }
 
