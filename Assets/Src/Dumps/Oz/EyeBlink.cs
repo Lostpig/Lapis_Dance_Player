@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using LapisPlayer;
+using System.Linq;
+using UnityEngine.EventSystems;
+using Unity.VisualScripting;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace Oz.Timeline
 {
@@ -12,24 +16,50 @@ namespace Oz.Timeline
         public AnimationCurve blinkCurve; // 0x28
         public new double duration => _duration;
         private double _duration = 0;
-        public void SetDuration(double clipDuration)
+        private EyeBlinkTrack _parentTrack;
+
+        public void Initialize(EyeBlinkTrack parentTrack, double clipDuration)
         {
+            _parentTrack = parentTrack;
             _duration = clipDuration;
         }
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var characters = owner.GetComponentsInChildren<FacialBehaviour>();
+            PlayableDirector dicector = owner.GetComponent<PlayableDirector>();
 
-            EyeBlinkPlayableBehaviour behaviour = new()
+            EyeBlinkPlayableBehaviour behaviour;
+            var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
+            if (danceManager.IsARMode)
             {
-                Asset = this,
-                BlinkCurve = blinkCurve,
-                Characters = characters,
-            };
+                var characters = danceManager.GetActiveCharacters();
+                var facials = characters.Select(c => c.Facial).ToArray();
+                behaviour = new()
+                {
+                    Asset = this,
+                    BlinkCurve = blinkCurve,
+                    Characters = facials,
+                };
+            }
+            else
+            {
+                var actorObj = dicector.GetGenericBinding(_parentTrack) as GameObject;
+                var actor = actorObj.GetComponent<Actor>();
+                var facial = danceManager.GetCharacter(actor.Postion).Facial;
+
+                behaviour = new()
+                {
+                    Asset = this,
+                    BlinkCurve = blinkCurve,
+                    Characters = new FacialBehaviour[] { facial },
+                };
+            }
+
             return ScriptPlayable<EyeBlinkPlayableBehaviour>.Create(graph, behaviour);
         }
     }
 
+    [TrackClipType(typeof(EyeBlinkPlayableAsset), false)]
+    [TrackBindingType(typeof(GameObject))]
     public class EyeBlinkTrack : TrackAsset
     {
         protected override void OnAfterTrackDeserialize()
@@ -38,7 +68,7 @@ namespace Oz.Timeline
             {
                 if (clip.asset is EyeBlinkPlayableAsset ebpa)
                 {
-                    ebpa.SetDuration(clip.duration);
+                    ebpa.Initialize(this, clip.duration);
                 }
             }
         }

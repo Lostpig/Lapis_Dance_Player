@@ -19,13 +19,7 @@ namespace Oz.Timeline
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var characters = owner.GetComponentsInChildren<FacialBehaviour>();
-
-            LipsyncBehaviour behaviour = new()
-            {
-                Asset = this,
-                Characters = characters,
-            };
+            LipsyncBehaviour behaviour = new();
             return ScriptPlayable<LipsyncBehaviour>.Create(graph, behaviour);
         }
     }
@@ -42,18 +36,43 @@ namespace Oz.Timeline
                 }
             }
         }
+
+        public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
+        {
+            var facials = go.GetComponentsInChildren<FacialBehaviour>();
+            foreach (var facial in facials)
+            {
+                facial.Vowel.Clear();
+            }
+            foreach (var clip in GetClips())
+            {
+                if (clip.asset is LipsyncAsset lsa)
+                {
+                    foreach (var facial in facials)
+                    {
+                        facial.Vowel.AppendVowelAnimationIndex(lsa.Index, lsa.Weight, clip.duration, clip.mixInDuration, clip.mixOutDuration, (float)clip.start);
+                    }
+                }
+            }
+
+            var updateBehaviour = new VowelUpdateBehaviour();
+            updateBehaviour.Facials = facials;
+
+            return ScriptPlayable<VowelUpdateBehaviour>.Create(graph, updateBehaviour, inputCount);
+        }
     }
 
-    public class LipsyncBehaviour : PlayableBehaviour
-    {
-        public LipsyncAsset Asset { get; set; }
-        public FacialBehaviour[] Characters { get; set; }
+    public class LipsyncBehaviour : PlayableBehaviour { }
 
-        public override void OnBehaviourPlay(Playable playable, FrameData info)
+    public class VowelUpdateBehaviour : PlayableBehaviour
+    {
+        public FacialBehaviour[] Facials { get; set; }
+
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            foreach (var item in Characters)
+            foreach (var facial in Facials)
             {
-                item.Vowel.AppendVowelAnimationIndex(Asset.Index, Asset.Weight, Asset.Clip.duration, Asset.Clip.mixInDuration, Asset.Clip.mixOutDuration);
+                facial.Vowel.Update((float)playable.GetTime());
             }
         }
     }

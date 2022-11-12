@@ -22,6 +22,7 @@ namespace LapisPlayer
         string _soundExt;
         int _physicalType;
         int _qualityLevel;
+        bool _fullscreen;
 
         public string AssetBundles => _assetBundles;
         public string SoundBanks => _soundBanks;
@@ -29,6 +30,7 @@ namespace LapisPlayer
         public string SoundExtension => _soundExt;
         public int PhysicalType => _physicalType;
         public int QualityLevel => _qualityLevel;
+        public bool FullScreen => _fullscreen;
 
         private ConfigManager()
         {
@@ -46,6 +48,7 @@ namespace LapisPlayer
             _soundExt = configJson.Value<string>("soundExt");
             _physicalType = configJson.Value<int>("physicalType");
             _qualityLevel = configJson.Value<int>("qualityLevel");
+            _fullscreen = configJson.Value<bool>("fullscreen");
         }
 
         private string GetPath (string p)

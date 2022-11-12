@@ -1,0 +1,77 @@
+﻿{
+  "stages": [
+    {
+      "id": "BG301",
+      "name": "supernova 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG301/Prefab/BG301",
+      "height": 0.01
+    },
+    {
+      "id": "BG302",
+      "name": "IV KROLE 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG302/Prefab/BG302_Mix",
+      "height": 0.015
+    },
+    {
+      "id": "BG2004",
+      "name": "LiGHTs 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG2004/Prefab/BG2004",
+      "height": 0.02
+    },
+    {
+      "id": "BG304",
+      "name": "この花は乙女 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG304/Prefab/BG304",
+      "height": 0.02
+    },
+    {
+      "id": "BG305",
+      "name": "Sugar Pockets 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG305/Prefab/BG305",
+      "height": 0.01
+    },
+    {
+      "id": "BG306",
+      "name": "Sadistic★Candy 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG306/Prefab/BG306",
+      "height": 0.02
+    },
+    {
+      "id": "BG307",
+      "name": "Ray 舞台",
+      "prefab": "SceneAssets/Scene_stage/BG307/Prefab/BG307",
+      "height": 0
+    },
+    {
+      "id": "BG303",
+      "name": "废案(BG303)",
+      "prefab": "SceneAssets/Scene_stage/BG303/Prefab/BG303",
+      "height": 0
+    },
+    
+    {
+      "id": "BG105",
+      "name": "魔法研究室",
+      "prefab": "SceneAssets/Scene_main/BG105/Prefab/BG105",
+      "height": 0
+    },
+    {
+      "id": "BG106",
+      "name": "餐厅",
+      "prefab": "SceneAssets/Scene_main/BG106/Prefab/BG106",
+      "height": 0
+    },
+    {
+      "id": "BG107",
+      "name": "导师房间",
+      "prefab": "SceneAssets/Scene_main/BG107/Prefab/BG107",
+      "height": 0
+    },
+    {
+      "id": "BG108",
+      "name": "游戏室(未实装)",
+      "prefab": "SceneAssets/Scene_main/BG108/Prefab/BG108",
+      "height": 0
+    }
+  ]
+}

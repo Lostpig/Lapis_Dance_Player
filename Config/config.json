@@ -4,5 +4,6 @@
   "soundbanks": "E:/Lapis Re Lights/Data/SoundBanks_Extract",
   "soundExt": "wav",
   "physicalType": 1,
-  "qualityLevel": 5
+  "qualityLevel": 5,
+  "fullscreen": true
 }

@@ -65,9 +65,8 @@ namespace LapisPlayer
             });
         }
 
-        public void AppendVowel(int vowel, float weight, float duration, float mixIn, float mixOut)
+        public void AppendVowel(int vowel, float start, float weight, float duration, float mixIn, float mixOut)
         {
-            float now = Time.time;
             float contentDuration = duration - mixIn - mixOut;
             var voewlData = _vowelMap[vowel];
 
@@ -85,8 +84,8 @@ namespace LapisPlayer
                     active = false,
                     values = targetValues,
                     perSecondChange = new float[_mouthBlendArr.Length],
-                    startTime = now,
-                    endTime = now + mixIn,
+                    startTime = start,
+                    endTime = start + mixIn,
                     weight = weight
                 };
                 if (!vowelList.ContainsKey(mixInRecord.startTime))
@@ -102,8 +101,8 @@ namespace LapisPlayer
                     active = false,
                     values = targetValues,
                     perSecondChange = new float[_mouthBlendArr.Length],
-                    startTime = now + mixIn + contentDuration,
-                    endTime = now + duration,
+                    startTime = start + mixIn + contentDuration,
+                    endTime = start + duration,
                     weight = weight
                 };
                 if (!vowelList.ContainsKey(mixOutRecord.startTime))
@@ -124,8 +123,8 @@ namespace LapisPlayer
                 active = false,
                 values = values,
                 perSecondChange = new float[_mouthBlendArr.Length],
-                startTime = now + mixIn,
-                endTime = now + mixIn + contentDuration,
+                startTime = start + mixIn,
+                endTime = start + mixIn + contentDuration,
                 weight = weight
             };
             if (!vowelList.ContainsKey(contentRecord.startTime))
@@ -133,13 +132,18 @@ namespace LapisPlayer
                 vowelList.Add(contentRecord.startTime, contentRecord);
             }
         }
-        public void AppendVowelAnimationIndex(AnimationIndex aIndex, float weight, double duration, double mixIn, double mixOut)
+        public void AppendVowelAnimationIndex(AnimationIndex aIndex, float weight, double duration, double mixIn, double mixOut, float start)
         {
             if (aIndex == AnimationIndex.None) return;
-
             var vowel = ((int)aIndex) - 1;
-            AppendVowel(vowel, weight, (float)duration, (float)mixIn, (float)mixOut);
+            AppendVowel(vowel, start, weight, (float)duration, (float)mixIn, (float)mixOut);
         }
+        public void Clear()
+        {
+            vowelList.Clear();
+        }
+
+
         public void ActiveRecord(VoewlChangeRecord record, float now)
         {
             for (int i = 0; i < record.values.Length; i++)
@@ -153,9 +157,8 @@ namespace LapisPlayer
         }
 
         private float LastUpdateTime = 0;
-        public void Update()
+        public void Update(float now)
         {
-            var now = Time.time;
             if (LastUpdateTime == 0)
             {
                 LastUpdateTime = now;
@@ -163,10 +166,9 @@ namespace LapisPlayer
             }
             var elapsed = now - LastUpdateTime;
             LastUpdateTime = now;
-
+            if (elapsed < 0) return;
             if (vowelList.Count == 0) return;
 
-            List<float> removeItems = new();
             float sumWeight = 0;
             float[] changes = new float[updateValues.Length];
 
@@ -175,11 +177,7 @@ namespace LapisPlayer
             {
                 var curr = vowelList.Values[i];
                 if (curr.startTime > now) break;
-                if (curr.endTime < now)
-                {
-                    removeItems.Add(vowelList.Keys[i]);
-                    continue;
-                }
+                if (curr.endTime < now) continue;
 
                 hasActiveVowel = true;
                 if (!curr.active) ActiveRecord(curr, now);
@@ -200,11 +198,6 @@ namespace LapisPlayer
 
                     updateValues[i] = val;
                 }
-            }
-
-            foreach (float key in removeItems)
-            {
-                vowelList.Remove(key);
             }
         }
     }

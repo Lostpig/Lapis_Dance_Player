@@ -2,6 +2,16 @@
 
 namespace LapisPlayer
 {
+    public class Actor : MonoBehaviour
+    {
+        public int Postion { get; private set; }
+
+        public void BindPosition (int position)
+        {
+            Postion = position;
+        }
+    }
+
     public class FacialBehaviour : MonoBehaviour
     {
         public VowelManager Vowel { get; private set; }
@@ -26,11 +36,7 @@ namespace LapisPlayer
         }
         private void Update()
         {
-            if (isPlayingAnimation)
-            {
-                Vowel.Update();
-            }
-            else
+            if (!isPlayingAnimation)
             {
                 Facial.AutoBlinkUpdate();
             }

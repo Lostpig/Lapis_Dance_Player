@@ -170,9 +170,9 @@ namespace LapisPlayer
                 _baseEyeEVal = 0f;
             }
 
-            _faceMesh.material.SetFloat("_CheekPower", data.CheekPower);
-            _faceMesh.material.SetFloat("_ForeheadShade", data.ForeheadShade);
-            _eyeMesh.material.SetFloat("_HighLight", 1f - data.EyeHighlight);
+            _faceMesh.sharedMaterial.SetFloat("_CheekPower", data.CheekPower);
+            _faceMesh.sharedMaterial.SetFloat("_ForeheadShade", data.ForeheadShade);
+            _eyeMesh.sharedMaterial.SetFloat("_HighLight", 1f - data.EyeHighlight);
         }
         public void SetExpression(eFaceExpression expression)
         {

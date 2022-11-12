@@ -11,6 +11,9 @@ namespace LapisPlayer
         public string Name { get; set; }
         public string ID { get; set; }
         public string Music { get; set; }
+
+        public string StageKey { get; set; }
+        public int CharacterCount { get; set; }
     }
     public class DanceStore
     {
@@ -39,6 +42,8 @@ namespace LapisPlayer
                 setting.Name = dance.Value<string>("name");
                 setting.ID = dance.Value<string>("id");
                 setting.Music = dance.Value<string>("music");
+                setting.StageKey = dance.Value<string>("stage");
+                setting.CharacterCount = dance.Value<int>("characters");
 
                 _danceDict.Add(setting.ID, setting);
             }

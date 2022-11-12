@@ -2,24 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Animations.SpringBones;
+using Unity.Animations.SpringBones.GameObjectExtensions;
 using UnityEngine;
-using UnityEngine.U2D;
-using UnityEngine.XR;
+
 
 namespace LapisPlayer
 {
     public class AvatarPart
     {
-        public readonly GameObject Model;
         public readonly AvatarSetting Setting;
+        public GameObject Prefab => Setting.Prefab;
+        public readonly GameObject Model;
 
         public AvatarPart(AvatarSetting setting)
         {
             Setting = setting;
-            Model = GameObject.Instantiate(setting.Prefab);
+            Model = GameObject.Instantiate(Prefab);
         }
 
-        public SpringBone[] BindSpringBone(Dictionary<string, SpringSphereCollider> sphereList, Dictionary<string, SpringCapsuleCollider> capsuleList)
+        public SpringBone[] BindSpringBone(GameObject SklRoot, Dictionary<string, SpringSphereCollider> sphereList, Dictionary<string, SpringCapsuleCollider> capsuleList)
         {
             var springSetting = Setting.SpringSetting;
             if (springSetting == null) return Array.Empty<SpringBone>();
@@ -27,7 +28,7 @@ namespace LapisPlayer
             List<SpringBone> boneList = new();
             foreach (var bone in springSetting.boneParameters)
             {
-                var node = Utility.FindNodeByPath(Model, bone.nodeName);
+                var node = Utility.FindNodeByPath(SklRoot, bone.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("[" + Model.name + "]Bone node not found:" + bone.nodeName);
@@ -40,7 +41,7 @@ namespace LapisPlayer
 
                 if (!string.IsNullOrEmpty(bone.sibilingPath))
                 {
-                    var sibilingNode = Utility.FindNodeByPath(Model, bone.sibilingPath);
+                    var sibilingNode = Utility.FindNodeByPath(SklRoot, bone.sibilingPath);
                     if (sibilingNode != null)
                     {
                         // Transform[] trs = sibilingNode.GetComponentsInChildren<Transform>(true);
@@ -76,8 +77,7 @@ namespace LapisPlayer
 
             foreach (var colliderParam in springSetting.colliderParameters)
             {
-                var node = Utility.FindNodeByPath(Model, colliderParam.nodeName);
-                if (node == null) node = Utility.FindNodeByPath(SklRoot, colliderParam.nodeName);
+                var node = Utility.FindNodeByPath(SklRoot, colliderParam.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("[" + Model.name + "]Collider node not found:" + colliderParam.nodeName);
@@ -94,8 +94,7 @@ namespace LapisPlayer
 
                 if (!string.IsNullOrEmpty(colliderParam.sibilingPath) && !capsuleList.ContainsKey(idName))
                 {
-                    var slblingNode = Utility.FindNodeByPath(Model, colliderParam.sibilingPath);
-                    if (slblingNode == null) slblingNode = Utility.FindNodeByPath(SklRoot, colliderParam.sibilingPath);
+                    var slblingNode = Utility.FindNodeByPath(SklRoot, colliderParam.sibilingPath);
                     if (slblingNode == null)
                     {
                         Debug.LogWarning("[" + Model.name + "]Sibiling collider node not found:" + colliderParam.sibilingPath);
@@ -128,26 +127,14 @@ namespace LapisPlayer
             }
         }
 
-        public void BindDynamicBone()
+        public void BindDynamicBone(GameObject SklRoot, DynamicBone dynamicBone)
         {
             var springSetting = Setting.SpringSetting;
             if (springSetting == null) return;
 
-            DynamicBone dynamicBone = Model.AddComponent<DynamicBone>();
-            dynamicBone.m_Radius = 0.04f;
-            dynamicBone.m_RadiusDistrib = AnimationCurve.Linear(0f, 0.33f, 1f, 1f);
-            dynamicBone.m_Damping = 0.33f;
-            dynamicBone.m_Elasticity = 0.05f;
-            dynamicBone.m_Stiffness = 0.05f;
-            dynamicBone.m_Friction = 0.25f;
-            dynamicBone.m_Gravity = new Vector3(0, -0.04f, 0);
-
-            dynamicBone.m_Roots = new();
-            dynamicBone.m_Colliders = new();
-
             foreach (var bone in springSetting.boneParameters)
             {
-                var node = Utility.FindNodeByPath(Model, bone.nodeName);
+                var node = Utility.FindNodeByPath(SklRoot, bone.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("[" + Model.name + "]Bone node not found:" + bone.nodeName);
@@ -159,7 +146,7 @@ namespace LapisPlayer
 
             foreach (var collider in springSetting.colliderParameters)
             {
-                var node = Utility.FindNodeByPath(Model, collider.nodeName);
+                var node = Utility.FindNodeByPath(SklRoot, collider.nodeName);
                 if (node == null)
                 {
                     Debug.LogWarning("Collider node not found:" + collider.nodeName);
@@ -173,8 +160,7 @@ namespace LapisPlayer
 
                 if (!string.IsNullOrEmpty(collider.sibilingPath))
                 {
-                    var slblingNode = Utility.FindNodeByPath(Model, collider.sibilingPath);
-                    if (slblingNode == null) slblingNode = Utility.FindNodeByPath(Model, collider.sibilingPath);
+                    var slblingNode = Utility.FindNodeByPath(SklRoot, collider.sibilingPath);
                     if (slblingNode == null)
                     {
                         Debug.LogWarning("Collider slbling node not found:" + collider.sibilingPath);
@@ -240,6 +226,7 @@ namespace LapisPlayer
         public GameObject SkeletonRoot { get; private set; }
         public ScaleSettings Scales { get; private set; }
         public HeelSetting Heel { get; private set; }
+        public FacialBehaviour Facial { get => _faceBehaviour; }
 
         public CharacterActor(CharacterSetting chara, ActorSetting actor, bool isCommonActor = false)
         {
@@ -257,7 +244,6 @@ namespace LapisPlayer
         private void BuildModel()
         {
             Root = new GameObject($"{_chara.Name}_{_actor.Name}_Root");
-
             _baseController = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>("Actors/AnimationController/Common@AR");
             GameObject skl_std = AssetBundleLoader.Instance.LoadAsset<GameObject>(Skeleton);
             SkeletonRoot = GameObject.Instantiate(skl_std);
@@ -295,8 +281,7 @@ namespace LapisPlayer
             _faceBehaviour = face.AddComponent<FacialBehaviour>();
             _faceBehaviour.ApplySettings(vowelSetting, facialSetting);
 
-            var body = Utility.FindNodeByName(Root, "Body");
-            var _heelBehaviour = body.AddComponent<HeelBehaviour>();
+            var _heelBehaviour = SkeletonRoot.AddComponent<HeelBehaviour>();
             _heelBehaviour.ApplySettings(bodySetting.HeelSetting);
 
             Root.transform.localScale = new Vector3(Scales.ScaleRatio, Scales.ScaleRatio, Scales.ScaleRatio);
@@ -324,10 +309,7 @@ namespace LapisPlayer
                 part.Model.transform.SetParent(Root.transform);
                 part.Model.transform.localPosition = Vector3.zero;
 
-                var skeletonAnimator = SkeletonRoot.GetComponent<Animator>();
-                Animator animator = part.Model.GetComponent<Animator>();
-                if (animator == null) animator = part.Model.AddComponent<Animator>();
-                animator.avatar = skeletonAnimator.avatar;
+                MergeBones(part.Model);
             }
             else
             {
@@ -361,36 +343,17 @@ namespace LapisPlayer
         public void PlayBaseAnimation()
         {
             SkeletonRoot.GetComponent<Animator>().Play("Body@Idle");
-            foreach (var part in _parts)
-            {
-                Animator animator = part.Model.GetComponent<Animator>();
-                if (animator != null) animator.Play("Body@Idle");
-            }
         }
         public void StopBaseAnimation()
         {
             SkeletonRoot.GetComponent<Animator>().Play("Body@Idle1");
-            foreach (var part in _parts)
-            {
-                Animator animator = part.Model.GetComponent<Animator>();
-                if (animator != null) animator.Play("Body@Idle1");
-            }
         }
 
         public void SetBaseAnimationClip(AnimationClip clip)
         {
             var ctrlInstance = new AnimatorOverrideController(_baseController);
             ctrlInstance["Body@Idle"] = clip;
-
             SkeletonRoot.GetComponent<Animator>().runtimeAnimatorController = ctrlInstance;
-            foreach (var part in _parts)
-            {
-                Animator animator = part.Model.GetComponent<Animator>();
-                if (animator != null)
-                {
-                    animator.runtimeAnimatorController = ctrlInstance;
-                }
-            }
         }
         public void SetPose(string poseName)
         {
@@ -431,9 +394,21 @@ namespace LapisPlayer
         // 但是暂时没有更好的解决方案
         private void BindDynamicBone()
         {
+            DynamicBone dynamicBone = SkeletonRoot.AddComponent<DynamicBone>();
+            dynamicBone.m_Radius = 0.04f;
+            dynamicBone.m_RadiusDistrib = AnimationCurve.Linear(0f, 0.33f, 1f, 1f);
+            dynamicBone.m_Damping = 0.33f;
+            dynamicBone.m_Elasticity = 0.05f;
+            dynamicBone.m_Stiffness = 0.05f;
+            dynamicBone.m_Friction = 0.25f;
+            dynamicBone.m_Gravity = new Vector3(0, -0.04f, 0);
+
+            dynamicBone.m_Roots = new();
+            dynamicBone.m_Colliders = new();
+
             foreach (var part in _parts)
             {
-                part.BindDynamicBone();
+                part.BindDynamicBone(SkeletonRoot, dynamicBone);
             }
         }
         private void BindSpringBone()
@@ -448,11 +423,75 @@ namespace LapisPlayer
             var bontList = new List<SpringBone>();
             foreach (var part in _parts)
             {
-                bontList.AddRange(part.BindSpringBone(sphereList, capsuleList));
+                bontList.AddRange(part.BindSpringBone(SkeletonRoot, sphereList, capsuleList));
             }
 
             var manager = Root.AddComponent<SpringManager>();
             manager.springBones = bontList.ToArray();
+        }
+
+        private void MergeBones(GameObject partRoot)
+        {
+            var sklRef = SkeletonRoot.FindChildByName("Reference");
+
+            var partRef = partRoot.FindChildByName("Reference");
+            var skinMeshes = partRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
+            Dictionary<Transform, Transform> replaceDict = new();
+
+            MergeReference(sklRef, partRef, ref replaceDict);
+            // MovePartItems(SkeletonRoot.transform, partRoot.transform);
+
+            foreach (var sm in skinMeshes)
+            {
+                ReplaceMeshBones(sm, ref replaceDict);
+            }
+        }
+        private void MergeReference(Transform sklRef, Transform partRef, ref Dictionary<Transform, Transform> dict)
+        {
+            var count = partRef.childCount;
+            for (int i = 0; i < count; i++)
+            {
+                var item = partRef.GetChild(i);
+                var sklItem = sklRef.Find(item.name);
+                if (sklItem == null)
+                {
+                    var newItem = new GameObject();
+                    newItem.name = item.name;
+                    newItem.transform.SetParent(sklRef);
+                    sklItem = newItem.transform;
+                }
+                sklItem.transform.position = item.position;
+                sklItem.transform.rotation = item.rotation;
+                sklItem.transform.localScale = item.localScale;
+
+                dict.Add(item, sklItem);
+                MergeReference(sklItem, item, ref dict);
+            }
+        }
+        private void MovePartItems(Transform skl, Transform partRoot)
+        {
+            var count = partRoot.childCount;
+            Transform[] items = new Transform[count];
+            for (int i = 0; i < count; i++)
+            {
+                items[i] = partRoot.GetChild(i);
+            }
+            foreach (var item in items)
+            {
+                if (item.name == "Reference") continue;
+                item.SetParent(skl);
+            }
+        }
+        private void ReplaceMeshBones(SkinnedMeshRenderer mesh, ref Dictionary<Transform, Transform> dict)
+        {
+            mesh.rootBone = dict[mesh.rootBone];
+            var replaceBones = new Transform[mesh.bones.Length];
+            for (int i = 0; i < mesh.bones.Length; i++)
+            {
+                replaceBones[i] = dict[mesh.bones[i]];
+            }
+
+            mesh.bones = replaceBones;
         }
     }
 }

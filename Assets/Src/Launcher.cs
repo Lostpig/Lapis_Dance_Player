@@ -1,17 +1,15 @@
 ﻿
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LapisPlayer
 {
     public class Launcher : MonoBehaviour
     {
         DanceManager _danceManager;
-        StageManager _stageManager;
-
+        GameObject _stage;
         private async void Start()
         {
-            QualitySettings.SetQualityLevel(ConfigManager.Instance.QualityLevel);
-
             var defaultDance = DanceStore.Instance.GetDance("MUSIC_0001");
             _danceManager = new();
             await _danceManager.InitializeDance(defaultDance);
@@ -19,8 +17,6 @@ namespace LapisPlayer
             var camare = GameObject.Find("Main Camera");
             var camCtrl = camare.AddComponent<CameraController>();
             camCtrl.Initialize(_danceManager.Root.transform);
-
-            _stageManager = new();
 
             var uiManager = new UIManager();
             uiManager.Initialize();
@@ -33,8 +29,17 @@ namespace LapisPlayer
             uiManager.OnPoseChange += UiManager_OnPoseChange;
             uiManager.OnLoadExpression += UiManager_OnLoadExpression;
             uiManager.OnExpressionChange += UiManager_OnExpressionChange;
+            uiManager.OnBack += UiManager_OnBack;
 
             uiManager.DanceChangeSuccess(defaultDance);
+
+            PlayerGlobal.Instance.SetSingleton<IDanceManager>(_danceManager);
+        }
+
+        private void UiManager_OnBack(UIManager obj)
+        {
+            SceneManager.LoadScene("MainScene");
+            SceneManager.UnloadSceneAsync("DanceScene");
         }
 
         private void UiManager_OnExpressionChange(int index, eFaceExpression expression, MouthState mouthState, UIManager sender)
@@ -67,8 +72,20 @@ namespace LapisPlayer
 
         private void UiManager_OnStageChange(StageData stage, UIManager sender)
         {
-            _stageManager.LoadStage(stage.ID);
-            _danceManager.SetPostion(new Vector3(0, stage.DefaultHeight, 0));
+            var prefab = StageStore.Instance.LoadStage(stage.ID);
+            if (prefab == null)
+            {
+                Debug.LogWarning("Stage not found:" + stage.ID);
+                return;
+            }
+
+            if (_stage != null)
+            {
+                GameObject.Destroy(_stage);
+            }
+
+            _stage = GameObject.Instantiate(prefab);
+            _danceManager.SetPostion(new Vector3(0, stage.Height, 0));
         }
 
         private async void UiManager_OnDanceChange(DanceSetting dance, UIManager sender)

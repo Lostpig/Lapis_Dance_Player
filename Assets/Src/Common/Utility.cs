@@ -157,5 +157,15 @@ namespace LapisPlayer
 
             return clip;
         }
+
+        public static void ActiveToTop(GameObject go)
+        {
+            var curr = go;
+            while (curr != null)
+            {
+                curr.SetActive(true);
+                curr = curr.transform.parent?.gameObject;
+            }
+        }
     }
 }

@@ -7,6 +7,13 @@ using System.Linq;
 
 namespace LapisPlayer
 {
+    interface IDanceManager
+    {
+        public bool IsARMode { get; }
+        public CharacterActor GetCharacter(int position);
+        public CharacterActor[] GetActiveCharacters();
+    }
+
     public enum DanceState
     {
         Stop,
@@ -14,7 +21,7 @@ namespace LapisPlayer
         Pause,
     }
 
-    public class DanceManager
+    public class DanceManager: IDanceManager
     {
         CharacterActor[] _characters = new CharacterActor[5];
         DanceState _state = DanceState.Stop;
@@ -112,6 +119,10 @@ namespace LapisPlayer
         {
             return _characters[characterPos];
         }
+        public CharacterActor[] GetActiveCharacters()
+        {
+            return _characters.Where(c => c != null).ToArray();
+        }
         public void RemoveCharacter(int characterPos)
         {
             if (_characters[characterPos] != null)
@@ -132,33 +143,25 @@ namespace LapisPlayer
         private void BindAnimationTrack(CharacterActor character)
         {
             var timeline = _director.playableAsset as TimelineAsset;
-            var count = character.Parts.Count + 1;
-            var tracks = new AnimationTrack[count];
+            AnimationTrack bindTrack = null;
 
-            int idx = 0;
             foreach (var track in _animationGroupTrack.GetChildTracks())
             {
                 if (track == _animationTrack) continue;
                 var bind = _director.GetGenericBinding(track);
                 if (bind == null)
                 {
-                    tracks[idx] = track as AnimationTrack;
-                    idx++;
+                    bindTrack = track as AnimationTrack;
+                    break;
                 }
-                if (idx >= count) break;
             }
-            for (; idx < count; idx++)
+            if (bindTrack == null)
             {
-                tracks[idx] = CloneAnimationTrack(timeline, _animationGroupTrack, _animationTrack);
+                bindTrack = CloneAnimationTrack(timeline, _animationGroupTrack, _animationTrack);
             }
 
             var sklAnimator = character.SkeletonRoot.GetComponent<Animator>();
-            _director.SetGenericBinding(tracks[0], sklAnimator);
-            for (int i = 0; i < count - 1; i++)
-            {
-                var animator = character.Parts[i].Model.GetComponent<Animator>();
-                _director.SetGenericBinding(tracks[i + 1], animator);
-            }
+            _director.SetGenericBinding(bindTrack, sklAnimator);
         }
         private AnimationTrack CloneAnimationTrack(TimelineAsset parent, TrackAsset rootTrack, AnimationTrack source)
         {
@@ -280,5 +283,7 @@ namespace LapisPlayer
 
             _state = DanceState.Stop;
         }
+
+        public bool IsARMode { get => true; }
     }
 }

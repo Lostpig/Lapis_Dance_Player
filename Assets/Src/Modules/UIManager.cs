@@ -38,6 +38,7 @@ namespace LapisPlayer
         public event Action<int, string, UIManager> OnPoseChange;
         public event Action<int, UIManager> OnLoadExpression;
         public event Action<int, eFaceExpression, MouthState, UIManager> OnExpressionChange;
+        public event Action<UIManager> OnBack;
 
         public UnityAction BindIndexAction(int index, Action<int> action)
         {
@@ -65,7 +66,7 @@ namespace LapisPlayer
             InitStageListView();
             InitPoseListView();
             InitExpressionView();
-            InitExitButton();
+            InitBackButton();
         }
         private void InitializeCharaterPositions()
         {
@@ -154,8 +155,9 @@ namespace LapisPlayer
         private void InitStageListView()
         {
             _stageListView = Utility.FindObject(_panelsContainer, "StageListView");
+            if (_stageListView == null) return;
 
-            var stages = StageManager.GetAllStages();
+            var stages = StageStore.Instance.GetAllStages();
             int height = stages.Length * 40 + 20;
 
             var content = Utility.FindNodeByRecursion(_stageListView, "Content");
@@ -190,6 +192,8 @@ namespace LapisPlayer
         private void InitPoseListView()
         {
             _poseListView = Utility.FindObject(_panelsContainer, "PoseListView");
+            if (_poseListView == null) return;
+
             var poses = PoseStore.Instance.GetAllPose();
             int height = poses.Length * 40 + 20;
 
@@ -228,7 +232,9 @@ namespace LapisPlayer
         private void InitExpressionView()
         {
             _expressionListView = Utility.FindObject(_panelsContainer, "ExpressionListView");
-            for (int i =0; i < 5; i++)
+            if (_expressionListView == null) return;
+
+            for (int i = 0; i < 5; i++)
             {
                 var button = DefaultControls.CreateButton(new DefaultControls.Resources());
                 button.name = "Expression" + i;
@@ -247,10 +253,10 @@ namespace LapisPlayer
                 button.GetComponent<Button>().onClick.AddListener(BindIndexAction(i, ToggleExpressionListView));
             }
         }
-        private void InitExitButton()
+        private void InitBackButton()
         {
-            var btnExit = Utility.FindObject(_buttonsContainer, "BtnExit");
-            btnExit.GetComponent<Button>().onClick.AddListener(TriggerExit);
+            var btnExit = Utility.FindObject(_buttonsContainer, "BtnBack");
+            btnExit.GetComponent<Button>().onClick.AddListener(TriggerBack);
         }
 
         private void SelectCharacter(CharacterSetting character)
@@ -438,10 +444,10 @@ namespace LapisPlayer
             text.text = actor.Name;
 
             var btnPose = Utility.FindObject(_buttonsContainer, "Pose" + pos);
-            btnPose.SetActive(true);
+            btnPose?.SetActive(true);
 
             var btnExpression = Utility.FindObject(_buttonsContainer, "Expression" + pos);
-            btnExpression.SetActive(true);
+            btnExpression?.SetActive(true);
         }
         public void RemoveActorSuccess(int pos)
         {
@@ -453,10 +459,10 @@ namespace LapisPlayer
             text.text = "Empty";
 
             var btnPose = Utility.FindObject(_buttonsContainer, "Pose" + pos);
-            btnPose.SetActive(false);
+            btnPose?.SetActive(false);
 
             var btnExpression = Utility.FindObject(_buttonsContainer, "Expression" + pos);
-            btnExpression.SetActive(false);
+            btnExpression?.SetActive(false);
         }
         public void DanceChangeSuccess(DanceSetting dance)
         {
@@ -526,9 +532,9 @@ namespace LapisPlayer
             OnDancePlay?.Invoke(DanceState.Pause, this);
         }
 
-        private void TriggerExit()
+        private void TriggerBack()
         {
-            Application.Quit();
+            OnBack?.Invoke(this);
         }
     }
 }

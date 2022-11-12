@@ -3,108 +3,148 @@
     {
       "name": "LiGHTs - 私の名は、光",
       "id": "MUSIC_0001",
-      "music": "413274000"
+      "music": "413274000",
+      "stage": "BG2004",
+      "characters": 5
     },
     {
       "name": "LiGHTs - Your Lights",
       "id": "MUSIC_0002",
-      "music": "1017980350"
+      "music": "1017980350",
+      "stage": "BG2004",
+      "characters": 5
     },
     {
       "name": "LiGHTs - ポラリス",
       "id": "MUSIC_0003",
-      "music": "176367230"
+      "music": "176367230",
+      "stage": "BG2004",
+      "characters": 5
     },
     {
       "name": "LiGHTs - 700,000,000,000,000,000,000,000の空で",
       "id": "MUSIC_0017",
-      "music": "378701293"
+      "music": "378701293",
+      "stage": "BG2004",
+      "characters": 5
     },
     {
       "name": "LiGHTs - プラネタリウム",
       "id": "MUSIC_0026",
-      "music": "0001"
+      "music": "0001",
+      "stage": "BG2004",
+      "characters": 5
     },
 
     {
       "name": "IV KROLE - Butterfly",
       "id": "MUSIC_0004",
-      "music": "373094441"
+      "music": "373094441",
+      "stage": "BG302",
+      "characters": 4
     },
     {
       "name": "IV KROLE - 禁忌の寓話",
       "id": "MUSIC_0005",
-      "music": "360776092"
+      "music": "360776092",
+      "stage": "BG302",
+      "characters": 4
     },
     {
       "name": "IV KROLE - Midnight Sapphire",
       "id": "MUSIC_0027",
-      "music": "32611669"
+      "music": "32611669",
+      "stage": "BG302",
+      "characters": 4
     },
 
     {
       "name": "Sadistic★Candy - Are Many Chance!!!",
       "id": "MUSIC_0006",
-      "music": "802023161"
+      "music": "802023161",
+      "stage": "BG306",
+      "characters": 2
     },
     {
       "name": "Sadistic★Candy - VIVIらぷ",
       "id": "MUSIC_0007",
-      "music": "668400988"
+      "music": "668400988",
+      "stage": "BG306",
+      "characters": 2
     },
 
     {
       "name": "supernova - Trinity",
       "id": "MUSIC_0008",
-      "music": "535488345"
+      "music": "535488345",
+      "stage": "BG301",
+      "characters": 3
     },
     {
       "name": "supernova - RISE",
       "id": "MUSIC_0009",
-      "music": "925175617"
+      "music": "925175617",
+      "stage": "BG301",
+      "characters": 3
     },
     {
       "name": "supernova - アオノショウドウ",
       "id": "MUSIC_0018",
-      "music": "134322268"
+      "music": "134322268",
+      "stage": "BG301",
+      "characters": 3
     },
 
     {
       "name": "この花は乙女 - いのち短し、繚乱乙女",
       "id": "MUSIC_0010",
-      "music": "220133619"
+      "music": "220133619",
+      "stage": "BG304",
+      "characters": 3
     },
     {
       "name": "この花は乙女 - 私の初恋をこの花に捧ぐ",
       "id": "MUSIC_0011",
-      "music": "730966017"
+      "music": "730966017",
+      "stage": "BG304",
+      "characters": 3
     },
 
     {
       "name": "シュガーポケッツ - シャノワール",
       "id": "MUSIC_0012",
-      "music": "92356989"
+      "music": "92356989",
+      "stage": "BG305",
+      "characters": 3
     },
     {
       "name": "シュガーポケッツ - knockin'on baby",
       "id": "MUSIC_0013",
-      "music": "300089310"
+      "music": "300089310",
+      "stage": "BG305",
+      "characters": 3
     },
     {
       "name": "シュガーポケッツ - #BFF",
       "id": "MUSIC_0025",
-      "music": "717320407"
+      "music": "717320407",
+      "stage": "BG305",
+      "characters": 3
     },
 
     {
       "name": "Ray - Beautiful World",
       "id": "MUSIC_0028",
-      "music": "773226141"
+      "music": "773226141",
+      "stage": "BG307",
+      "characters": 5
     },
     {
       "name": "Ray - HYBRID",
       "id": "MUSIC_0029",
-      "music": "248729206"
+      "music": "248729206",
+      "stage": "BG307",
+      "characters": 5
     }
   ]
 }

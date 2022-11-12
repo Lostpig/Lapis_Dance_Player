@@ -31,7 +31,6 @@
 ### Dance
 + Char Animtion Group
   > 舞蹈动作的Track，AR版的只有一个，应该要将各个`AvatarPart`的骨骼节点Merge之后绑上去的  
-  > 实现上比较麻烦，目前使用的办法是把Track多复制几个，每个`AvatarPart`绑定一个，Timeline会自己控制同步  
 + Eyes Blink Group
   > 眨眼的Track，按一般逻辑自己实现了`EyeBlinkPlayableAsset`  
 + Expression Group

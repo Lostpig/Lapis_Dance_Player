@@ -1,4 +1,6 @@
-﻿public enum SceneObjectState
+﻿using System;
+
+public enum SceneObjectState
 {
     store = 0,
     binding = 1,
@@ -30,7 +32,6 @@ public enum eVowel
     O = 4, // 0x0
     N = 5, // 0x0
 }
-
 
 public enum eFacialParts
 {
@@ -208,4 +209,48 @@ public enum AnimationIndex
     E = 4, // 0x0
     O = 5, // 0x0
     N = 6, // 0x0
+}
+
+public enum InternalState
+{
+    Create = 0, // 0x0
+    Start = 1, // 0x0
+    Play = 2, // 0x0
+    Pause = 3, // 0x0
+    Stop = 4, // 0x0
+    Destroy = 5, // 0x0
+}
+
+public enum PiplineType
+{
+    Unity = 1, // 0x0
+    ZBuffer = 2, // 0x0
+    MRT = 4, // 0x0
+}
+
+public enum AntiAilasing
+{
+    none = 0, // 0x0
+    fxaa = 1, // 0x0
+    smaa = 2, // 0x0
+}
+
+public enum MRTDataTexture
+{
+    ColorHDR = 1
+}
+
+public enum BlurType
+{
+    simple = 0, // 0x0
+    gaussian = 1, // 0x0
+    fastgaussian = 2, // 0x0
+    grainy = 3, // 0x0
+    depthOfField = 4, // 0x0
+}
+
+public enum GlowType
+{
+    simple = 0, // 0x0
+    fastgaussian = 1, // 0x0
 }

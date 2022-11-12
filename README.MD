@@ -31,7 +31,8 @@ SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结�
   "soundbanks": "C:/lapis_relights/SoundBanks",       // SoundBank 资源所在目录;使用"."或".."开头则认为是相对路径(相对config.json文件)
   "soundExt": "wav",                                  // 使用的音频文件的格式,与SoundBank下的文件格式需匹配,支持ogg/mp3/wav;默认使用wav
   "physicalType": 0,                                  // 使用的物理模块版本 0:UnityChanSpringBone 1:DynamicBone,默认为0
-  "qualityLevel": 5                                   // 画质设置(0-5),就是unity默认的6档
+  "qualityLevel": 5,                                  // 画质设置(0-5),就是unity默认的6档
+  "fullscreen": true                                  // 是否全屏
 }
 ```
 
@@ -78,8 +79,10 @@ SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结�
   "dances": [
     {
       "name": "LiGHTs - Your Lights",         // 显示舞蹈名称,随意设置
-      "id": "MUSIC_0002"                      // 该舞蹈的ID,为固定值
-      "music": "1017980350"                   // 手工填写从soundbank中解包出的音乐文件名，或者自己拿对应的音乐文件放上也可以
+      "id": "MUSIC_0002",                     // 该舞蹈的ID,为固定值
+      "music": "1017980350",                  // 手工填写从soundbank中解包出的音乐文件名，或者自己拿对应的音乐文件放上也可以
+      "stage": "BG2004",                      // 舞蹈对应的舞台,该项仅在魔法舞台Live中生效
+      "characters": 5                         // 舞蹈对应的人数,该项仅在魔法舞台Live中生效
     }
   ]
 }
@@ -88,16 +91,29 @@ SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结�
 ---
 
 ### RoadMap
-> 只是列一下，不一定能完成
+> ~~只是列一下，不一定能完成~~
+> 搞不动了，就这样吧...
 + [✓] 模型查看
 + [✓] 口型控制模块
 + [✓] 眨眼控制模块
 + [✓] 表情控制模块
 + [✓] 动作控制模块
 + [✓] 舞蹈播放器
++ [✓] 魔法舞台基础版本
 + 物理碰撞系统
   > 基于 DynamicBone 实现了一个基础版本，但穿模问题严重  
   > 添加了用 UnityChanSpringBone 实现的另一个版本，一样有问题  
 + [x]~~wwise集成~~
 + [✓] 一个简单的UI
+
+
+
+
+
+
+
+
+
+
+
 

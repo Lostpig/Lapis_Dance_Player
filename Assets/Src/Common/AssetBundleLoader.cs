@@ -84,5 +84,11 @@ namespace LapisPlayer
             T asset = bundle.LoadAsset<T>(assetName.ToLower());
             return asset;
         }
+    
+        public void Reset ()
+        {
+            AssetBundle.UnloadAllAssetBundles(true);
+            _loadedBundles.Clear();
+        }
     }
 }
