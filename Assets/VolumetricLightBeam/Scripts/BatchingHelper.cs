@@ -69,16 +69,13 @@ namespace VLB
             if (!CanBeBatched(beamB, ref reasons))
                 ret = false;
 
-            if (Config.Instance.featureEnabledDynamicOcclusion)
+            if ((beamA.GetComponent<DynamicOcclusionAbstractBase>() == null) != (beamB.GetComponent<DynamicOcclusionAbstractBase>() == null))
             {
-                if ((beamA.GetComponent<DynamicOcclusionAbstractBase>() == null) != (beamB.GetComponent<DynamicOcclusionAbstractBase>() == null))
-                {
-                    AppendErrorMessage(ref reasons, string.Format("{0}/{1}: dynamically occluded and non occluded beams cannot be batched together", beamA.name, beamB.name));
-                    ret = false;
-                }
+                AppendErrorMessage(ref reasons, string.Format("{0}/{1}: dynamically occluded and non occluded beams cannot be batched together", beamA.name, beamB.name));
+                ret = false;
             }
 
-            if (Config.Instance.featureEnabledColorGradient != FeatureEnabledColorGradient.Off && beamA.colorMode != beamB.colorMode)
+            if (beamA.colorMode != beamB.colorMode)
             {
                 AppendErrorMessage(ref reasons, string.Format("'Color Mode' mismatch: {0} / {1}", beamA.colorMode, beamB.colorMode));
                 ret = false;
@@ -90,13 +87,13 @@ namespace VLB
                 ret = false;
             }
 
-            if (Config.Instance.featureEnabledNoise3D && beamA.isNoiseEnabled != beamB.isNoiseEnabled)
+            if (beamA.isNoiseEnabled != beamB.isNoiseEnabled)
             {
                 AppendErrorMessage(ref reasons, string.Format("'3D Noise' enabled mismatch: {0} / {1}", beamA.noiseMode, beamB.noiseMode));
                 ret = false;
             }
 
-            if (Config.Instance.featureEnabledDepthBlend && !forceEnableDepthBlend)
+            if (!forceEnableDepthBlend)
             {
 #pragma warning disable 0162
                 if ((beamA.depthBlendDistance > 0) != (beamB.depthBlendDistance > 0))
@@ -107,7 +104,7 @@ namespace VLB
 #pragma warning restore 0162
             }
 
-            if (Config.Instance.featureEnabledShaderAccuracyHigh && beamA.shaderAccuracy != beamB.shaderAccuracy)
+            if (beamA.shaderAccuracy != beamB.shaderAccuracy)
             {
                 AppendErrorMessage(ref reasons, string.Format("'Shader Accuracy' mismatch: {0} / {1}", beamA.shaderAccuracy, beamB.shaderAccuracy));
                 ret = false;
@@ -129,7 +126,7 @@ namespace VLB
                 }
             }
 
-            if (Config.Instance.featureEnabledDynamicOcclusion && beam.GetComponent<DynamicOcclusionDepthBuffer>() != null)
+            if (beam.GetComponent<DynamicOcclusionDepthBuffer>())
             {
                 AppendErrorMessage(ref reasons, string.Format("{0} is using the DynamicOcclusion DepthBuffer feature", beam.name));
                 ret = false;

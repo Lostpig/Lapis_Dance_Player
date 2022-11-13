@@ -7,13 +7,13 @@ namespace VLB
     {
         public static class Common
         {
-            public static readonly GUIContent ButtonOpenGlobalConfig = new GUIContent("Open Config asset in use");
+            public static readonly GUIContent ButtonOpenGlobalConfig = new GUIContent("Open Config Asset in use");
             public const string HelpNoiseLoadingFailed = "Fail to load 3D noise texture. Please check your Config.";
 
-            public static readonly string[] DimensionsEnumDescriptions = new string[]
+            public static readonly GUIContent[] DimensionsEnumDescriptions = new GUIContent[]
             {
-                "3D",
-                "2D",
+                new GUIContent("3D"),
+                new GUIContent("2D"),
             };
         }
 
@@ -28,7 +28,7 @@ namespace VLB
             public static readonly GUIContent Header2D = new GUIContent("2D", "Tweak and combine the order when beams are rendered with 2D objects (such as 2D sprites)");
             public static readonly GUIContent HeaderInfos = new GUIContent("Infos");
 
-            public const string FromSpotLight = "Get the value from the Light Spot";
+            public static readonly GUIContent FromSpotLight = new GUIContent("From Spot", "Get the value from the Light Spot");
 
             public static readonly GUIContent SideThickness = new GUIContent(
                 "Side Thickness",
@@ -65,11 +65,11 @@ namespace VLB
             public static readonly GUIContent NoiseIntensity = new GUIContent("Intensity", "Higher intensity means the noise contribution is stronger and more visible");
             public static readonly GUIContent NoiseScale = new GUIContent("Scale", "3D Noise texture scaling: higher scale make the noise more visible, but potentially less realistic");
             public static readonly GUIContent NoiseVelocity = new GUIContent("Velocity", "Direction and speed of the noise scrolling, simulating the fog/smoke movement");
-            public static readonly string[] NoiseModeEnumDescriptions = new string[]
+            public static readonly GUIContent[] NoiseModeEnumDescriptions = new GUIContent[]
             {
-                "Disabled",
-                "Enabled (World Space)",
-                "Enabled (Local Space)",
+                new GUIContent("Disabled"),
+                new GUIContent("Enabled (World Space)"),
+                new GUIContent("Enabled (Local Space)"),
             };
 
             public static readonly GUIContent CameraClippingDistance = new GUIContent("Camera", "Distance from the camera the beam will fade with.\n- 0.0: hard intersection\n- Higher values produce soft intersection when the camera is near the cone triangles.");
@@ -84,44 +84,34 @@ namespace VLB
 
             public static readonly GUIContent FadeOutEnabled = new GUIContent("Enabled", "Enable the fade out of the beam according to the distance to the camera.");
             public static readonly GUIContent FadeOutBegin = new GUIContent("Begin Distance", "Fade out starting distance. Beyond this distance, the beam intensity will start to be dimmed.");
-            public static readonly GUIContent FadeOutEnd = new GUIContent("End", "Fade out ending distance. Beyond this distance, the beam will be culled off to save on performance.");
+            public static readonly GUIContent FadeOutEnd = new GUIContent("End Distance", "Fade out ending distance. Beyond this distance, the beam will be culled off to save on performance.");
 
             public static readonly GUIContent SkewingLocalForwardDirection = new GUIContent("Skewing Factor", "Distort the shape of the beam horizontally and vertically while keeping its circular slice unchanged.");
             public static readonly GUIContent ClippingPlane = new GUIContent("Clipping Plane", "Additional clipping plane transform.");
-            public static readonly GUIContent EditorShowClippingPlane = new GUIContent("Debug", "Display the additional clipping plane.");
+            public static readonly GUIContent EditorShowClippingPlane = new GUIContent("Show clipping plane", "Display the additional clipping plane.");
 
             public static readonly GUIContent TiltFactor = new GUIContent("Tilt Factor", "Tilt the color and attenuation gradient compared to the global beam's direction.\nShould be used with 'High' shader accuracy mode.");
-            public static readonly GUIContent EditorShowTiltDirection = new GUIContent("Debug", "Display the direction of the tilt factor in editor.");
+            public static readonly GUIContent EditorShowTiltDirection = new GUIContent("Show Tilt Direction", "Display the direction of the tilt factor in editor.");
 
             public static readonly GUIContent Dimensions = new GUIContent("Dimensions", "- 3D: beam along the Z axis.\n- 2D: beam along the X axis, so you won't have to rotate it to see it in 2D.");
             public const string SortingLayer = "Sorting Layer";
-            public static readonly GUIContent SortingOrder = new GUIContent("Order", "The overlay priority within its layer. Lower numbers are rendered first and subsequent numbers overlay those below.");
+            public static readonly GUIContent SortingOrder = new GUIContent("Order in Layer", "The overlay priority within its layer. Lower numbers are rendered first and subsequent numbers overlay those below.");
 
             // BUTTONS
-            public static readonly GUIContent ButtonCreateOverridePerPlatform = new GUIContent("Create another Config asset for a specific platform", "");
             public static readonly GUIContent ButtonResetProperties = new GUIContent("Default values", "Reset properties to their default values.");
             public static readonly GUIContent ButtonGenerateGeometry = new GUIContent("Regenerate geometry", "Force to re-create the Beam Geometry GameObject.");
-            public static readonly GUIContent ButtonEditInScene = new GUIContent("Edit in Scene View", "Edit some beam's properties directly in the Scene View using convenient gizmos.");
-            public const string ButtonAddDustParticles = "+ Volumetric Dust Particles\nAdd highly detailed dustlight/mote particles on your beam.";
-            public const string ButtonAddDynamicOcclusion = "+ Dynamic Occlusion\nGives awareness to your beam so it reacts to changes in the world: it could be occluded by environment geometry.";
-            public const string ButtonAddDynamicOcclusionRaycasting = "+ Dynamic Occlusion (Raycasting)";
-            public const string ButtonAddDynamicOcclusionDepthBuffer = "+ Dynamic Occlusion (Depth Buffer)";
-            public const string ButtonAddTriggerZone = "+ Trigger Zone\nTrack objects passing through the light beam and track when the beam is passing over them.";
-            public const string ButtonAddEffect = "+ Effect\nAdd runtime FX to easily animate your light and/or beam with effects such as strobe/flickering and pulsing/flashing.";
-            public const string ButtonAddEffectFlicker = "+ Effect Flicker";
-            public const string ButtonAddEffectPulse = "+ Effect Pulse";
+            public static readonly GUIContent ButtonAddDustParticles = new GUIContent("+ Dust Particles", "Add highly detailed dustlight / mote particles on your beam");
+            public static readonly GUIContent ButtonAddDynamicOcclusion = new GUIContent("+ Dynamic Occlusion", "Gives awareness to your beam so it reacts to changes in the world: it could be occluded by environment geometry.");
+            public static readonly GUIContent ButtonAddTriggerZone = new GUIContent("+ Trigger Zone", "Track objects passing through the light beam and track when the beam is passing over them.");
 
             // HELP BOXES
             public const string HelpNoSpotlight = "To bind properties from the Light and the Beam together, this component must be attached to a Light of type 'Spot'";
-            public const string HelpAnimatorWarning = "If you want to animate your light beam in real-time, you should enable the 'Track Changes During Playtime' property.";
+            public const string HelpAnimatorWarning = "If you want to animate your light beam in real-time, you should enable the 'trackChangesDuringPlaytime' property.";
             public const string HelpTrackChangesEnabled = "This beam will keep track of the changes of its own properties and the spotlight attached to it (if any) during playtime. You can modify every properties except 'geomSides'.";
             public const string HelpDepthTextureMode = "To support 'Soft Intersection with Opaque Geometry', your camera must use 'DepthTextureMode.Depth'.";
             public const string HelpDepthMobile = "On mobile platforms, the depth buffer precision can be pretty low. Try to keep a small depth range on your cameras: the difference between the near and far clip planes should stay as low as possible.";
             public const string HelpFadeOutNoMainCamera = "Fail to retrieve the main camera specified in the config.";
             public const string HelpTiltedWithShaderAccuracyFast = "We highly recommend to set the 'Shader Accuracy' property to 'High' when using 'Tilt Factor'.";
-
-            public const string PrefEditInScene = "VLB_BEAM_EDITINSCENE";
-            public const string PrefShowAddClippingPlane = "VLB_BEAM_SHOWADDCLIPPINGPLANE";
         }
 
         public static class DustParticles
@@ -142,9 +132,11 @@ namespace VLB
             public static readonly GUIContent CullingMaxDistance = new GUIContent("Max Distance", "The particles will not be rendered if they are further than this distance to the Main Camera");
 
             public static readonly GUIContent Density = new GUIContent("Density", "Control how many particles are spawned. The higher the density, the more particles are spawned, the higher the performance cost is");
-            public static readonly GUIContent SpawnDistanceRange = new GUIContent("Distance Range", "The distance range (from the light source) where the particles are spawned.\n- Min bound: the higher it is, the more the particles are spawned away from the light source.\n- Max bound: the lower it is, the more the particles are gathered near the light source.");
+            public static readonly GUIContent SpawnMinDistance = new GUIContent("Min Distance", "The minimum distance (from the light source) where the particles are spawned.\nThe higher it is, the more the particles are spawned away from the light source.");
+            public static readonly GUIContent SpawnMaxDistance = new GUIContent("Max Distance", "The maximum distance (from the light source) where the particles are spawned.\nThe lower it is, the more the particles are gathered near the light source.");
 
             // HELP BOXES
+            public const string HelpFeatureNotSupported = "Volumetric Dust Particles feature is only supported in Unity 5.5 or above";
             public const string HelpFailToInstantiate = "Fail to instantiate the Particles. Please check your Config.";
             public const string HelpRecommendation = "We do not recommend to use this feature if you plan to move or change properties of the beam during playtime.";
         }
@@ -168,13 +160,13 @@ namespace VLB
             public static readonly GUIContent MinOccluderArea = new GUIContent("Min Occluder Area",
                 "Minimum 'area' of the collider to become an occluder.\nColliders smaller than this value will not block the beam.");
             public static readonly GUIContent UpdateRate = new GUIContent("Update Rate", "How often will the occlusion be processed?\nTry to update the occlusion as rarely as possible to keep good performance.");
-            public static readonly string[] UpdateRateDescriptions = new string[]
+            public static readonly GUIContent[] UpdateRateDescriptions = new GUIContent[]
             {
-                "Never",
-                "On Enable (only once)",
-                "On Beam Move",
-                "Every X Frames",
-                "On Beam Move and Every X Frames",
+                new GUIContent("Never"),
+                new GUIContent("On Enable (only once)"),
+                new GUIContent("On Beam Move"),
+                new GUIContent("Every X Frames"),
+                new GUIContent("On Beam Move and Every X Frames"),
             };
 
             public static readonly GUIContent WaitXFrames = new GUIContent("X frames to wait",
@@ -207,8 +199,6 @@ namespace VLB
 
             public const string HelpOverrideLayer = "To keep good performance, it's highly recommended to set an 'Override Layer' in the Config when using this feature, to prevent from having a LayerMark including any Volumetric Beam.";
             public static string HelpLayerMaskIssues { get { return string.Format("The beams are generated on the layer '{0}' (set in the Config), but this LayerMask includes this layer.\nTo keep good performance, it's highly recommended to set a LayerMask which doesn't include this layer!", UnityEngine.LayerMask.LayerToName(VLB.Config.Instance.geometryLayerID)); } }
-
-            public const string HelpFeatureDisabled = "The Dynamic Occlusion features have been disabled in the plugin's Config.";
         }
 
         public static class TriggerZone
@@ -230,21 +220,11 @@ namespace VLB
 
             public const string ErrorAttachedToSelf = "You should attach the 'SkewingHandle' component to another GameObject than the beam itself.";
             public const string ErrorCannotSkew = "This beam can't be skewed because it doesn't use 'Custom' mesh type.";
-            public const string ErrorCannotUpdate = "This beam can't be updated each frame since its property 'Track Changes During Playtime' is disabled.";
-
-            public const string HelpFeatureDisabled = "The 'Mesh Skewing' feature has been disabled in the plugin's Config.";
+            public const string ErrorCannotUpdate = "This beam can't be updated each frame since its property 'trackChangesDuringPlaytime' is disabled.";
         }
 
         public static class Config
         {
-            public static readonly GUIContent HeaderBeamGeometry = new GUIContent("Beam Geometry", "");
-            public static readonly GUIContent HeaderRendering = new GUIContent("Rendering", "");
-            public static readonly GUIContent HeaderSharedMesh = new GUIContent("Shared Mesh", "");
-            public static readonly GUIContent HeaderGlobal3DNoise = new GUIContent("Global 3D Noise", "");
-            public static readonly GUIContent HeaderFadeOutCamera = new GUIContent("Camera to compute Fade Out", "");
-            public static readonly GUIContent HeaderFeaturesEnabled = new GUIContent("Features Enabled", "Disable the features you don't use in your project to speed up export time, specially with URP and HDRP.");
-            public static readonly GUIContent HeaderInternalData = new GUIContent("Internal Data (do not change)", "");
-
             public static readonly GUIContent GeometryOverrideLayer = new GUIContent("Override Layer", "The layer the GameObjects holding the procedural cone meshes are created on");
             public static readonly GUIContent GeometryTag = new GUIContent("Tag", "The tag applied on the procedural geometry GameObjects");
             public static readonly GUIContent GeometryRenderQueue = new GUIContent("Render Queue", "Determine in which order beams are rendered compared to other objects.\nThis way for example transparent objects are rendered after opaque objects, and so on.");
@@ -263,11 +243,15 @@ namespace VLB
 
             public static readonly GUIContent FadeOutCameraTag = new GUIContent("Fade Out Camera Tag", "Tag used to retrieve the camera used to compute the fade out factor on beams");
 
+            public static readonly GUIContent BeamShader1Pass = new GUIContent("Shader (single-pass)", "Main shader (1 pass version) applied to the cone beam geometry");
+            public static readonly GUIContent BeamShader2Pass = new GUIContent("Shader (multi-pass)", "Main shader (multi-pass version) applied to the cone beam geometry");
+            public static readonly GUIContent BeamShaderSRP = new GUIContent("Shader (SRP)", "Main shader (SRP version) applied to the cone beam geometry");
             public static readonly GUIContent SharedMeshSides = new GUIContent("Sides", "Number of Sides of the cone.\nHigher values make the beam looks more 'round', but require more memory and graphic performance.\nA recommended value for a decent quality while keeping the poly count low is 18.");
             public static readonly GUIContent SharedMeshSegments = new GUIContent("Segments", "Number of Segments of the cone.\nHigher values give better looking results but require more performance. We recommend at least 3 segments, specially regarding Attenuation and Gradient, otherwise the approximation could become inaccurate.\nThe longer the beam, the more segments we recommend to set.\nA recommended value is 4.");
             public static readonly GUIContent GlobalNoiseScale = new GUIContent("Scale", "Global 3D Noise texture scaling: higher scale make the noise more visible, but potentially less realistic");
             public static readonly GUIContent GlobalNoiseVelocity = new GUIContent("Velocity", "Global World Space direction and speed of the noise scrolling, simulating the fog/smoke movement");
-            public static readonly GUIContent NoiseTexture3D = new GUIContent("3D Noise Texture", "3D Texture storing noise data.");
+            public static readonly GUIContent Noise3DData = new GUIContent("3D Noise Data binary file", "Binary file holding the 3D Noise texture data (a 3D array). Must be exactly Size * Size * Size bytes long.");
+            public static readonly GUIContent Noise3DSize = new GUIContent("3D Noise Data dimension", "Size (of one dimension) of the 3D Noise data. Must be power of 2. So if the binary file holds a 32x32x32 texture, this value must be 32.");
             public static readonly GUIContent DustParticlesPrefab = new GUIContent("Dust Particles Prefab", "ParticleSystem prefab instantiated for the Volumetric Dust Particles feature (Unity 5.5 or above)");
             public static readonly GUIContent DitheringFactor = new GUIContent("Dithering", "Depending on the quality of your screen, you might see some artifacts with high contrast visual (like a white beam over a black background).\nThese is a very common problem known as color banding.\nTo help with this issue, the plugin offers a Dithering factor: it smooths the banding by introducing a subtle pattern of noise.");
             public static readonly GUIContent DitheringNoiseTexture = new GUIContent("Dithering Noise Texture", "Noise texture for dithering feature.");
@@ -275,58 +259,20 @@ namespace VLB
             public static readonly GUIContent ResetToDefaultButton = new GUIContent("Default values", "Reset properties to their default values.");
             public static readonly GUIContent ResetInternalDataButton = new GUIContent("Reset internal data", "Reset internal data to their default values.");
 
-            public static readonly GUIContent FeatureEnabledColorGradient = new GUIContent("Color Gradient", "- Off: do not support having a gradient as color.\n- High Only: support gradient color only for devices with Shader Level = 35 or higher.\n- High and Low: support gradient color for all devices");
-            public static readonly GUIContent FeatureEnabledDepthBlend = new GUIContent("Soft Intersect w/ Opaque Geometry", "Support having soft intersection when the beam intersects other opaque geometry or not.");
-            public static readonly GUIContent FeatureEnabledNoise3D = new GUIContent("Noise 3D", "Support 'Noise 3D' feature or not.");
-            public static readonly GUIContent FeatureEnabledDynamicOcclusion = new GUIContent("Dynamic Occlusion", "Support 'Dynamic Occlusion' features or not.");
-            public static readonly GUIContent FeatureEnabledMeshSkewing = new GUIContent("Mesh Skewing", "Support 'Mesh Skewing' feature or not.");
-            public static readonly GUIContent FeatureEnabledShaderAccuracyHigh = new GUIContent("High Shader Accuracy", "Support 'Shader Accuracy' property set to 'High' or not.");
-
-            public static readonly string[] GeometryRenderPipelineEnumDescriptions = new string[]
+            public static readonly GUIContent[] GeometryRenderPipelineEnumDescriptions = new GUIContent[]
             {
-                "Built-In",
-                "URP",
-                "HDRP",
+                new GUIContent("Built-In"),
+                new GUIContent("URP"),
+                new GUIContent("HDRP"),
             };
 
             public static string GetErrorInvalidShader() { return string.Format("Fail to generate shader asset. Please try to reset the Config asset or reinstall the plugin."); }
 
-            public static readonly string InvalidPlatformOverride = string.Format(
-                "This Config asset has an invalid name. It should be named either:\n- '{0}.asset' for the default config.\n- '{0}PlatformName.asset' for a config specific to a platform, e.g., '{0}Android.asset'."
+            public static readonly string MultipleAssets = string.Format(
+                "This overridden Config asset is not the one in use, please make sure:\n- This asset is directly located under a 'Resources' folder.\n- This asset is named {0}.asset.\n- You only have 1 '{1}' asset in your project."
                 , ConfigOverride.kAssetName
                 , typeof(ConfigOverride).ToString()
                 );
-
-            public static readonly string WrongAssetLocation = string.Format(
-                "This Config asset is not the one in use, please make sure: it's directly located under a 'Resources' folder."
-                );
-
-            public static readonly string NotCurrentAssetInUse = string.Format(
-                "This Config asset is not the one in use for current Target Platform '{0}'."
-                , PlatformHelper.GetCurrentPlatformSuffix()
-                );
-        }
-
-        public static class Effects
-        {
-            public static readonly GUIContent HeaderTimings = new GUIContent("Timings", "");
-            public static readonly GUIContent HeaderVisual = new GUIContent("Visual", "");
-            public static readonly GUIContent HeaderMisc = new GUIContent("Misc", "");
-
-            public static readonly GUIContent PerformPauses = new GUIContent("Perform Pauses", "If enabled, pauses will be added between 2 flickering sequences.");
-            public static readonly GUIContent FlickeringDuration = new GUIContent("Flickering Duration", "The duration of a flickering sequence.\nA random value will be picked each time inside that range.");
-            public static readonly GUIContent PauseDuration = new GUIContent("Pause Duration", "The duration of a pause sequence.\nA random value will be picked each time inside that range.");
-            public static readonly GUIContent FrequencyFlicker = new GUIContent("Frequency", "Frequency of flickering.\nHigher value means the flickering will occur faster.");
-            public static readonly GUIContent FrequencyPulse = new GUIContent("Frequency", "Frequency of pulsing.\nHigher value means the pulsing will occur faster.");
-            public static readonly GUIContent IntensityAmplitude = new GUIContent("Intensity Amplitude", "The amplitude of intensity change which will be applied to the Light and/or Beam.\nA random value will be picked each time inside that range.");
-            public static readonly GUIContent Smoothing = new GUIContent("Smoothing", "How much intensity change will be smoothed.\nHigher value means the more smoothing.");
-            public static readonly GUIContent RestoreBaseIntensity = new GUIContent("Restore Base Intensity", "Restore the default intensity when this component is disabled.");
-            public static readonly GUIContent ComponentsToChange = new GUIContent("Components To Change", "Decide which component to change among:\n- Unity's Light\n- Volumetric Light Beam\n- Volumetric Dust Particles");
-            public static readonly GUIContent ChangeVolumetricBeamIntensity = new GUIContent("Change Volumetric Beam Intensity", "Apply the flicker on the Volumetric Beam Intensity.");
-
-            public const string HelpNoValidComponents = "This component must be applied with a 'Unity Light' and/or a 'Volumetric Light Beam'.";
-            public const string HelpLightNotChangeable = "To apply this effect on the Unity Light's intensity, it must use 'Realtime' or 'Mixed' mode.";
-            public const string HelpBeamNotChangeable = "To apply this effect on the Volumetric Light Beam's intensity, it must have its 'Track Changes During Playtime' property enabled.";
         }
     }
 }

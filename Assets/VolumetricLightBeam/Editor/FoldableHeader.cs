@@ -39,8 +39,10 @@ namespace VLB
 
 #if UI_USE_FOLDOUT_HEADER_2019
             folded = !EditorGUILayout.BeginFoldoutHeaderGroup(!folded, label);
-#else
+#elif UNITY_5_5_OR_NEWER
             folded = !EditorGUILayout.Foldout(!folded, label, toggleOnLabelClick: true, style: ms_StyleHeaderFoldable);
+#else
+            folded = !EditorGUILayout.Foldout(!folded, label, ms_StyleHeaderFoldable);
 #endif
 
             if (folded) ms_FoldedHeaders.Add(uniqueString);

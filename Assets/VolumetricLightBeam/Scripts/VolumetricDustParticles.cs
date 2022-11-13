@@ -1,36 +1,38 @@
-﻿using UnityEngine;
+﻿#if UNITY_5_5_OR_NEWER
+#define PARTICLES_SUPPORTED
+#endif
+
+using UnityEngine;
 
 namespace VLB
 {
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(VolumetricLightBeam))]
-    [HelpURL(Consts.Help.UrlDustParticles)]
+    [HelpURL(Consts.HelpUrlDustParticles)]
     public class VolumetricDustParticles : MonoBehaviour
     {
-        public const string ClassName = "VolumetricDustParticles";
-
         /// <summary>
         /// Max alpha of the particles
         /// </summary>
         [Range(0f, 1f)]
-        public float alpha = Consts.DustParticles.AlphaDefault;
+        public float alpha = 0.5f;
 
         /// <summary>
         /// Max size of the particles
         /// </summary>
         [Range(0.0001f, 0.1f)]
-        public float size = Consts.DustParticles.SizeDefault;
+        public float size = 0.01f;
 
         /// <summary>
         /// Direction of the particles.
         /// </summary>
-        public ParticlesDirection direction = Consts.DustParticles.DirectionDefault;
+        public ParticlesDirection direction = ParticlesDirection.Random;
 
         /// <summary>
         /// Movement speed of the particles.
         /// </summary>
-        public Vector3 velocity = Consts.DustParticles.VelocityDefault;
+        public Vector3 velocity = new Vector3(0.0f, 0.0f, 0.03f);
 
         [System.Obsolete("Use 'velocity' instead")]
         public float speed = 0.03f;
@@ -38,55 +40,51 @@ namespace VLB
         /// <summary>
         /// Control how many particles are spawned. The higher the density, the more particles are spawned, the higher the performance cost is.
         /// </summary>
-        public float density = Consts.DustParticles.DensityDefault;
+        public float density = 5f;
 
         /// <summary>
-        /// The distance range (from the light source) where the particles are spawned.
-        /// - Min bound: the higher it is, the more the particles are spawned away from the light source.
-        /// - Max bound: the lower it is, the more the particles are gathered near the light source.
+        /// The minimum distance (from the light source) where the particles are spawned.
+        /// The higher it is, the more the particles are spawned away from the light source.
         /// </summary>
-        [MinMaxRange(0.0f, 1.0f)]
-        public MinMaxRangeFloat spawnDistanceRange = Consts.DustParticles.SpawnDistanceRangeDefault;
-
-        [System.Obsolete("Use 'spawnDistanceRange' instead")]
+        [Range(0f, 1f)]
         public float spawnMinDistance = 0f;
-
-        [System.Obsolete("Use 'spawnDistanceRange' instead")]
+        
+        /// <summary>
+        /// The maximum distance (from the light source) where the particles are spawned.
+        /// The lower it is, the more the particles are gathered near the light source.
+        /// </summary>
+        [Range(0f, 1f)]
         public float spawnMaxDistance = 0.7f;
 
         /// <summary>
         /// Enable particles culling based on the distance to the Main Camera.
         /// We highly recommend to enable this feature to keep good runtime performances.
         /// </summary>
-        public bool cullingEnabled = Consts.DustParticles.CullingEnabledDefault;
+        public bool cullingEnabled = true;
 
         /// <summary>
         /// If culling is enabled, the particles will not be rendered if they are further than cullingMaxDistance to the Main Camera.
         /// </summary>
-        public float cullingMaxDistance = Consts.DustParticles.CullingMaxDistanceDefault;
+        public float cullingMaxDistance = 10f;
 
         /// <summary>
         /// Is the particle system currently culled (no visible) because too far from the main camera?
         /// </summary>
         public bool isCulled { get; private set; }
 
-
-        [SerializeField] float m_AlphaAdditionalRuntime = 1.0f;
-        public float alphaAdditionalRuntime
-        {
-            get { return m_AlphaAdditionalRuntime; }
-            set { if (m_AlphaAdditionalRuntime != value) { m_AlphaAdditionalRuntime = value; m_RuntimePropertiesDirty = true; } }
-        }
-
+#if PARTICLES_SUPPORTED
+        public static bool isFeatureSupported = true;
         public bool particlesAreInstantiated { get { return m_Particles; } }
         public int particlesCurrentCount { get { return m_Particles ? m_Particles.particleCount : 0; } }
         public int particlesMaxCount { get { return m_Particles ? m_Particles.main.maxParticles : 0; } }
         ParticleSystem m_Particles = null;
         ParticleSystemRenderer m_Renderer = null;
-        Material m_Material = null;
-        Gradient m_GradientCached = new Gradient();
-        bool m_RuntimePropertiesDirty = true;
-
+#else
+        public static bool isFeatureSupported = false;
+        public bool particlesAreInstantiated { get { return false; } }
+        public int particlesCurrentCount { get { return 0; } }
+        public int particlesMaxCount { get { return 0; } }
+#endif
 
         /// <summary>Cached version of Camera.main, for performance reasons</summary>
         public Camera mainCamera
@@ -98,7 +96,7 @@ namespace VLB
                     ms_MainCamera = Camera.main;
                     if (!ms_MainCamera && !ms_NoMainCameraLogged)
                     {
-                        Debug.LogErrorFormat(gameObject, "In order to use '" + VolumetricDustParticles.ClassName + "' culling, you must have a MainCamera defined in your scene.");
+                        Debug.LogErrorFormat(gameObject, "In order to use 'VolumetricDustParticles' culling, you must have a MainCamera defined in your scene.");
                         ms_NoMainCameraLogged = true;
                     }
                 }
@@ -114,12 +112,21 @@ namespace VLB
 #if UNITY_EDITOR
         void OnValidate()
         {
-            density = Mathf.Clamp(density, Consts.DustParticles.DensityMin, Consts.DustParticles.DensityMax);
-            cullingMaxDistance = Mathf.Max(cullingMaxDistance, Consts.DustParticles.CullingMaxDistanceMin);
-            Play(); // support instant refresh when modifying properties from inspector
+            density = Mathf.Clamp(density, 0f, 1000f);
+            cullingMaxDistance = Mathf.Max(cullingMaxDistance, 1f);
+#if PARTICLES_SUPPORTED
+            // support instant refresh when modifying properties from inspector
+            if (m_Particles)
+            {
+                SetParticleProperties(); // mandatory to update with the latest values
+                m_Particles.Simulate(0f);
+                m_Particles.Play();
+            }
+#endif
         }
-#endif // UNITY_EDITOR
+#endif
 
+#if PARTICLES_SUPPORTED
         VolumetricLightBeam m_Master = null;
 
         void Start()
@@ -153,99 +160,58 @@ namespace VLB
                     UnityEditor.GameObjectUtility.SetStaticEditorFlags(m_Particles.gameObject, m_Master.GetStaticEditorFlagsForSubObjects());
                     m_Particles.gameObject.SetSameSceneVisibilityStatesThan(m_Master.gameObject);
                 }
-#endif // UNITY_EDITOR
+#endif
                 m_Particles.transform.SetParent(transform, false);
                 m_Particles.transform.localRotation = m_Master.beamInternalLocalRotation;
-
                 m_Renderer = m_Particles.GetComponent<ParticleSystemRenderer>();
-                Debug.Assert(m_Renderer);
-
-                m_Material = new Material(m_Renderer.sharedMaterial);
-                Debug.Assert(m_Material);
-                m_Renderer.material = m_Material;
             }
         }
 
-        void OnEnable()
-        {
-            SetActiveAndPlay();
-        }
-        
-        void SetActive(bool active)
-        {
-            if (m_Particles) m_Particles.gameObject.SetActive(active);
-        }
+        void OnEnable() { SetActiveAndPlay(); }
 
         void SetActiveAndPlay()
         {
-            SetActive(true);
-            Play();
-        }
-
-        void Play()
-        {
             if (m_Particles)
             {
+                m_Particles.gameObject.SetActive(true);
                 SetParticleProperties();
-                m_Particles.Simulate(0f);
                 m_Particles.Play(true);
             }
         }
 
         void OnDisable()
         {
-            SetActive(false);
+            if (m_Particles) m_Particles.gameObject.SetActive(false);
         }
 
         void OnDestroy()
         {
-            if (m_Particles)
-            {
-                DestroyImmediate(m_Particles.gameObject); // Make sure to delete the GAO
-                m_Particles = null;
-            }
-
-            if (m_Material)
-            {
-                DestroyImmediate(m_Material);
-                m_Material = null;
-            }
+            if (m_Particles) DestroyImmediate(m_Particles.gameObject); // Make sure to delete the GAO
+            m_Particles = null;
         }
 
         void Update()
         {
 #if UNITY_EDITOR
-            if(!Application.isPlaying)
-            {
-                if (m_Particles == null)
-                    InstantiateParticleSystem();
-
-                Play();
-            }
-            else
-#endif // UNITY_EDITOR
-            {
+            if (!m_Particles && !Application.isPlaying)
+                InstantiateParticleSystem();
+#endif
+            if(Application.isPlaying)
                 UpdateCulling();
 
-                Debug.Assert(m_Master);
-                if (m_Master.trackChangesDuringPlaytime)
-                    SetParticleProperties();
-            }
-
-            if (m_RuntimePropertiesDirty && m_Material != null)
-            {
-                m_Material.SetColor(ShaderProperties.ParticlesTintColor, new Color(1.0f, 1.0f, 1.0f, alphaAdditionalRuntime));
-                m_RuntimePropertiesDirty = false;
-            }
+            SetParticleProperties();
         }
 
         void SetParticleProperties()
         {
             if (m_Particles && m_Particles.gameObject.activeSelf)
             {
-                var thickness = Mathf.Clamp01(1 - (m_Master.fresnelPow / Consts.Beam.FresnelPowMaxValue));
+                var thickness = Mathf.Clamp01(1 - (m_Master.fresnelPow / Consts.FresnelPowMaxValue));
+
+                if (spawnMinDistance > spawnMaxDistance)
+                    Utils.Swap(ref spawnMinDistance, ref spawnMaxDistance);
                 
-                var coneLength = m_Master.fallOffEnd * (spawnDistanceRange.maxValue - spawnDistanceRange.minValue);
+                var coneLength = m_Master.fallOffEnd * (spawnMaxDistance - spawnMinDistance);
                 var ratePerSec = coneLength * density;
                 int maxParticles = (int)(ratePerSec * 4);
 
@@ -265,7 +231,7 @@ namespace VLB
                 
                 var startColor = main.startColor;
 
-                if (m_Master.usedColorMode == ColorMode.Flat)
+                if(m_Master.colorMode == ColorMode.Flat)
                 {
                     startColor.mode = ParticleSystemGradientMode.Color;
                     var colorMax = m_Master.color;
@@ -284,9 +250,9 @@ namespace VLB
                     for(int i=0; i< alphaKeys.Length; ++i)
                         alphaKeys[i].alpha *= alpha;
 
-                    Debug.Assert(m_GradientCached != null);
-                    m_GradientCached.SetKeys(colorKeys, alphaKeys);
-                    startColor.gradient = m_GradientCached;
+                    var newGradient = new Gradient();
+                    newGradient.SetKeys(colorKeys, alphaKeys);
+                    startColor.gradient = newGradient;
                 }
                 main.startColor = startColor;
 
@@ -316,11 +282,11 @@ namespace VLB
 
                     float radiusStart = m_Master.coneRadiusStart * Mathf.Lerp(0.3f, 1.0f, thickness);
                     float radiusEnd = Utils.ComputeConeRadiusEnd(m_Master.fallOffEnd, coneAngle);
-                    shape.radius = Mathf.Lerp(radiusStart, radiusEnd, spawnDistanceRange.minValue);
+                    shape.radius = Mathf.Lerp(radiusStart, radiusEnd, spawnMinDistance);
 
                     shape.length = coneLength;
 
-                    var localOffset = m_Master.fallOffEnd * spawnDistanceRange.minValue;
+                    var localOffset = m_Master.fallOffEnd * spawnMinDistance;
 #if UNITY_2017_1_OR_NEWER
                     shape.position = new Vector3(0f, 0f, localOffset);
 #else
@@ -348,22 +314,17 @@ namespace VLB
             if (serializedVersion == -1) return;            // freshly new spawned entity: nothing to do
             if (serializedVersion == newVersion) return;    // same version: nothing to do
 
-#pragma warning disable 0618
             if (serializedVersion < 1880)
             {
                 // Version 1880 changed the order of ParticlesDirection enum and add WorldSpace option
                 if ((int)direction == 0)    direction = (ParticlesDirection)1;
                 else                        direction = (ParticlesDirection)0;
 
+#pragma warning disable 0618
                 // Version 1880 changed from single float speed to 3D velocity vector
                 velocity = new Vector3(0.0f, 0.0f, speed);
-            }
-
-            if (serializedVersion < 1940)
-            {
-                spawnDistanceRange = new MinMaxRangeFloat(spawnMinDistance, spawnMaxDistance);
-            }
 #pragma warning restore 0618
+            }
 
             Utils.MarkCurrentSceneDirty();
         }
@@ -390,7 +351,7 @@ namespace VLB
 
                 if (m_Particles.gameObject.activeSelf != visible)
                 {
-                    SetActive(visible);
+                    m_Particles.gameObject.SetActive(visible);
                     isCulled = !visible;
                 }
 
@@ -398,7 +359,8 @@ namespace VLB
                     m_Particles.Play();
             }
         } 
-        #endregion
+#endregion
+#endif
     }
-}
+    }
 

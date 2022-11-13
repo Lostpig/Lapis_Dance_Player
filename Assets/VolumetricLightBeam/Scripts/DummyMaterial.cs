@@ -11,7 +11,7 @@ namespace VLB
         static string GetPath(Shader shader)
         {
             const string kDummyFilename = "VLBDummyMaterial.mat";
-            const string kDummyPathFallback = "Assets/" + Consts.PluginFolder + "/Shaders/" + kDummyFilename;
+            const string kDummyPathFallback = "Assets/Plugins/VolumetricLightBeam/Shaders/" + kDummyFilename;
 
             if (shader == null)
                 return kDummyPathFallback;

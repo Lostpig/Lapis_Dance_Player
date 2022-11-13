@@ -391,7 +391,9 @@ half4 fragShared(v2f i, float outsideBeam)
         float apexDist = VLB_GET_PROP(_ConeApexOffsetZ);
         float2 uv = normalize(i.posObjectSpace.xy) * 0.5 + 0.5;
         float dynamicOcclusionDepthRaw = tex2D(_DynamicOcclusionDepthTexture, uv).r;
-        dynamicOcclusionDepthRaw = lerp(dynamicOcclusionDepthRaw, 1.0f - dynamicOcclusionDepthRaw, _VLB_UsesReversedZBuffer);
+    #if defined(UNITY_REVERSED_Z)
+        dynamicOcclusionDepthRaw = 1.0f - dynamicOcclusionDepthRaw;
+    #endif
 
         float fallOffEnd = VLB_GET_PROP(_DistanceFallOff).z; // maxGeometryDistance
 
@@ -505,22 +507,30 @@ half4 fragShared(v2f i, float outsideBeam)
         float3 distancesFallOff = VLB_GET_PROP(_DistanceFallOff);
         intensity *= ComputeAttenuation(pixDistFromSourceTilted, distancesFallOff.x, distancesFallOff.y, VLB_GET_PROP(_AttenuationLerpLinearQuad));
 
+        // fade when too close to camera factor
+        float fadeWithCameraEnabled = 1 - max(boostFactor,          // do not fade according to camera when we are in boost zone, to keep boost effect
+                                              VLB_CAMERA_ORTHO);    // fading according to camera eye position doesn't make sense with ortho camera
+        intensity *= ComputeFadeWithCamera(posViewSpace, fadeWithCameraEnabled);
+
         // smooth blend between inside and outside geometry depending of View Direction
         intensity *= ComputeInOutBlending(vecCamToPixDotZ, outsideBeam);
     }
-#elif !OPTIM_VS_FRESNEL_VS // && OPTIM_VS
+#else // OPTIM_VS ON
     {
         float boostFactor = i.posViewSpace_extraData.w;
+
+        // fade when too close to camera factor
+        float fadeWithCameraEnabled = 1 - max(boostFactor,          // do not fade according to camera when we are in boost zone, to keep boost effect
+                                              VLB_CAMERA_ORTHO);    // fading according to camera eye position doesn't make sense with ortho camera
+        intensity *= ComputeFadeWithCamera(posViewSpace, fadeWithCameraEnabled);
+
+#if !OPTIM_VS_FRESNEL_VS
         // compute fresnel in fragment shader to keep good quality even with low tessellation
         intensity *= ComputeFresnel(i.posObjectSpaceNonSkewed, vecCamToPixOSN, outsideBeam, boostFactor);
+#endif
     }
-#endif // !OPTIM_VS_FRESNEL_VS && OPTIM_VS
+#endif // OPTIM_VS
 
-    // fade when too close to camera factor
-    {
-        float fadeWithCameraEnabled = 1 - VLB_CAMERA_ORTHO; // fading according to camera eye position doesn't make sense with ortho camera
-        intensity *= ComputeFadeWithCamera(posViewSpace, fadeWithCameraEnabled);
-    }
 
 #if DEBUG_BLEND_INSIDE_OUTSIDE
     float DBGvecCamToPixDotZ = dot(vecCamToPixOSN, float3(0, 0, 1));

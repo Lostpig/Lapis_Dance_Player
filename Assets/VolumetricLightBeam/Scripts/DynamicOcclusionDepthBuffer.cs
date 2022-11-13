@@ -4,34 +4,32 @@ using System.Collections;
 namespace VLB
 {
     [ExecuteInEditMode]
-    [HelpURL(Consts.Help.UrlDynamicOcclusionDepthBuffer)]
+    [HelpURL(Consts.HelpUrlDynamicOcclusionDepthBuffer)]
     public class DynamicOcclusionDepthBuffer : DynamicOcclusionAbstractBase
     {
-        public new const string ClassName = "DynamicOcclusionDepthBuffer";
-
         /// <summary>
         /// The beam can only be occluded by objects located on the layers matching this mask.
         /// It's very important to set it as restrictive as possible (checking only the layers which are necessary)
         /// to perform a more efficient process in order to increase the performance.
         /// It should NOT include the layer on which the beams are generated.
         /// </summary>
-        public LayerMask layerMask = Consts.DynOcclusion.LayerMaskDefault;
+        public LayerMask layerMask = Consts.DynOcclusionLayerMaskDefault;
 
         /// <summary>
         /// Whether or not the virtual camera will use occlusion culling during rendering from the beam's POV.
         /// </summary>
-        public bool useOcclusionCulling = Consts.DynOcclusion.DepthBufferOcclusionCullingDefault;
+        public bool useOcclusionCulling = Consts.DynOcclusionDepthBufferOcclusionCullingDefault;
 
         /// <summary>
         /// Controls how large the depth texture captured by the virtual camera is.
         /// The lower the resolution, the better the performance, but the less accurate the rendering.
         /// </summary>
-        public int depthMapResolution = Consts.DynOcclusion.DepthBufferDepthMapResolutionDefault;
+        public int depthMapResolution = Consts.DynOcclusionDepthBufferDepthMapResolutionDefault;
 
         /// <summary>
         /// Fade out the beam before the occlusion surface in order to soften the transition.
         /// </summary>
-        public float fadeDistanceToSurface = Consts.DynOcclusion.FadeDistanceToSurfaceDefault;
+        public float fadeDistanceToSurface = Consts.DynOcclusionFadeDistanceToSurfaceDefault;
 
 
         protected override string GetShaderKeyword() { return "VLB_OCCLUSION_DEPTH_TEXTURE"; }
@@ -122,7 +120,7 @@ namespace VLB
                     m_DepthCamera.depthTextureMode = DepthTextureMode.Depth;
                     m_DepthCamera.renderingPath = RenderingPath.VertexLit; // faster
                     m_DepthCamera.useOcclusionCulling = useOcclusionCulling;
-                    m_DepthCamera.gameObject.hideFlags = Consts.Internal.ProceduralObjectsHideFlags;
+                    m_DepthCamera.gameObject.hideFlags = Consts.ProceduralObjectsHideFlags;
                     m_DepthCamera.transform.SetParent(transform, false);
 
                     var rt = new RenderTexture(depthMapResolution, depthMapResolution, 16, RenderTextureFormat.Depth);

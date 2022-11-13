@@ -4,13 +4,11 @@
 #endif
 
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace VLB
 {
@@ -19,7 +17,6 @@ namespace VLB
         protected virtual void OnEnable()
         {
             FoldableHeader.OnEnable();
-            RetrieveSerializedProperties("_");
         }
 
         public override void OnInspectorGUI()
@@ -50,6 +47,14 @@ namespace VLB
             EditorGUI.DrawRect(r, color);
         }
 
+        protected SerializedProperty FindProperty<T, TValue>(Expression<Func<T, TValue>> expr)
+        {
+            Debug.Assert(serializedObject != null);
+            var prop = serializedObject.FindProperty(ReflectionUtils.GetFieldPath(expr));
+            Debug.Assert(prop != null, string.Format("Failed to find SerializedProperty for expression '{0}'", expr));
+            return prop;
+        }
+
         protected void ButtonOpenConfig(bool miniButton = true)
         {
             bool buttonClicked = false;
@@ -60,10 +65,10 @@ namespace VLB
                 Config.EditorSelectInstance();
         }
 
-        protected bool GlobalToggleButton(ref bool boolean, GUIContent content, string saveString, float maxWidth = 999.0f)
+        protected bool GlobalToggle(ref bool boolean, GUIContent content, string saveString)
         {
             EditorGUI.BeginChangeCheck();
-            boolean = GUILayout.Toggle(boolean, content, EditorStyles.miniButton, GUILayout.MaxWidth(maxWidth));
+            boolean = EditorGUILayout.Toggle(content, boolean);
             if (EditorGUI.EndChangeCheck())
             {
                 EditorPrefs.SetBool(saveString, boolean);
@@ -71,84 +76,6 @@ namespace VLB
                 return true;
             }
             return false;
-        }
-
-        // SERIALIZED PROPERTY RETRIEVAL
-        string GetThisNamespaceAsString() { return GetType().Namespace; }
-
-        SerializedProperty FindProperty(string prefix, string name)
-        {
-            Debug.Assert(serializedObject != null);
-            var prop = serializedObject.FindProperty(name);
-            if (prop == null)
-            {
-                name = string.Format("{0}{1}{2}", prefix, char.ToUpperInvariant(name[0]), name.Substring(1)); // get '_Name' from 'name'
-                prop = serializedObject.FindProperty(name);
-            }
-            return prop;
-        }
-
-        void RetrieveSerializedProperties(string prefix, Type t)
-        {
-            if (t == null) return;
-            if (t.Namespace != GetThisNamespaceAsString()) return;
-
-            var allEditorFields = t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-            foreach (var field in allEditorFields)
-            {
-                if (field.FieldType == typeof(SerializedProperty))
-                {
-                    var runtimeFieldName = field.Name;
-                    var serializedProp = FindProperty(prefix, runtimeFieldName);
-                    Debug.AssertFormat(serializedProp != null, "Fail to find serialized field '{0}' in object {1}", runtimeFieldName, serializedObject.targetObject);
-                    field.SetValue(this, serializedProp);
-                }
-            }
-
-            RetrieveSerializedProperties(prefix, t.BaseType);
-        }
-
-        protected void RetrieveSerializedProperties(string prefix)
-        {
-            RetrieveSerializedProperties(prefix, GetType());
-        }
-
-        public abstract class EditorGUIWidth : System.IDisposable
-        {
-            protected abstract void ApplyWidth(float width);
-            public EditorGUIWidth(float width) { ApplyWidth(width); }
-            public void Dispose() { ApplyWidth(0.0f); }
-        }
-
-        public class LabelWidth : EditorGUIWidth
-        {
-            public LabelWidth(float width) : base(width) { }
-            protected override void ApplyWidth(float width) { EditorGUIUtility.labelWidth = width; }
-        }
-
-        public class FieldWidth : EditorGUIWidth
-        {
-            public FieldWidth(float width) : base(width) { }
-            protected override void ApplyWidth(float width) { EditorGUIUtility.fieldWidth = width; }
-        }
-
-        private static ArcHandle ms_HandleRadius = null;
-
-        // HANDLES
-        protected static ArcHandle handleRadius
-        {
-            get
-            {
-                if (ms_HandleRadius == null)
-                {
-                    ms_HandleRadius = new ArcHandle();
-                    ms_HandleRadius.SetColorWithRadiusHandle(Color.white, 0f);
-                    ms_HandleRadius.angle = 360f;
-                    ms_HandleRadius.angleHandleSizeFunction = null;
-                    ms_HandleRadius.angleHandleColor = Color.clear;
-                }
-                return ms_HandleRadius;
-            }
         }
     }
 }

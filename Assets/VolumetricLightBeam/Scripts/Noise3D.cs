@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#define LOAD_NOISE3D_ON_STARTUP // prevent loading spike from happening when the 1st beam is instantiated
+
+using UnityEngine;
 
 #pragma warning disable 0429, 0162 // Unreachable expression code detected (because of Noise3D.isSupported on mobile)
 
@@ -45,18 +47,25 @@ namespace VLB
         static bool ms_IsSupported = false;
         static Texture3D ms_NoiseTexture = null;
 
+        const HideFlags kHideFlags = HideFlags.HideAndDontSave; // hide the noise texture
         const int kMinShaderLevel = 35; // Shader Model 3.5 / OpenGL ES 3.0 to handle sampler3D -> https://docs.unity3d.com/ScriptReference/SystemInfo-graphicsShaderLevel.html
 
+#if LOAD_NOISE3D_ON_STARTUP
         [RuntimeInitializeOnLoadMethod]
         static void OnStartUp()
         {
             LoadIfNeeded();
         }
+#endif
 
 #if UNITY_EDITOR
         public static void _EditorForceReloadData()
         {
-            ms_NoiseTexture = null;
+            if (ms_NoiseTexture)
+            {
+                Object.DestroyImmediate(ms_NoiseTexture);
+                ms_NoiseTexture = null;
+            }
             LoadIfNeeded();
         }
 #endif
@@ -67,11 +76,42 @@ namespace VLB
 
             if (ms_NoiseTexture == null)
             {
-                ms_NoiseTexture = Config.Instance.noiseTexture3D;
+                ms_NoiseTexture = LoadTexture3D(Config.Instance.noise3DData, Config.Instance.noise3DSize);
+                if(ms_NoiseTexture)
+                    ms_NoiseTexture.hideFlags = kHideFlags;
 
                 Shader.SetGlobalTexture(ShaderProperties.GlobalNoiseTex3D, ms_NoiseTexture);
                 Shader.SetGlobalFloat(ShaderProperties.GlobalNoiseCustomTime, -1.0f);
             }
+        }
+
+        static Texture3D LoadTexture3D(TextAsset textData, int size)
+        {
+            if (textData == null)
+            {
+                Debug.LogError("Fail to open Noise 3D Data");
+                return null;
+            }
+
+            var bytes = textData.bytes;
+            Debug.Assert(bytes != null);
+
+            int dataLen = Mathf.Max(0, size * size * size);
+            if (bytes.Length != dataLen)
+            {
+                Debug.LogErrorFormat("Noise 3D Data file has not the proper size {0}x{0}x{0}", size);
+                return null;
+            }
+
+            var tex = new Texture3D(size, size, size, TextureFormat.Alpha8, false);
+
+            var colors = new Color[dataLen];
+            for (int i = 0; i < dataLen; ++i)
+                colors[i] = new Color32(0, 0, 0, bytes[i]);
+
+            tex.SetPixels(colors);
+            tex.Apply();
+            return tex;
         }
     }
 }

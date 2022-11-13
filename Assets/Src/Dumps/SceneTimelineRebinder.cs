@@ -2,6 +2,7 @@
 using UnityEngine.Playables;
 using UnityEngine;
 using System.Collections.Generic;
+using LapisPlayer;
 
 [Serializable]
 public class Rebingding
@@ -29,15 +30,6 @@ public class SceneTimelineRebinder : MonoBehaviour
     public void ReKey() { }
     public void Rebind()
     {
-        Dictionary<string, ReferenceObject> objDict = new();
-        // var objs = gameObject.GetComponentsInChildren<ReferenceObject>();
-        var objs = GameObject.FindObjectsOfType<ReferenceObject>();
-
-        foreach (var obj in objs)
-        {
-            objDict.Add(obj.Data.GUID, obj);
-        }
-
         foreach (var reb in rebinding)
         {
             if (reb.Key == null) continue;
@@ -55,17 +47,22 @@ public class SceneTimelineRebinder : MonoBehaviour
                     var rebindItem = go.GetComponent(reb.Value.TypeName);
                     if (rebindItem == null)
                     {
-                        Debug.LogError("Rebinder type not found:" + reb.Value.TypeName);
-                        Director.SetGenericBinding(reb.Key, go);
+                        Debug.LogError("Rebinder type not found:" + reb.Value.TypeName + " on " + go.name);
+
+                        var type = Type.GetType(reb.Value.TypeName);
+                        type = type ?? Type.GetType($"UnityEngine.{reb.Value.TypeName}, UnityEngine");
+                        var component = go.AddComponent(type);
+
+                        Director.SetGenericBinding(reb.Key, component == null ? go : component);
                         continue;
                     }
 
                     Director.SetGenericBinding(reb.Key, rebindItem);
                 }
             }
-            else if (objDict.ContainsKey(reb.Value.GUID))
+            else if (ReferenceStore.Instance.Include(reb.Value.GUID))
             {
-                var refObj = objDict[reb.Value.GUID];
+                var refObj = ReferenceStore.Instance.GetReference(reb.Value.GUID);
                 var go = refObj.GetGameObject();
 
                 if (string.IsNullOrEmpty(reb.Value.TypeName))

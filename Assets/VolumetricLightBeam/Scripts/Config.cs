@@ -6,31 +6,29 @@ using UnityEditor;
 
 namespace VLB
 {
-    [HelpURL(Consts.Help.UrlConfig)]
+    [HelpURL(Consts.HelpUrlConfig)]
     public class Config : ScriptableObject
     {
-        public const string ClassName = "Config";
-
         /// <summary>
         /// Override the layer on which the procedural geometry is created or not
         /// </summary>
-        public bool geometryOverrideLayer = Consts.Config.GeometryOverrideLayerDefault;
+        public bool geometryOverrideLayer = Consts.ConfigGeometryOverrideLayerDefault;
 
         /// <summary>
         /// The layer the procedural geometry gameObject is in (only if geometryOverrideLayer is enabled)
         /// </summary>
-        public int geometryLayerID = Consts.Config.GeometryLayerIDDefault;
+        public int geometryLayerID = Consts.ConfigGeometryLayerIDDefault;
 
         /// <summary>
         /// The tag applied on the procedural geometry gameObject
         /// </summary>
-        public string geometryTag = Consts.Config.GeometryTagDefault;
+        public string geometryTag = Consts.ConfigGeometryTagDefault;
 
         /// <summary>
         /// Determine in which order beams are rendered compared to other objects.
         /// This way for example transparent objects are rendered after opaque objects, and so on.
         /// </summary>
-        public int geometryRenderQueue = (int)Consts.Config.GeometryRenderQueueDefault;
+        public int geometryRenderQueue = (int)Consts.ConfigGeometryRenderQueueDefault;
 
         /// <summary>
         /// Select the Render Pipeline (Built-In or SRP) in use.
@@ -48,13 +46,12 @@ namespace VLB
             }
         }
         [FormerlySerializedAs("renderPipeline")]
-        [SerializeField] RenderPipeline _RenderPipeline = Consts.Config.GeometryRenderPipelineDefault;
+        [SerializeField] RenderPipeline _RenderPipeline = Consts.ConfigGeometryRenderPipelineDefault;
 
         /// <summary>
         /// MultiPass: Use the 2 pass shader. Will generate 2 drawcalls per beam.
-        /// SinglePass: Use the 1 pass shader. Will generate 1 drawcall per beam.
+        /// SinglePass: Use the 1 pass shader. Will generate 1 drawcall per beam. Mandatory when using Render Pipeline such as HDRP, URP and LWRP.
         /// GPUInstancing: Dynamically batch multiple beams to combine and reduce draw calls (Feature only supported in Unity 5.6 or above). More info: https://docs.unity3d.com/Manual/GPUInstancing.html
-        /// SRPBatcher: Use the SRP Batcher to automatically batch multiple beams and reduce draw calls. Only available when using SRP.
         /// </summary>
         public RenderingMode renderingMode
         {
@@ -69,8 +66,15 @@ namespace VLB
             }
         }
         [FormerlySerializedAs("renderingMode")]
-        [SerializeField] RenderingMode _RenderingMode = Consts.Config.GeometryRenderingModeDefault;
+        [SerializeField] RenderingMode _RenderingMode = Consts.ConfigGeometryRenderingModeDefault;
 
+        public void SetRenderingModeAndRefreshShader(RenderingMode mode)
+        {
+            renderingMode = mode;
+#if UNITY_EDITOR
+            RefreshShader(RefreshShaderFlags.All);
+#endif
+        }
 
         public bool IsSRPBatcherSupported()
         {
@@ -130,33 +134,33 @@ namespace VLB
         /// These is a very common problem known as color banding.
         /// To help with this issue, the plugin offers a Dithering factor: it smooths the banding by introducing a subtle pattern of noise.
         /// </summary>
-        public float ditheringFactor = Consts.Config.DitheringFactor;
+        public float ditheringFactor = Consts.ConfigDitheringFactor;
 
         /// <summary>
         /// Number of Sides of the shared cone mesh
         /// </summary>
-        public int sharedMeshSides = Consts.Config.SharedMeshSides;
+        public int sharedMeshSides = Consts.ConfigSharedMeshSides;
 
         /// <summary>
         /// Number of Segments of the shared cone mesh
         /// </summary>
-        public int sharedMeshSegments = Consts.Config.SharedMeshSegments;
+        public int sharedMeshSegments = Consts.ConfigSharedMeshSegments;
 
         /// <summary>
         /// Global 3D Noise texture scaling: higher scale make the noise more visible, but potentially less realistic.
         /// </summary>
-        [Range(Consts.Beam.NoiseScaleMin, Consts.Beam.NoiseScaleMax)]
-        public float globalNoiseScale = Consts.Beam.NoiseScaleDefault;
+        [Range(Consts.NoiseScaleMin, Consts.NoiseScaleMax)]
+        public float globalNoiseScale = Consts.NoiseScaleDefault;
 
         /// <summary>
         /// Global World Space direction and speed of the noise scrolling, simulating the fog/smoke movement
         /// </summary>
-        public Vector3 globalNoiseVelocity = Consts.Beam.NoiseVelocityDefault;
+        public Vector3 globalNoiseVelocity = Consts.NoiseVelocityDefault;
 
         /// <summary>
         /// Tag used to retrieve the camera used to compute the fade out factor on beams
         /// </summary>
-        public string fadeOutCameraTag = Consts.Config.FadeOutCameraTagDefault;
+        public string fadeOutCameraTag = Consts.ConfigFadeOutCameraTagDefault;
 
         public Transform fadeOutCameraTransform
         {
@@ -182,10 +186,15 @@ namespace VLB
         }
 
         /// <summary>
-        /// 3D Texture storing noise data.
+        /// Binary file holding the 3D Noise texture data (a 3D array). Must be exactly Size * Size * Size bytes long.
         /// </summary>
         [HighlightNull]
-        public Texture3D noiseTexture3D = null;
+        public TextAsset noise3DData = null;
+
+        /// <summary>
+        /// Size (of one dimension) of the 3D Noise data. Must be power of 2. So if the binary file holds a 32x32x32 texture, this value must be 32.
+        /// </summary>
+        public int noise3DSize = Consts.ConfigNoise3DSizeDefault;
 
         /// <summary>
         /// ParticleSystem prefab instantiated for the Volumetric Dust Particles feature (Unity 5.5 or above)
@@ -197,38 +206,6 @@ namespace VLB
         /// Noise texture for dithering feature
         /// </summary>
         public Texture2D ditheringNoiseTexture = null;
-
-        /// <summary>
-        /// Off: do not support having a gradient as color.
-        /// High Only: support gradient color only for devices with Shader Level = 35 or higher.
-        /// High and Low: support gradient color for all devices.
-        /// </summary>
-        public FeatureEnabledColorGradient featureEnabledColorGradient = Consts.Config.FeatureEnabledColorGradientDefault;
-
-        /// <summary>
-        /// Support 'Soft Intersection with Opaque Geometry' feature or not.
-        /// </summary>
-        public bool featureEnabledDepthBlend = Consts.Config.FeatureEnabledDefault;
-
-        /// <summary>
-        /// Support 'Noise 3D' feature or not.
-        /// </summary>
-        public bool featureEnabledNoise3D = Consts.Config.FeatureEnabledDefault;
-
-        /// <summary>
-        /// Support 'Dynamic Occlusion' features or not.
-        /// </summary>
-        public bool featureEnabledDynamicOcclusion = Consts.Config.FeatureEnabledDefault;
-
-        /// <summary>
-        /// Support 'Mesh Skewing' feature or not.
-        /// </summary>
-        public bool featureEnabledMeshSkewing = Consts.Config.FeatureEnabledDefault;
-
-        /// <summary>
-        /// Support 'Shader Accuracy' property set to 'High' or not.
-        /// </summary>
-        public bool featureEnabledShaderAccuracyHigh = Consts.Config.FeatureEnabledDefault;
 
         // INTERNAL
 #pragma warning disable 0414
@@ -252,34 +229,25 @@ namespace VLB
 #endif
 
             if(Instance.hasRenderPipelineMismatch)
-                Debug.LogError("It looks like the 'Render Pipeline' is not correctly set in the config. Please make sure to select the proper value depending on your pipeline in use.", Instance);
+                Debug.LogError("It looks like the 'Render Pipeline' correctly is not set in the config. Please make sure to select the proper value depending on your pipeline in use.", Instance);
         }
 
         public void Reset()
         {
-            geometryOverrideLayer = Consts.Config.GeometryOverrideLayerDefault;
-            geometryLayerID = Consts.Config.GeometryLayerIDDefault;
-            geometryTag = Consts.Config.GeometryTagDefault;
-            geometryRenderQueue = (int)Consts.Config.GeometryRenderQueueDefault;
+            geometryOverrideLayer = Consts.ConfigGeometryOverrideLayerDefault;
+            geometryLayerID = Consts.ConfigGeometryLayerIDDefault;
+            geometryTag = Consts.ConfigGeometryTagDefault;
+            geometryRenderQueue = (int)Consts.ConfigGeometryRenderQueueDefault;
 
-            sharedMeshSides = Consts.Config.SharedMeshSides;
-            sharedMeshSegments = Consts.Config.SharedMeshSegments;
+            sharedMeshSides = Consts.ConfigSharedMeshSides;
+            sharedMeshSegments = Consts.ConfigSharedMeshSegments;
 
-            globalNoiseScale = Consts.Beam.NoiseScaleDefault;
-            globalNoiseVelocity = Consts.Beam.NoiseVelocityDefault;
+            globalNoiseScale = Consts.NoiseScaleDefault;
+            globalNoiseVelocity = Consts.NoiseVelocityDefault;
 
-            renderPipeline = Consts.Config.GeometryRenderPipelineDefault;
-            renderingMode = Consts.Config.GeometryRenderingModeDefault;
-            ditheringFactor = Consts.Config.DitheringFactor;
-
-            fadeOutCameraTag = Consts.Config.FadeOutCameraTagDefault;
-
-            featureEnabledColorGradient = Consts.Config.FeatureEnabledColorGradientDefault;
-            featureEnabledDepthBlend = Consts.Config.FeatureEnabledDefault;
-            featureEnabledNoise3D = Consts.Config.FeatureEnabledDefault;
-            featureEnabledDynamicOcclusion = Consts.Config.FeatureEnabledDefault;
-            featureEnabledMeshSkewing = Consts.Config.FeatureEnabledDefault;
-            featureEnabledShaderAccuracyHigh = Consts.Config.FeatureEnabledDefault;
+            renderPipeline = Consts.ConfigGeometryRenderPipelineDefault;
+            renderingMode = Consts.ConfigGeometryRenderingModeDefault;
+            ditheringFactor = Consts.ConfigDitheringFactor;
 
             ResetInternalData();
 
@@ -291,26 +259,135 @@ namespace VLB
 
         void RefreshGlobalShaderProperties()
         {
-            Shader.SetGlobalFloat(ShaderProperties.GlobalUsesReversedZBuffer, SystemInfo.usesReversedZBuffer ? 1.0f : 0.0f);
             Shader.SetGlobalFloat(ShaderProperties.GlobalDitheringFactor, ditheringFactor);
             Shader.SetGlobalTexture(ShaderProperties.GlobalDitheringNoiseTex, ditheringNoiseTexture);
         }
 
 #if UNITY_EDITOR
-        public void _EditorSetRenderingModeAndRefreshShader(RenderingMode mode)
-        {
-            renderingMode = mode;
-            RefreshShader(RefreshShaderFlags.All);
-        }
-
         void OnValidate()
         {
-            sharedMeshSides = Mathf.Clamp(sharedMeshSides, Consts.Beam.GeomSidesMin, Consts.Beam.GeomSidesMax);
-            sharedMeshSegments = Mathf.Clamp(sharedMeshSegments, Consts.Beam.GeomSegmentsMin, Consts.Beam.GeomSegmentsMax);
+            noise3DSize = Mathf.Max(2, Mathf.NextPowerOfTwo(noise3DSize));
+
+            sharedMeshSides = Mathf.Clamp(sharedMeshSides, Consts.GeomSidesMin, Consts.GeomSidesMax);
+            sharedMeshSegments = Mathf.Clamp(sharedMeshSegments, Consts.GeomSegmentsMin, Consts.GeomSegmentsMax);
 
             ditheringFactor = Mathf.Clamp01(ditheringFactor);
         }
+#endif
 
+#if UNITY_EDITOR
+        [System.Flags]
+        public enum RefreshShaderFlags
+        {
+            Reference = 1 << 1,
+            Dummy = 1 << 2,
+            All = Reference | Dummy,
+        }
+
+        public void RefreshShader(RefreshShaderFlags flags)
+        {
+            if (flags.HasFlag(RefreshShaderFlags.Reference))
+            {
+                var prevShader = _BeamShader;
+                _BeamShader = ShaderGenerator.Generate(_RenderPipeline, actualRenderingMode, ditheringFactor > 0.0f);
+                if (_BeamShader != prevShader)
+                {
+                    EditorUtility.SetDirty(this);
+                }
+            }
+
+            if (flags.HasFlag(RefreshShaderFlags.Dummy) && _BeamShader != null)
+            {
+                bool gpuInstanced = actualRenderingMode == RenderingMode.GPUInstancing;
+                _DummyMaterial = DummyMaterial.Create(_BeamShader, gpuInstanced);
+            }
+
+            if (_DummyMaterial == null)
+            {
+                Debug.LogError("No dummy material referenced to VLB config, please try to reset this asset.", this);
+            }
+
+            RefreshGlobalShaderProperties();
+        }
+#endif
+
+        public void ResetInternalData()
+        {
+#if UNITY_EDITOR
+            RefreshShader(RefreshShaderFlags.All);
+#endif
+            noise3DData = Resources.Load("Noise3D_64x64x64") as TextAsset;
+            noise3DSize = Consts.ConfigNoise3DSizeDefault;
+
+            dustParticlesPrefab = Resources.Load("DustParticles", typeof(ParticleSystem)) as ParticleSystem;
+
+            ditheringNoiseTexture = Resources.Load("VLBDitheringNoise", typeof(Texture2D)) as Texture2D;
+        }
+
+        public ParticleSystem NewVolumetricDustParticles()
+        {
+            if (!dustParticlesPrefab)
+            {
+                if (Application.isPlaying)
+                {
+                    Debug.LogError("Failed to instantiate VolumetricDustParticles prefab.");
+                }
+                return null;
+            }
+
+            var instance = Instantiate(dustParticlesPrefab);
+#if UNITY_5_4_OR_NEWER
+            instance.useAutoRandomSeed = false;
+#endif
+            instance.name = "Dust Particles";
+            instance.gameObject.hideFlags = Consts.ProceduralObjectsHideFlags;
+            instance.gameObject.SetActive(true);
+            return instance;
+        }
+
+#if UNITY_EDITOR
+        public static void EditorSelectInstance()
+        {
+            Selection.activeObject = Config.Instance; // this will create the instance if it doesn't exist
+            if(Selection.activeObject == null)
+                Debug.LogError("Cannot find any Config resource");
+        }
+#endif
+
+        void OnEnable()
+        {
+            HandleBackwardCompatibility(pluginVersion, Version.Current);
+            pluginVersion = Version.Current;
+
+#if UNITY_EDITOR
+            var instanceNoAssert = m_Instance;
+            if (instanceNoAssert != null)
+                instanceNoAssert.RefreshShader(RefreshShaderFlags.Dummy);
+#endif
+        }
+
+        void HandleBackwardCompatibility(int serializedVersion, int newVersion)
+        {
+            if (serializedVersion == -1) return;            // freshly new spawned config: nothing to do
+            if (serializedVersion == newVersion) return;    // same version: nothing to do
+
+
+
+#if UNITY_EDITOR
+            if (serializedVersion < 1830)
+            {
+                AutoSelectRenderPipeline();
+            }
+
+            if (newVersion > serializedVersion)
+            {
+                // Import to keep, we have to regenerate the shader each time the plugin is updated
+                RefreshShader(RefreshShaderFlags.All);
+            }
+#endif
+        }
+
+#if UNITY_EDITOR
         void AutoSelectRenderPipeline()
         {
             var newPipeline = renderPipeline;
@@ -335,158 +412,23 @@ namespace VLB
                 RefreshShader(RefreshShaderFlags.All);
             }
         }
-
-        public static void EditorSelectInstance()
-        {
-            Selection.activeObject = Config.Instance; // this will create the instance if it doesn't exist
-            if (Selection.activeObject == null)
-                Debug.LogError("Cannot find any Config resource");
-        }
-
-        [System.Flags]
-        public enum RefreshShaderFlags
-        {
-            Reference = 1 << 1,
-            Dummy = 1 << 2,
-            All = Reference | Dummy,
-        }
-
-        public void RefreshShader(RefreshShaderFlags flags)
-        {
-            if (flags.HasFlag(RefreshShaderFlags.Reference))
-            {
-                var prevShader = _BeamShader;
-
-                var enabledFeatures = new ShaderGenerator.EnabledFeatures
-                {
-                    dithering = ditheringFactor > 0.0f,
-                    depthBlend = featureEnabledDepthBlend,
-                    noise3D = featureEnabledNoise3D,
-                    colorGradient = featureEnabledColorGradient,
-                    dynamicOcclusion = featureEnabledDynamicOcclusion,
-                    meshSkewing = featureEnabledMeshSkewing,
-                    shaderAccuracyHigh = featureEnabledShaderAccuracyHigh
-                };
-
-                _BeamShader = ShaderGenerator.Generate(_RenderPipeline, actualRenderingMode, enabledFeatures);
-                if (_BeamShader != prevShader)
-                {
-                    EditorUtility.SetDirty(this);
-                }
-            }
-
-            if (flags.HasFlag(RefreshShaderFlags.Dummy) && _BeamShader != null)
-            {
-                bool gpuInstanced = actualRenderingMode == RenderingMode.GPUInstancing;
-                _DummyMaterial = DummyMaterial.Create(_BeamShader, gpuInstanced);
-            }
-
-            if (_DummyMaterial == null)
-            {
-                Debug.LogError("No dummy material referenced to VLB config, please try to reset this asset.", this);
-            }
-
-            RefreshGlobalShaderProperties();
-        }
-#endif // UNITY_EDITOR
-
-        public void ResetInternalData()
-        {
-            noiseTexture3D = Resources.Load("Noise3D_64x64x64") as Texture3D;
-
-            dustParticlesPrefab = Resources.Load("DustParticles", typeof(ParticleSystem)) as ParticleSystem;
-
-            ditheringNoiseTexture = Resources.Load("VLBDitheringNoise", typeof(Texture2D)) as Texture2D;
-
-#if UNITY_EDITOR
-            RefreshShader(RefreshShaderFlags.All);
 #endif
-        }
-
-        public ParticleSystem NewVolumetricDustParticles()
-        {
-            if (!dustParticlesPrefab)
-            {
-                if (Application.isPlaying)
-                {
-                    Debug.LogError("Failed to instantiate VolumetricDustParticles prefab.");
-                }
-                return null;
-            }
-
-            var instance = Instantiate(dustParticlesPrefab);
-            instance.useAutoRandomSeed = false;
-            instance.name = "Dust Particles";
-            instance.gameObject.hideFlags = Consts.Internal.ProceduralObjectsHideFlags;
-            instance.gameObject.SetActive(true);
-            return instance;
-        }
-
-        void OnEnable()
-        {
-            HandleBackwardCompatibility(pluginVersion, Version.Current);
-            pluginVersion = Version.Current;
-        }
-
-        void HandleBackwardCompatibility(int serializedVersion, int newVersion)
-        {
-            if (serializedVersion == -1) return;            // freshly new spawned config: nothing to do
-            if (serializedVersion == newVersion) return;    // same version: nothing to do
-
-#if UNITY_EDITOR
-            if (serializedVersion < 1830)
-            {
-                AutoSelectRenderPipeline();
-            }
-
-            if (serializedVersion < 1950)
-            {
-                ResetInternalData(); // retrieve Noise3D texture converted from binary data to texture 3D asset in 1950
-                EditorUtility.SetDirty(this); // make sure to save this property change
-            }
-
-            if (newVersion > serializedVersion)
-            {
-                // Import to keep, we have to regenerate the shader each time the plugin is updated
-                RefreshShader(RefreshShaderFlags.All);
-            }
-#endif
-        }
-
 
         // Singleton management
-        static Config ms_Instance = null;
+        static Config m_Instance = null;
         public static Config Instance { get { return GetInstance(true); } }
 
 #if UNITY_EDITOR
         static bool ms_IsCreatingInstance = false;
-
-        public bool IsCurrentlyUsedInstance() { return Instance == this; }
-
-        public bool HasValidAssetName()
-        {
-            if (name.IndexOf(ConfigOverride.kAssetName) != 0)
-                return false;
-
-            return PlatformHelper.IsValidPlatformSuffix(GetAssetSuffix());
-        }
-
-        public string GetAssetSuffix()
-        {
-            var fullname = name;
-            var strToFind = ConfigOverride.kAssetName;
-            if (fullname.IndexOf(strToFind) == 0)   return fullname.Substring(strToFind.Length);
-            else                                    return "";
-        }
 #endif
 
         private static Config GetInstance(bool assertIfNotFound)
         {
 #if UNITY_EDITOR
             // Do not cache the instance during editing in order to handle new asset created or moved.
-            if (!Application.isPlaying || ms_Instance == null)
+            if (!Application.isPlaying || m_Instance == null)
 #else
-            if (ms_Instance == null)
+            if (m_Instance == null)
 #endif
             {
 #if UNITY_EDITOR
@@ -496,40 +438,28 @@ namespace VLB
                     return null;
                 }
 #endif
+                var foundOverride = Resources.Load<ConfigOverride>(ConfigOverride.kAssetName);
+                if (foundOverride)
                 {
-                    var newInstance = Resources.Load<ConfigOverride>(ConfigOverride.kAssetName + PlatformHelper.GetCurrentPlatformSuffix());
-
-                    if (newInstance == null)
-                        newInstance = Resources.Load<ConfigOverride>(ConfigOverride.kAssetName);
-
-#if UNITY_EDITOR
-                    if (newInstance && newInstance != ms_Instance)
-                    {
-                        ms_Instance = newInstance;
-                        newInstance.RefreshGlobalShaderProperties(); // make sure noise textures are properly loaded as soon as the editor is started
-                    }
-#endif
-
-                    ms_Instance = newInstance;
+                    m_Instance = foundOverride;
                 }
-
-                if (ms_Instance == null)
+                else
                 {
 #if UNITY_EDITOR
                     ms_IsCreatingInstance = true;
-                    ms_Instance = ConfigOverride.CreateInstanceOverride();
+                    m_Instance = ConfigOverride.CreateInstanceOverride();
                     ms_IsCreatingInstance = false;
 
-                    ms_Instance.AutoSelectRenderPipeline();
+                    m_Instance.AutoSelectRenderPipeline();
 
                     if (Application.isPlaying)
-                        ms_Instance.Reset(); // Reset is not automatically when instancing a ScriptableObject when in playmode
+                        m_Instance.Reset(); // Reset is not automatically when instancing a ScriptableObject when in playmode
 #endif
-                    Debug.Assert(!(assertIfNotFound && ms_Instance == null), string.Format("Can't find any resource of type '{0}'. Make sure you have a ScriptableObject of this type in a 'Resources' folder.", typeof(Config)));
+                    Debug.Assert(!(assertIfNotFound && m_Instance == null), string.Format("Can't find any resource of type '{0}'. Make sure you have a ScriptableObject of this type in a 'Resources' folder.", typeof(Config)));
                 }
             }
 
-            return ms_Instance;
+            return m_Instance;
         }
     }
 }

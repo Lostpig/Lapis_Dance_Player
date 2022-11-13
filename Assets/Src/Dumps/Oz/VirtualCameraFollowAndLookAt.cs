@@ -21,24 +21,31 @@ namespace Oz.Timeline
         {
             _virtualCamera = GetComponent<CinemachineVirtualCamera>();
 
-            // TODO HeadFix这个节点在解包的数据中找不到...
-            // 可能是硬编码写死的,转为Head_Point做个兼容
+            // TODO HeadFix NeckFix 这类节点在解包中找不到...
+            // 可能是硬编码写死的,转为感觉上相近的节点做个兼容
             if (followName == "HeadFix") followName = "Head_Point";
             if (lookAtName == "HeadFix") lookAtName = "Head_Point";
+            if (followName == "NeckFix") followName = "Bip001_Neck";
+            if (lookAtName == "NeckFix") lookAtName = "Bip001_Neck";
+            if (lookAtName == "KneeFix") lookAtName = "Bip001_L_Calf";
+            if (lookAtName == "KneeFix") lookAtName = "Bip001_L_Calf";
         }
         public void ApplyLookAt(ICinemachineCamera cinemachineCamera)
         {
             if (!isActiveAndEnabled) return;
-            if (positionIndex > 5)
+            if (positionIndex > 5 || positionIndex <= 0)
             {
-                Debug.Log("ApplyLookAt Failed: positionIndex = " + positionIndex);
+                Debug.Log("ApplyLookAt Failed: positionIndex = " + positionIndex + ", self = " + name);
                 return;
             }
 
             var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
             var character = danceManager.GetCharacter(positionIndex - 1);
-
-
+            if (character == null)
+            {
+                Debug.Log("ApplyLookAt Failed: positionIndex = " + positionIndex + ", self = " + name);
+                return;
+            }
 
             var follow = Utility.FindNodeByRecursion(character.SkeletonRoot, followName);
             var lookAt = Utility.FindNodeByRecursion(character.SkeletonRoot, lookAtName);

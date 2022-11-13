@@ -1,9 +1,8 @@
 ﻿using Cinemachine;
-using Oz.Timeline;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -18,21 +17,24 @@ namespace LapisPlayer
         PlayableDirector _director;
         CharacterActor[] _characters;
         int[] positions;
-        double _lastClipStart = 0.0;
-        double _lastClipEnd = 0.0;
+        public double _lastClipStart = 0.0;
+        public double _lastClipEnd = 0.0;
 
         public GameObject Timeline => _timeline;
         public GameObject Stage => _stage;
 
+        DanceSetting _danceSetting;
+        StageData _stageSetting;
+
         public async Task SetBattleDance(string danceKey, string[] actorKeys)
         {
-            var danceSetting = DanceStore.Instance.GetDance(danceKey);
-            if (danceSetting.CharacterCount > actorKeys.Length)
+            _danceSetting = DanceStore.Instance.GetDance(danceKey);
+            if (_danceSetting.CharacterCount > actorKeys.Length)
             {
-                Debug.LogError("Create BattleDance failed, character count less than " + danceSetting.CharacterCount);
+                Debug.LogError("Create BattleDance failed, character count less than " + _danceSetting.CharacterCount);
                 return;
             }
-            positions = danceSetting.CharacterCount switch
+            positions = _danceSetting.CharacterCount switch
             {
                 2 => new int[] { 1, 2 },
                 3 => new int[] { 1, 2, 3 },
@@ -41,17 +43,18 @@ namespace LapisPlayer
                 _ => new int[] { 0 },
             };
 
-            LoadTimeline(danceSetting);
+            LoadTimeline();
 
-            LoadStage(danceSetting.StageKey);
-            BindingCharacters(danceSetting, actorKeys);
+            LoadStage();
+            BindingCharacters(actorKeys);
 
-            await BindingAudio(danceSetting);
+            await BindingAudio();
             BindingCamare();
 
             SetClipTimes();
-            SolveBugs(danceSetting);
+            // SolveBugs(danceSetting);
 
+            _director.time = 0.005;
             Ready = true;
         }
         public void Clear()
@@ -65,10 +68,9 @@ namespace LapisPlayer
             Ready = false;
         }
 
-
-        private void LoadTimeline(DanceSetting setting)
+        private void LoadTimeline()
         {
-            GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"battle/song/{setting.ID}/CM Timeline");
+            GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"battle/song/{_danceSetting.ID}/CM Timeline");
             var timeline = GameObject.Instantiate(timelinePrefab);
 
             _timeline = timeline;
@@ -82,9 +84,18 @@ namespace LapisPlayer
             {
                 text.font = runnerText.font;
             }
+
+            var refObjs = _timeline.GetComponentsInChildren<ReferenceObject>(true);
+            foreach(var refObj in refObjs)
+            {
+                ReferenceStore.Instance.AddReference(refObj);
+            }
         }
-        private void LoadStage(string stageId)
+        private void LoadStage()
         {
+            string stageId = _danceSetting.StageKey;
+
+            _stageSetting = StageStore.Instance.GetStage(stageId);
             var prefab = StageStore.Instance.LoadStage(stageId);
             if (_stage)
             {
@@ -92,12 +103,25 @@ namespace LapisPlayer
             }
 
             _stage = GameObject.Instantiate(prefab);
+
+            var refObjs = _stage.GetComponentsInChildren<ReferenceObject>(true);
+            foreach (var refObj in refObjs)
+            {
+                ReferenceStore.Instance.AddReference(refObj);
+            }
         }
 
-        private async Task BindingAudio(DanceSetting setting)
+        private async Task BindingAudio()
         {
-            var audioClip = await SoundBankLoader.Instance.LoadAudioClip(setting.ID, setting.Music);
-            var audioTrack = FindRootTrack<AudioTrack>();
+            var audioClip = await SoundBankLoader.Instance.LoadAudioClip(_danceSetting.ID, _danceSetting.Music);
+            var audioTrack = FindTracks<AudioTrack>()[0];
+
+            if (audioTrack == null)
+            {
+                var ta = (_director.playableAsset as TimelineAsset);
+                audioTrack = ta.CreateTrack<AudioTrack>();
+                audioTrack.CreateClip<AudioPlayableAsset>();
+            }
 
             foreach (var clip in audioTrack.GetClips())
             {
@@ -119,7 +143,7 @@ namespace LapisPlayer
                 }
             }
         }
-        private void BindingCharacters(DanceSetting setting, string[] actorKeys)
+        private void BindingCharacters(string[] actorKeys)
         {
             _characters = new CharacterActor[5];
             for (int i = 0; i < positions.Length; i++)
@@ -132,7 +156,8 @@ namespace LapisPlayer
                 Utility.ActiveToTop(posObj);
 
                 chara.Root.transform.SetParent(posObj.transform);
-                chara.Root.transform.localPosition = Vector3.zero;
+                SetByStage(chara.Root);
+
                 chara.Root.name = "Actor " + posStr;
                 chara.SkeletonRoot.name = "Model " + posStr;
 
@@ -178,6 +203,30 @@ namespace LapisPlayer
             }
             return null;
         }
+        private T[] FindTracks<T>() where T : TrackAsset
+        {
+            List<T> tracks = new();
+
+            var timelineAsset = _director.playableAsset as TimelineAsset;
+            foreach (var track in timelineAsset.GetRootTracks())
+            {
+                if (track is GroupTrack gt)
+                {
+                    foreach (var childTrack in track.GetChildTracks())
+                    {
+                        if (childTrack is T tt)
+                        {
+                            tracks.Add(tt);
+                        }
+                    }
+                }
+                else if (track is T tTrack)
+                {
+                    tracks.Add(tTrack);
+                }
+            }
+            return tracks.ToArray();
+        }
 
         public CharacterActor GetCharacter(int characterPos)
         {
@@ -199,6 +248,7 @@ namespace LapisPlayer
             _lastClipStart = 0;
             _lastClipEnd = 0;
             var charGoup = FindRootTrack<GroupTrack>("Char Animation Group");
+
             foreach (var track in charGoup.GetChildTracks())
             {
                 foreach (var clip in track.GetClips())
@@ -210,6 +260,13 @@ namespace LapisPlayer
                     }
                 }
             }
+
+            Debug.Log("Set dance track loop start: " + _lastClipStart + ", end: " + _lastClipEnd);
+        }
+        public void SetLoopTime (double start, double end)
+        {
+            _lastClipStart = start;
+            _lastClipEnd = end;
         }
 
         public void Play()
@@ -257,35 +314,22 @@ namespace LapisPlayer
         }
 
 
-
-        // 某些问题找不出原因,特殊处理
-        private void SolveBugs(DanceSetting danceSetting)
+        private void SetByStage(GameObject charaGo)
         {
-            if (danceSetting.StageKey == "BG2004")
+            if (_stageSetting.ID == "BG2004")
             {
-                var toplight = Utility.FindNodeByRecursion(_stage, "TopLight");
-                toplight.transform.localPosition = Vector3.zero;
+                charaGo.transform.localPosition = new Vector3(0, 0, 7.5f);
+                charaGo.transform.localRotation = Quaternion.Euler(new Vector3(-90, 90, -90));
             }
-            else if (danceSetting.StageKey == "BG307")
+            else if (_stageSetting.ID == "BG307")
             {
-                var toplight = Utility.FindNodeByRecursion(_stage, "TopLight");
-                toplight.transform.localPosition = new Vector3(0, 1.072f, 0);
+                charaGo.transform.localPosition = new Vector3(0, 1.055f, 0);
+                charaGo.transform.localRotation = Quaternion.identity;
             }
-            
-            if (danceSetting.ID == "MUSIC_0028")
+            else
             {
-                _lastClipStart = 0;
-                _lastClipEnd = _director.duration;
-
-                var charGoup = FindRootTrack<GroupTrack>("Char Animation Group");
-                foreach (var track in charGoup.GetChildTracks())
-                {
-                    foreach (var clip in track.GetClips())
-                    {
-                        clip.duration = clip.animationClip.averageDuration;
-                        if (clip.end > _lastClipEnd) _lastClipEnd = clip.end;
-                    }
-                }
+                charaGo.transform.localPosition = Vector3.zero;
+                charaGo.transform.localRotation = Quaternion.identity;
             }
         }
     }

@@ -42,7 +42,7 @@ namespace Oz.Timeline
             }
             else
             {
-                var actorObj = dicector.GetGenericBinding(_parentTrack) as GameObject;
+                var actorObj = dicector.GetGenericBinding(_parentTrack);
                 var actor = actorObj.GetComponent<Actor>();
                 var facial = danceManager.GetCharacter(actor.Postion).Facial;
 

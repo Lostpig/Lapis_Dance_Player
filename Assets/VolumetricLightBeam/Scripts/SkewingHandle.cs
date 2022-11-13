@@ -4,7 +4,7 @@ using System.Collections;
 namespace VLB
 {
     [ExecuteInEditMode]
-    [HelpURL(Consts.Help.UrlSkewingHandle)]
+    [HelpURL(Consts.HelpUrlSkewingHandle)]
     public class SkewingHandle : MonoBehaviour
     {
         public VolumetricLightBeam volumetricLightBeam = null;

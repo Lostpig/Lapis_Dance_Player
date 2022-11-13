@@ -35,13 +35,12 @@ namespace VLB
         public static readonly int TiltVector                   = Shader.PropertyToID("_TiltVector");
         public static readonly int AdditionalClippingPlaneWS    = Shader.PropertyToID("_AdditionalClippingPlaneWS");
 
-        public static readonly int ParticlesTintColor           = Shader.PropertyToID("_TintColor");
-
-        public static readonly int GlobalUsesReversedZBuffer    = Shader.PropertyToID("_VLB_UsesReversedZBuffer");
         public static readonly int GlobalNoiseTex3D             = Shader.PropertyToID("_VLB_NoiseTex3D");
         public static readonly int GlobalNoiseCustomTime        = Shader.PropertyToID("_VLB_NoiseCustomTime");
         public static readonly int GlobalDitheringFactor        = Shader.PropertyToID("_VLB_DitheringFactor");
         public static readonly int GlobalDitheringNoiseTex      = Shader.PropertyToID("_VLB_DitheringNoiseTex");
+
+        public const string KeywordSRP = "VLB_SRP_API";
     }
 }
 

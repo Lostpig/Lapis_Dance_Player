@@ -29,35 +29,24 @@ namespace VLB
         static string GetOutputPath()
         {
             var path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(Instance));
-            if (string.IsNullOrEmpty(path)) path = Consts.PluginFolder + "/Shaders/";
+            if (string.IsNullOrEmpty(path)) path = "Plugins/VolumetricLightBeam/Shaders/";
             path = path.Replace("\\", "/");
             const string kAssetsFolder = "Assets/";
             if (path.IndexOf(kAssetsFolder) == 0) path = path.Remove(0, kAssetsFolder.Length);
             return path;
         }
 
-        public class EnabledFeatures
-        {
-            public bool dithering;
-            public bool depthBlend;
-            public FeatureEnabledColorGradient colorGradient;
-            public bool noise3D;
-            public bool dynamicOcclusion;
-            public bool meshSkewing;
-            public bool shaderAccuracyHigh;
-        }
-
-        public static Shader Generate(RenderPipeline rp, RenderingMode rm, EnabledFeatures enabledFeatures)
+        public static Shader Generate(RenderPipeline rp, RenderingMode rm, bool ditheringEnabled)
         {
             // The instance might not be accessible yet, when called from Config.OnEnable for instance if the Config is enabled before the ShaderGenerator.
             // In this case we don't generate the shader right away, we store the parameters instead and we'll generate the shader in ShaderGenerator.OnEnable.
             if (Instance == null)
             {
-                ms_GenerationParamOnEnable = new GenerationParam { renderPipeline = rp, renderingMode = rm, enabledFeatures = enabledFeatures };
+                ms_GenerationParamOnEnable = new GenerationParam { renderPipeline = rp, renderingMode = rm, ditheringEnabled = ditheringEnabled };
                 return null;
             }
 
-            return new GenShader(rp, rm, enabledFeatures).Generate();
+            return new GenShader(rp, rm, ditheringEnabled).Generate();
         }
 
         static string LoadText(TextAsset textAsset)
@@ -111,20 +100,7 @@ namespace VLB
                 m_CullMode = cullMode;
             }
 
-            static void AppendMultiCompile(ref string str, bool genDefaultVariant, params string[] options)
-            {
-#if UNITY_2019_1_OR_NEWER
-                const string kPrefix = "                #pragma multi_compile_local";
-#else
-                const string kPrefix = "                #pragma multi_compile";
-#endif
-                str += kPrefix;
-                if(genDefaultVariant) str += " __";
-                foreach (string opt in options) str += " " + opt;
-                str += System.Environment.NewLine;
-            }
-
-            public string Generate(SRPHelper.RenderPipeline rp, RenderingMode rm, EnabledFeatures enabledFeatures, int passID, int passCount)
+            public string Generate(SRPHelper.RenderPipeline rp, RenderingMode rm, bool ditheringEnabled, int passID, int passCount)
             {
                 var code = LoadText(Instance.textAssetPass);
 
@@ -132,19 +108,11 @@ namespace VLB
                 code = code.Replace("{VLB_GEN_PRAGMA_INSTANCING}", rm == RenderingMode.GPUInstancing ? "#pragma multi_compile_instancing" : "");
                 code = code.Replace("{VLB_GEN_PRAGMA_FOG}", IsFogSupported(rp) ? "#pragma multi_compile_fog" : "");
 
-                string multiCompileVariants = "";
-                AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.AlphaAsBlack);
-                if (enabledFeatures.noise3D)        AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.Noise3D);
-                if (enabledFeatures.depthBlend)     AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.DepthBlend);
-                switch(enabledFeatures.colorGradient)
-                {
-                    case FeatureEnabledColorGradient.HighOnly:      AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.ColorGradientMatrixHigh); break;
-                    case FeatureEnabledColorGradient.HighAndLow:    AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.ColorGradientMatrixHigh, ShaderKeywords.ColorGradientMatrixLow); break;
-                }
-                if (enabledFeatures.dynamicOcclusion)   AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.OcclusionClippingPlane, ShaderKeywords.OcclusionDepthTexture);
-                if (enabledFeatures.meshSkewing)        AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.MeshSkewing);
-                if (enabledFeatures.shaderAccuracyHigh) AppendMultiCompile(ref multiCompileVariants, true, ShaderKeywords.ShaderAccuracyHigh);
-                code = code.Replace("{VLB_GEN_PRAGMA_MULTI_COMPILE_VARIANTS}", multiCompileVariants);
+            #if UNITY_2019_1_OR_NEWER
+                code = code.Replace("{VLB_GEN_PRAGMA_MULTI_COMPILE}", "#pragma multi_compile_local");
+            #else
+                code = code.Replace("{VLB_GEN_PRAGMA_MULTI_COMPILE}", "#pragma multi_compile");
+            #endif
 
                 var lang = GetShaderLangage(rp);
                 code = code.Replace("{VLB_GEN_PROGRAM_PRE}", GetShaderLangagePre(lang));
@@ -180,7 +148,7 @@ namespace VLB
                     }
                 }
 
-                if (enabledFeatures.dithering)
+                if (ditheringEnabled)
                 {
                     passPre += "                #define VLB_DITHERING 1" + System.Environment.NewLine;
                 }
@@ -197,13 +165,13 @@ namespace VLB
         {
             SRPHelper.RenderPipeline m_RenderPipeline;
             RenderingMode m_RenderingMode;
-            EnabledFeatures m_EnabledFeatures;
+            bool m_DitheringEnabled;
             List<GenPass> m_Passes = new List<GenPass>();
 
-            public GenShader(RenderPipeline rp, RenderingMode rm, EnabledFeatures enabledFeatures)
+            public GenShader(RenderPipeline rp, RenderingMode rm, bool ditheringEnabled)
             {
                 m_RenderingMode = rm;
-                m_EnabledFeatures = enabledFeatures;
+                m_DitheringEnabled = ditheringEnabled;
 
                 switch (rp)
                 {
@@ -239,7 +207,7 @@ namespace VLB
 
                 var passes = "";
                 for (int i = 0; i < m_Passes.Count; ++i)
-                    passes += m_Passes[i].Generate(m_RenderPipeline, m_RenderingMode, m_EnabledFeatures, i, m_Passes.Count);
+                    passes += m_Passes[i].Generate(m_RenderPipeline, m_RenderingMode, m_DitheringEnabled, i, m_Passes.Count);
 
                 code = code.Replace("{VLB_GEN_PASSES}", passes);
                 code = code.Replace("{VLB_GEN_SPECIFIC_INCLUDE}", GetRenderPipelineInclude(m_RenderPipeline));
@@ -287,7 +255,7 @@ namespace VLB
         {
             public RenderPipeline renderPipeline;
             public RenderingMode renderingMode;
-            public EnabledFeatures enabledFeatures;
+            public bool ditheringEnabled;
         }
 
         static GenerationParam ms_GenerationParamOnEnable = null;
@@ -296,7 +264,7 @@ namespace VLB
         {
             if(ms_GenerationParamOnEnable != null && Instance != null)
             {
-                Generate(ms_GenerationParamOnEnable.renderPipeline, ms_GenerationParamOnEnable.renderingMode, ms_GenerationParamOnEnable.enabledFeatures);
+                Generate(ms_GenerationParamOnEnable.renderPipeline, ms_GenerationParamOnEnable.renderingMode, ms_GenerationParamOnEnable.ditheringEnabled);
                 ms_GenerationParamOnEnable = null;
             }
         }

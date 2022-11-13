@@ -16,7 +16,7 @@ namespace VLB
 {
     [AddComponentMenu("")] // hide it from Component search
     [ExecuteInEditMode]
-    [HelpURL(Consts.Help.UrlBeam)]
+    [HelpURL(Consts.HelpUrlBeam)]
     public class BeamGeometry : MonoBehaviour, MaterialModifier.Interface
     {
         VolumetricLightBeam m_Master = null;
@@ -174,7 +174,7 @@ namespace VLB
         {
             Debug.Assert(master != null);
 
-            var customHideFlags = Consts.Internal.ProceduralObjectsHideFlags;
+            var customHideFlags = Consts.ProceduralObjectsHideFlags;
             m_Master = master;
 
             transform.SetParent(master.transform, false);
@@ -184,7 +184,11 @@ namespace VLB
             meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             meshRenderer.receiveShadows = false;
             meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off; // different reflection probes could break batching with GPU Instancing
+#if UNITY_5_4_OR_NEWER
             meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+#else
+            meshRenderer.useLightProbes = false;
+#endif
 
             if (!shouldUseGPUInstancedMaterial)
             {
@@ -239,7 +243,7 @@ namespace VLB
                 case MeshType.Custom:
                     {
                         coneMesh = MeshGenerator.GenerateConeZ_Radius(1f, 1f, 1f, m_Master.geomCustomSides, m_Master.geomCustomSegments, m_Master.geomCap, Config.Instance.requiresDoubleSidedMesh);
-                        coneMesh.hideFlags = Consts.Internal.ProceduralObjectsHideFlags;
+                        coneMesh.hideFlags = Consts.ProceduralObjectsHideFlags;
                         meshFilter.mesh = coneMesh;
                         break;
                     }
@@ -296,7 +300,7 @@ namespace VLB
                 noise3D = isNoiseEnabled ? MaterialManager.Noise3D.On : MaterialManager.Noise3D.Off,
                 depthBlend = isDepthBlendEnabled ? MaterialManager.DepthBlend.On : MaterialManager.DepthBlend.Off,
                 colorGradient = colorGradient,
-                dynamicOcclusion = m_Master._INTERNAL_DynamicOcclusionMode_Runtime,
+                dynamicOcclusion = m_Master._INTERNAL_EnabledDynamicOcclusionMode,
                 meshSkewing = m_Master.hasMeshSkewing ? MaterialManager.MeshSkewing.On : MaterialManager.MeshSkewing.Off,
                 shaderAccuracy = (m_Master.shaderAccuracy == ShaderAccuracy.Fast) ? MaterialManager.ShaderAccuracy.Fast : MaterialManager.ShaderAccuracy.High
             };
@@ -310,7 +314,7 @@ namespace VLB
             }
             else
             {
-                mat = MaterialManager.GetInstancedMaterial(m_Master._INTERNAL_InstancedMaterialGroupID, ref staticProps);
+                mat = MaterialManager.GetInstancedMaterial(m_Master._INTERNAL_InstancedMaterialGroupID, staticProps);
             }
 
             meshRenderer.material = mat;
@@ -413,7 +417,7 @@ namespace VLB
                 float nonNullApex = Mathf.Sign(m_Master.coneApexOffsetZ) * Mathf.Max(Mathf.Abs(m_Master.coneApexOffsetZ), kMinApexOffset);
                 SetMaterialProp(ShaderProperties.ConeApexOffsetZ, nonNullApex);
 
-                if (m_Master.usedColorMode == ColorMode.Flat)
+                if (m_Master.colorMode == ColorMode.Flat)
                 {
                     SetMaterialProp(ShaderProperties.ColorFlat, m_Master.color);
                 }
@@ -424,10 +428,8 @@ namespace VLB
                     // pass the gradient matrix in OnWillRenderObject()
                 }
 
-                float intensityInside, intensityOutside;
-                m_Master.GetInsideAndOutsideIntensity(out intensityInside, out intensityOutside);
-                SetMaterialProp(ShaderProperties.AlphaInside, intensityInside);
-                SetMaterialProp(ShaderProperties.AlphaOutside, intensityOutside);
+                SetMaterialProp(ShaderProperties.AlphaInside, m_Master.intensityInside);
+                SetMaterialProp(ShaderProperties.AlphaOutside, m_Master.intensityOutside);
                 SetMaterialProp(ShaderProperties.AttenuationLerpLinearQuad, m_Master.attenuationLerpLinearQuad);
                 SetMaterialProp(ShaderProperties.DistanceFallOff, new Vector3(m_Master.fallOffStart, m_Master.fallOffEnd, m_Master.maxGeometryDistance));
                 SetMaterialProp(ShaderProperties.DistanceCamClipping, m_Master.cameraClippingDistance);
@@ -591,7 +593,7 @@ namespace VLB
                     UpdateMatricesPropertiesForGPUInstancingSRP();
 #endif
 
-                    if (m_Master.usedColorMode == ColorMode.Gradient)
+                    if (m_Master.colorMode == ColorMode.Gradient)
                     {
                         // Send the gradient matrix every frame since it's not a shader's property
                         SetMaterialProp(ShaderProperties.ColorGradientMatrix, m_ColorGradientMatrix);

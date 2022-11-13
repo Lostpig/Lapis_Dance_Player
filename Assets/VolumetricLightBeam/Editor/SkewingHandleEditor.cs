@@ -7,8 +7,15 @@ namespace VLB
     [CustomEditor(typeof(SkewingHandle))]
     public class SkewingHandleEditor : EditorCommon
     {
-        SerializedProperty volumetricLightBeam = null;
-        SerializedProperty shouldUpdateEachFrame = null;
+        SerializedProperty volumetricLightBeam, shouldUpdateEachFrame;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            volumetricLightBeam = FindProperty((SkewingHandle x) => x.volumetricLightBeam);
+            shouldUpdateEachFrame = FindProperty((SkewingHandle x) => x.shouldUpdateEachFrame);
+        }
 
         public override void OnInspectorGUI()
         {
@@ -17,9 +24,6 @@ namespace VLB
             var thisTarget = target as SkewingHandle;
             if (thisTarget == null)
                 return;
-
-            if(Config.Instance.featureEnabledMeshSkewing == false)
-                EditorGUILayout.HelpBox(EditorStrings.SkewingHandle.HelpFeatureDisabled, MessageType.Warning);
 
             EditorGUILayout.PropertyField(volumetricLightBeam, EditorStrings.SkewingHandle.Beam);
             EditorGUILayout.PropertyField(shouldUpdateEachFrame, EditorStrings.SkewingHandle.ShouldUpdateEachFrame);

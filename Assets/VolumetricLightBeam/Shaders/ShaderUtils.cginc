@@ -30,7 +30,9 @@ inline float SampleSceneZ_Eye(float4 uv)
     float rawDepth = VLBSampleDepthTexture(uv);
     float linearDepthPersp = VLBLinearEyeDepth(rawDepth);
 
-    rawDepth = lerp(rawDepth, 1.0f - rawDepth, _VLB_UsesReversedZBuffer);
+#if defined(UNITY_REVERSED_Z) // not reversed in OpenGL on WebGL
+    rawDepth = 1.0 - rawDepth;
+#endif
     float linearDepthOrtho = (VLB_CAMERA_FAR_PLANE - VLB_CAMERA_NEAR_PLANE) * rawDepth + VLB_CAMERA_NEAR_PLANE;
 
     return lerp(linearDepthPersp, linearDepthOrtho, VLB_CAMERA_ORTHO);

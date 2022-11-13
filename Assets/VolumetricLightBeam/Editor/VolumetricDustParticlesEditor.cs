@@ -8,17 +8,25 @@ namespace VLB
     [CanEditMultipleObjects]
     public class VolumetricDustParticlesEditor : EditorCommon
     {
-        SerializedProperty alpha = null;
-        SerializedProperty size = null;
-        SerializedProperty direction = null;
-        SerializedProperty velocity = null;
-        SerializedProperty density = null;
-        SerializedProperty spawnDistanceRange = null;
-        SerializedProperty cullingEnabled = null;
-        SerializedProperty cullingMaxDistance = null;
+        SerializedProperty alpha, size, direction, velocity, density, spawnMinDistance, spawnMaxDistance, cullingEnabled, cullingMaxDistance;
 
-        static bool AreParticlesInfosUpdated() { return Application.isPlaying; }
+        static bool AreParticlesInfosUpdated() { return VolumetricDustParticles.isFeatureSupported && Application.isPlaying; }
         public override bool RequiresConstantRepaint() { return AreParticlesInfosUpdated(); }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            alpha = FindProperty((VolumetricDustParticles x) => x.alpha);
+            size = FindProperty((VolumetricDustParticles x) => x.size);
+            direction = FindProperty((VolumetricDustParticles x) => x.direction);
+            velocity = FindProperty((VolumetricDustParticles x) => x.velocity);
+            density = FindProperty((VolumetricDustParticles x) => x.density);
+            spawnMinDistance = FindProperty((VolumetricDustParticles x) => x.spawnMinDistance);
+            spawnMaxDistance = FindProperty((VolumetricDustParticles x) => x.spawnMaxDistance);
+            cullingEnabled = FindProperty((VolumetricDustParticles x) => x.cullingEnabled);
+            cullingMaxDistance = FindProperty((VolumetricDustParticles x) => x.cullingMaxDistance);
+        }
 
         public override void OnInspectorGUI()
         {
@@ -26,7 +34,11 @@ namespace VLB
 
             var particles = target as VolumetricDustParticles;
 
-            if (particles.gameObject.activeSelf && particles.enabled && !particles.particlesAreInstantiated)
+            if (!VolumetricDustParticles.isFeatureSupported)
+            {
+                EditorGUILayout.HelpBox(EditorStrings.DustParticles.HelpFeatureNotSupported, MessageType.Warning);
+            }
+            else if (particles.gameObject.activeSelf && particles.enabled && !particles.particlesAreInstantiated)
             {
                 EditorGUILayout.HelpBox(EditorStrings.DustParticles.HelpFailToInstantiate, MessageType.Error);
                 ButtonOpenConfig();
@@ -67,15 +79,17 @@ namespace VLB
             if (FoldableHeader.Begin(this, EditorStrings.DustParticles.HeaderSpawning))
             {
                 EditorGUILayout.PropertyField(density, EditorStrings.DustParticles.Density);
-                EditorGUILayout.PropertyField(spawnDistanceRange, EditorStrings.DustParticles.SpawnDistanceRange);
+                EditorGUILayout.PropertyField(spawnMinDistance, EditorStrings.DustParticles.SpawnMinDistance);
+                EditorGUILayout.PropertyField(spawnMaxDistance, EditorStrings.DustParticles.SpawnMaxDistance);
 
+                if (VolumetricDustParticles.isFeatureSupported)
                 {
-                    var infos = "Current particles count: ";
+                    var infos = "Particles count:\nCurrent: ";
                     if (AreParticlesInfosUpdated()) infos += particles.particlesCurrentCount;
                     else infos += "(playtime only)";
                     if (particles.isCulled)
                         infos += string.Format(" (culled by '{0}')", particles.mainCamera.name);
-                    infos += string.Format("\nMax particles count: {0}", particles.particlesMaxCount);
+                    infos += string.Format("\nMax: {0}", particles.particlesMaxCount);
                     EditorGUILayout.HelpBox(infos, MessageType.Info);
                 }
             }

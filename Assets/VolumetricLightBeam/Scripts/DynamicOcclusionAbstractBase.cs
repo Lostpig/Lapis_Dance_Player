@@ -8,13 +8,11 @@ namespace VLB
     [RequireComponent(typeof(VolumetricLightBeam))]
     public abstract class DynamicOcclusionAbstractBase : MonoBehaviour
     {
-        public const string ClassName = "DynamicOcclusionAbstractBase";
-
         /// <summary>
         /// How often will the occlusion be processed?
         /// Try to update the occlusion as rarely as possible to keep good performance.
         /// </summary>
-        public DynamicOcclusionUpdateRate updateRate = Consts.DynOcclusion.UpdateRateDefault;
+        public DynamicOcclusionUpdateRate updateRate = Consts.DynamicOcclusionUpdateRateDefault;
 
         /// <summary>
         /// How many frames we wait between 2 occlusion tests?
@@ -22,7 +20,7 @@ namespace VLB
         /// If you want to save on performance, we recommend to wait few frames between each update by setting a higher value.
         /// </summary>
         [FormerlySerializedAs("waitFrameCount")]
-        public int waitXFrames = Consts.DynOcclusion.WaitFramesCountDefault;
+        public int waitXFrames = Consts.DynOcclusionWaitFramesCountDefault;
 
         /// <summary>
         /// Manually process the occlusion.
@@ -45,9 +43,6 @@ namespace VLB
 
         protected void ProcessOcclusion(ProcessOcclusionSource source)
         {
-            if (!Config.Instance.featureEnabledDynamicOcclusion)
-                return;
-
             Debug.Assert(!Application.isPlaying || m_LastFrameRendered != Time.frameCount, "ProcessOcclusion has been called twice on the same frame, which is forbidden");
             Debug.Assert(m_Master);
 
@@ -57,10 +52,7 @@ namespace VLB
                 onOcclusionProcessed();
 
             if (m_Master)
-            {
-                Debug.Assert(m_MaterialModifierCallbackCached != null);
-                m_Master._INTERNAL_SetDynamicOcclusionCallback(GetShaderKeyword(), occlusionSuccess ? m_MaterialModifierCallbackCached : (MaterialModifier.Callback)(null));
-            }
+                m_Master._INTERNAL_SetDynamicOcclusionCallback(GetShaderKeyword(), occlusionSuccess ? OnModifyMaterialCallback : (MaterialModifier.Callback)(null));
 
             if (updateRate.HasFlag(DynamicOcclusionUpdateRate.OnBeamMove))
                 m_TransformPacked = transform.GetWorldPacked();
@@ -74,11 +66,11 @@ namespace VLB
             }
         }
 
-        TransformUtils.Packed m_TransformPacked;
+        TransformUtils.Packed m_TransformPacked = null;
         int m_LastFrameRendered = int.MinValue;
         public int _INTERNAL_LastFrameRendered { get { return m_LastFrameRendered; } } // for unit tests
         protected VolumetricLightBeam m_Master = null;
-        protected MaterialModifier.Callback m_MaterialModifierCallbackCached = null;
+
 
         protected abstract string GetShaderKeyword();
         protected abstract MaterialManager.DynamicOcclusion GetDynamicOcclusionMode();
@@ -109,9 +101,6 @@ namespace VLB
 
         protected virtual void OnEnable()
         {
-            // cache the delegate to prevent from being inlined as '() => OnModifyMaterialCallback' when calling _INTERNAL_SetDynamicOcclusionCallback and from generating GC garbage
-            m_MaterialModifierCallbackCached = OnModifyMaterialCallback;
-
             OnValidateProperties();
 
             OnEnablePostValidate();
@@ -158,7 +147,7 @@ namespace VLB
 
                 if (!shouldUpdate && updateRate.HasFlag(DynamicOcclusionUpdateRate.OnBeamMove))
                 {
-                    if (!m_TransformPacked.IsSame(transform))
+                    if (!transform.IsSame(m_TransformPacked))
                         shouldUpdate = true;
                 }
 

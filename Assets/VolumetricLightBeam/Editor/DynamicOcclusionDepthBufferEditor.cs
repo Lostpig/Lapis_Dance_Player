@@ -8,10 +8,17 @@ namespace VLB
     [CanEditMultipleObjects]
     public class DynamicOcclusionDepthBufferEditor : DynamicOcclusionAbstractBaseEditor<DynamicOcclusionDepthBuffer>
     {
-        SerializedProperty depthMapResolution = null;
-        SerializedProperty layerMask = null;
-        SerializedProperty useOcclusionCulling = null;
-        SerializedProperty fadeDistanceToSurface = null;
+        SerializedProperty depthMapResolution, layerMask, useOcclusionCulling, fadeDistanceToSurface;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            depthMapResolution      = FindProperty((DynamicOcclusionDepthBuffer x) => x.depthMapResolution);
+            layerMask               = FindProperty((DynamicOcclusionDepthBuffer x) => x.layerMask);
+            useOcclusionCulling     = FindProperty((DynamicOcclusionDepthBuffer x) => x.useOcclusionCulling);
+            fadeDistanceToSurface   = FindProperty((DynamicOcclusionDepthBuffer x) => x.fadeDistanceToSurface);
+        }
 
         public override void OnInspectorGUI()
         {

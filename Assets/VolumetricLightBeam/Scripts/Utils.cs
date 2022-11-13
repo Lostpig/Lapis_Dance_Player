@@ -10,11 +10,6 @@ namespace VLB
             return fallOffEnd * Mathf.Tan(spotAngle * Mathf.Deg2Rad * 0.5f);
         }
 
-        public static float ComputeSpotAngle(float fallOffEnd, float coneRadiusEnd)
-        {
-            return Mathf.Atan2(coneRadiusEnd, fallOffEnd) * Mathf.Rad2Deg * 2.0f;
-        }
-
         public static void Swap<T>(ref T a, ref T b)
         {
             var temp = a;
@@ -65,13 +60,9 @@ namespace VLB
         public static Vector2 yx(this Vector3 aVector) { return new Vector2(aVector.y, aVector.x); }
         public static Vector2 zx(this Vector3 aVector) { return new Vector2(aVector.z, aVector.x); }
         public static Vector2 zy(this Vector3 aVector) { return new Vector2(aVector.z, aVector.y); }
-
-        const float kEpsilon = 0.00001f;
-        public static bool Approximately(this float a, float b, float epsilon = kEpsilon)       { return Mathf.Abs(a - b) < epsilon; }
-        public static bool Approximately(this Vector2 a, Vector2 b, float epsilon = kEpsilon)   { return Vector2.SqrMagnitude(a - b) < epsilon; }
-        public static bool Approximately(this Vector3 a, Vector3 b, float epsilon = kEpsilon)   { return Vector3.SqrMagnitude(a - b) < epsilon; }
-        public static bool Approximately(this Vector4 a, Vector4 b, float epsilon = kEpsilon)   { return Vector4.SqrMagnitude(a - b) < epsilon; }
-
+        public static bool Approximately(this Vector2 a, Vector2 b, float epsilon = 0.00001f) { return Vector2.SqrMagnitude(a - b) < epsilon; }
+        public static bool Approximately(this Vector3 a, Vector3 b, float epsilon = 0.00001f) { return Vector3.SqrMagnitude(a - b) < epsilon; }
+        public static bool Approximately(this Vector4 a, Vector4 b, float epsilon = 0.00001f) { return Vector4.SqrMagnitude(a - b) < epsilon; }
         public static Vector4 AsVector4(this Vector3 vec3, float w) { return new Vector4(vec3.x, vec3.y, vec3.z, w); }
         public static Vector4 PlaneEquation(Vector3 normalizedNormal, Vector3 pt) { return normalizedNormal.AsVector4(-Vector3.Dot(normalizedNormal, pt)); }
 
@@ -79,17 +70,6 @@ namespace VLB
         public static float GetMaxArea2D(this Bounds self) { return Mathf.Max(Mathf.Max(self.size.x * self.size.y, self.size.y * self.size.z), self.size.x * self.size.z); }
 
         public static Color Opaque(this Color self) { return new Color(self.r, self.g, self.b, 1f); }
-
-        public static Color ComputeComplementaryColor(this Color self, bool blackAndWhite)
-        {
-            if (blackAndWhite)
-            {
-                // http://stackoverflow.com/a/3943023/112731
-                return (self.r * 0.299 + self.g * 0.587 + self.b * 0.114) > (186.0f / 255) ? Color.black : Color.white;
-            }
-
-            return new Color(1.0f - self.r, 1.0f - self.g, 1.0f - self.b);
-        }
 
 #if UNITY_EDITOR
         public static void GizmosDrawPlane(Vector3 normal, Vector3 position, Color color, Matrix4x4 mat, float size = 1f, float normalLength = 0.0f)
@@ -203,7 +183,11 @@ namespace VLB
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
+#if UNITY_5_3_OR_NEWER
                 UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+#else
+                UnityEditor.EditorApplication.MarkSceneDirty();
+#endif
             }
 #endif
         }

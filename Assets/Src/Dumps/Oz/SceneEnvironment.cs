@@ -39,8 +39,7 @@ namespace Oz.Graphics
                 var shadows = GetGeometricShadowCastInScene();
                 foreach (var s in shadows)
                 {
-                    s.meshFilter.sharedMesh = m_ShadowSettings.ShadowMesh;
-                    s.meshRenderer.sharedMaterial = m_ShadowSettings.ShadowMaterial;
+                    s.ApplyShadow(m_ShadowSettings);
                 }
             }
         }
@@ -105,20 +104,20 @@ namespace Oz.Graphics
     public class ShadowSettings
     {
         // Fields
-        private float m_ShadowDistance; // 0x10
-        private bool m_UseGeometryShadow; // 0x14
-        private bool m_ForceGeometryShadow; // 0x15
-        private Mesh m_ShadowMesh; // 0x18
-        private Material m_ShadowMaterial; // 0x20
-        private bool m_UseRaycast; // 0x28
-        private Transform m_RaycastOrigin; // 0x30
-        private LayerMask m_CullingMask; // 0x38
-        private float m_WorldHeight; // 0x3c
-        private float m_MaxHeight; // 0x40
-        private Vector3 m_Rotation; // 0x44
-        private AnimationCurve m_ScaleCurve; // 0x50
-        private AnimationCurve m_OffsetCurve; // 0x58
-        private AnimationCurve m_AlphaCurve; // 0x60
+        [SerializeField] private float m_ShadowDistance; // 0x10
+        [SerializeField] private bool m_UseGeometryShadow; // 0x14
+        [SerializeField] private bool m_ForceGeometryShadow; // 0x15
+        [SerializeField] private Mesh m_ShadowMesh; // 0x18
+        [SerializeField] private Material m_ShadowMaterial; // 0x20
+        [SerializeField] private bool m_UseRaycast; // 0x28
+        [SerializeField] private Transform m_RaycastOrigin; // 0x30
+        [SerializeField] private LayerMask m_CullingMask; // 0x38
+        [SerializeField] private float m_WorldHeight; // 0x3c
+        [SerializeField] private float m_MaxHeight; // 0x40
+        [SerializeField] private Vector3 m_Rotation; // 0x44
+        [SerializeField] private AnimationCurve m_ScaleCurve; // 0x50
+        [SerializeField] private AnimationCurve m_OffsetCurve; // 0x58
+        [SerializeField] private AnimationCurve m_AlphaCurve; // 0x60
 
         // Properties
         public float ShadowDistance { get => m_ShadowDistance; set => m_ShadowDistance = value; }

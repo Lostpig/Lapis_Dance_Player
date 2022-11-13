@@ -61,9 +61,6 @@ VLB_DEFINE_PROP_START
 
 VLB_DEFINE_PROP_END
 
-// UNITY_REVERSED_Z define is broken for WebGL and URP
-uniform float _VLB_UsesReversedZBuffer; // not reversed in OpenGL on WebGL
-
 #if VLB_OCCLUSION_DEPTH_TEXTURE
 // Setting a Texture property to a GPU instanced material is not supported, so keep it as regular property
 uniform sampler2D _DynamicOcclusionDepthTexture;

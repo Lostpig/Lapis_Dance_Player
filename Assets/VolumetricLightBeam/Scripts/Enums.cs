@@ -1,12 +1,5 @@
 ﻿namespace VLB
 {
-    public enum FeatureEnabledColorGradient
-    {
-        Off,        // Do not support having a gradient as color
-        HighOnly,   // Support gradient color only for devices with Shader Level = 35 or higher
-        HighAndLow  // Support gradient color for all devices
-    };
-
     public enum ColorMode
     {
         Flat,       // Apply a flat/plain/single color

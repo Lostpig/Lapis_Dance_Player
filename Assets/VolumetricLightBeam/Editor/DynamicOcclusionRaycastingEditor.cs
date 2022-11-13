@@ -8,22 +8,26 @@ namespace VLB
     [CanEditMultipleObjects]
     public class DynamicOcclusionRaycastingEditor : DynamicOcclusionAbstractBaseEditor<DynamicOcclusionRaycasting>
     {
-        SerializedProperty dimensions = null;
-        SerializedProperty layerMask = null;
-        SerializedProperty considerTriggers = null;
-        SerializedProperty minOccluderArea = null;
-        SerializedProperty planeAlignment = null;
-        SerializedProperty maxSurfaceDot = null;
-        SerializedProperty planeOffset = null;
-        SerializedProperty fadeDistanceToSurface = null;
-        SerializedProperty minSurfaceRatio = null;
+        SerializedProperty dimensions, layerMask, considerTriggers, minOccluderArea, planeAlignment, maxSurfaceDot, planeOffset, fadeDistanceToSurface, minSurfaceRatio;
 
         public override bool RequiresConstantRepaint() { return Application.isPlaying || DynamicOcclusionRaycasting.editorRaycastAtEachFrame; }
 
         protected override void OnEnable()
         {
             base.OnEnable();
+            m_Targets = new TargetList<DynamicOcclusionRaycasting>(targets);
+
             DynamicOcclusionRaycasting.EditorLoadPrefs();
+
+            dimensions = FindProperty((DynamicOcclusionRaycasting x) => x.dimensions);
+            layerMask = FindProperty((DynamicOcclusionRaycasting x) => x.layerMask);
+            considerTriggers = FindProperty((DynamicOcclusionRaycasting x) => x.considerTriggers);
+            minOccluderArea = FindProperty((DynamicOcclusionRaycasting x) => x.minOccluderArea);
+            planeAlignment = FindProperty((DynamicOcclusionRaycasting x) => x.planeAlignment);
+            planeOffset = FindProperty((DynamicOcclusionRaycasting x) => x.planeOffset);
+            fadeDistanceToSurface = FindProperty((DynamicOcclusionRaycasting x) => x.fadeDistanceToSurface);
+            minSurfaceRatio = FindProperty((DynamicOcclusionRaycasting x) => x.minSurfaceRatio);
+            maxSurfaceDot = FindProperty((DynamicOcclusionRaycasting x) => x.maxSurfaceDot);
         }
 
         public override void OnInspectorGUI()
@@ -55,14 +59,14 @@ namespace VLB
             {
                 minSurfaceRatio.FloatSlider(
                     EditorStrings.DynOcclusion.MinSurfaceRatio,
-                    Consts.DynOcclusion.RaycastingMinSurfaceRatioMin, Consts.DynOcclusion.RaycastingMinSurfaceRatioMax,
+                    Consts.DynOcclusionRaycastingMinSurfaceRatioMin, Consts.DynOcclusionRaycastingMinSurfaceRatioMax,
                     (value) => value * 100f,  // conversion value to slider
                     (value) => value / 100f   // conversion slider to value
                     );
 
                 maxSurfaceDot.FloatSlider(
                     EditorStrings.DynOcclusion.MaxSurfaceDot,
-                    Consts.DynOcclusion.RaycastingMaxSurfaceAngleMin, Consts.DynOcclusion.RaycastingMaxSurfaceAngleMax,
+                    Consts.DynOcclusionRaycastingMaxSurfaceAngleMin, Consts.DynOcclusionRaycastingMaxSurfaceAngleMax,
                     (value) => Mathf.Acos(value) * Mathf.Rad2Deg,   // conversion value to slider
                     (value) => Mathf.Cos(value * Mathf.Deg2Rad)     // conversion slider to value
                     );
@@ -81,11 +85,8 @@ namespace VLB
 
             if (FoldableHeader.Begin(this, EditorStrings.DynOcclusion.HeaderEditorDebug))
             {
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    GlobalToggleButton(ref DynamicOcclusionRaycasting.editorShowDebugPlane, EditorStrings.DynOcclusion.EditorShowDebugPlane, EditorPrefsStrings.DynOcclusion.PrefShowDebugPlane);
-                    GlobalToggleButton(ref DynamicOcclusionRaycasting.editorRaycastAtEachFrame, EditorStrings.DynOcclusion.EditorRaycastAtEachFrame, EditorPrefsStrings.DynOcclusion.PrefRaycastingEditor);
-                }
+                GlobalToggle(ref DynamicOcclusionRaycasting.editorShowDebugPlane, EditorStrings.DynOcclusion.EditorShowDebugPlane, "VLB_DYNOCCLUSION_SHOWDEBUGPLANE");
+                GlobalToggle(ref DynamicOcclusionRaycasting.editorRaycastAtEachFrame, EditorStrings.DynOcclusion.EditorRaycastAtEachFrame, "VLB_DYNOCCLUSION_RAYCASTINGEDITOR");
 
                 if (Application.isPlaying || DynamicOcclusionRaycasting.editorRaycastAtEachFrame)
                 {
@@ -93,11 +94,11 @@ namespace VLB
                     {
                         var instance = (target as DynamicOcclusionRaycasting);
                         Debug.Assert(instance);
-                        var hit = instance.editorCurrentHitResult;
+                        var hit = instance.currentHit;
                         var lastFrameUpdate = instance.editorDebugData.lastFrameUpdate;
 
                         var occluderInfo = string.Format("Last update {0} frame(s) ago\n", Time.frameCount - lastFrameUpdate);
-                        occluderInfo += (hit.hasCollider) ? string.Format("Current occluder: '{0}'\nEstimated occluder area: {1} units²", hit.name, hit.bounds.GetMaxArea2D()) : "No occluder found";
+                        occluderInfo += (hit != null) ? string.Format("Current occluder: '{0}'\nEstimated occluder area: {1} units²", hit.name, hit.bounds.GetMaxArea2D()) : "No occluder found";
                         EditorGUILayout.HelpBox(occluderInfo, MessageType.Info);
                     }
                 }

@@ -4,11 +4,9 @@ namespace VLB
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(VolumetricLightBeam))]
-    [HelpURL(Consts.Help.UrlTriggerZone)]
+    [HelpURL(Consts.HelpUrlTriggerZone)]
     public class TriggerZone : MonoBehaviour
     {
-        public const string ClassName = "TriggerZone";
-
         /// <summary>
         /// Define if the Collider will be created as a convex trigger (not physical, most common behavior) or as a regular collider (physical).
         /// </summary>
@@ -86,9 +84,8 @@ namespace VLB
                     var meshCollider = gameObject.GetOrAddComponent<MeshCollider>();
                     Debug.Assert(meshCollider);
 
-                    int sides = Mathf.Min(m_Beam.geomSides, kMeshColliderNumSides);
-                    var mesh = MeshGenerator.GenerateConeZ_Radius(rangeEnd, m_Beam.coneRadiusStart, lerpedRadiusEnd, sides, 0, false, false);
-                    mesh.hideFlags = Consts.Internal.ProceduralObjectsHideFlags;
+                    var mesh = MeshGenerator.GenerateConeZ_Radius(rangeEnd, m_Beam.coneRadiusStart, lerpedRadiusEnd, kMeshColliderNumSides, 0, false, false);
+                    mesh.hideFlags = Consts.ProceduralObjectsHideFlags;
 
                     meshCollider.sharedMesh = mesh;
                     meshCollider.convex = setIsTrigger;

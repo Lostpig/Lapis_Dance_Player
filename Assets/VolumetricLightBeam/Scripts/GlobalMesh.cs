@@ -23,7 +23,7 @@ namespace VLB
                     cap: true,
                     doubleSided: needDoubleSided);
 
-                ms_Mesh.hideFlags = Consts.Internal.ProceduralObjectsHideFlags;
+                ms_Mesh.hideFlags = Consts.ProceduralObjectsHideFlags;
                 ms_DoubleSided = needDoubleSided;
             }
 

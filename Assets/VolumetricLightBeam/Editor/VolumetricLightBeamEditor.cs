@@ -3,7 +3,6 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,20 +14,20 @@ namespace VLB
     [CanEditMultipleObjects]
     public class VolumetricLightBeamEditor : EditorCommon
     {
-        SerializedProperty trackChangesDuringPlaytime = null;
-        SerializedProperty colorFromLight = null, colorMode = null, color = null, colorGradient = null;
-        SerializedProperty intensityFromLight = null, intensityModeAdvanced = null, intensityInside = null, intensityOutside = null;
-        SerializedProperty blendingMode = null, shaderAccuracy = null;
-        SerializedProperty fresnelPow = null, glareFrontal = null, glareBehind = null;
-        SerializedProperty spotAngleFromLight = null, spotAngle = null;
-        SerializedProperty coneRadiusStart = null, geomMeshType = null, geomCustomSides = null, geomCustomSegments = null, geomCap = null;
-        SerializedProperty fallOffEndFromLight = null, fallOffStart = null, fallOffEnd = null;
-        SerializedProperty attenuationEquation = null, attenuationCustomBlending = null;
-        SerializedProperty depthBlendDistance = null, cameraClippingDistance = null;
-        SerializedProperty noiseMode = null, noiseIntensity = null, noiseScaleUseGlobal = null, noiseScaleLocal = null, noiseVelocityUseGlobal = null, noiseVelocityLocal = null;
-        SerializedProperty fadeOutBegin = null, fadeOutEnd = null;
-        SerializedProperty dimensions = null, sortingLayerID = null, sortingOrder = null;
-        SerializedProperty skewingLocalForwardDirection = null, clippingPlaneTransform = null, tiltFactor = null;
+        SerializedProperty trackChangesDuringPlaytime;
+        SerializedProperty colorFromLight, colorMode, color, colorGradient;
+        SerializedProperty intensityFromLight, intensityModeAdvanced, intensityInside, intensityOutside;
+        SerializedProperty blendingMode, shaderAccuracy;
+        SerializedProperty fresnelPow, glareFrontal, glareBehind;
+        SerializedProperty spotAngleFromLight, spotAngle;
+        SerializedProperty coneRadiusStart, geomMeshType, geomCustomSides, geomCustomSegments, geomCap;
+        SerializedProperty fallOffEndFromLight, fallOffStart, fallOffEnd;
+        SerializedProperty attenuationEquation, attenuationCustomBlending;
+        SerializedProperty depthBlendDistance, cameraClippingDistance;
+        SerializedProperty noiseMode, noiseIntensity, noiseScaleUseGlobal, noiseScaleLocal, noiseVelocityUseGlobal, noiseVelocityLocal;
+        SerializedProperty fadeOutBegin, fadeOutEnd;
+        SerializedProperty dimensions, sortingLayerID, sortingOrder;
+        SerializedProperty skewingLocalForwardDirection, clippingPlaneTransform, tiltFactor;
 
         TargetList<VolumetricLightBeam> m_Targets;
         string[] m_SortingLayerNames;
@@ -36,8 +35,69 @@ namespace VLB
         protected override void OnEnable()
         {
             base.OnEnable();
-            m_SortingLayerNames = SortingLayer.layers.Select(l => l.name).ToArray();
+
             m_Targets = new TargetList<VolumetricLightBeam>(targets);
+
+            colorFromLight = FindProperty((VolumetricLightBeam x) => x.colorFromLight);
+            color = FindProperty((VolumetricLightBeam x) => x.color);
+            colorGradient = FindProperty((VolumetricLightBeam x) => x.colorGradient);
+            colorMode = FindProperty((VolumetricLightBeam x) => x.colorMode);
+
+            intensityFromLight = FindProperty((VolumetricLightBeam x) => x.intensityFromLight);
+            intensityModeAdvanced = FindProperty((VolumetricLightBeam x) => x.intensityModeAdvanced);
+            intensityInside = FindProperty((VolumetricLightBeam x) => x.intensityInside);
+            intensityOutside = FindProperty((VolumetricLightBeam x) => x.intensityOutside);
+
+            blendingMode = FindProperty((VolumetricLightBeam x) => x.blendingMode);
+            shaderAccuracy = FindProperty((VolumetricLightBeam x) => x.shaderAccuracy);
+
+            fresnelPow = FindProperty((VolumetricLightBeam x) => x.fresnelPow);
+
+            glareFrontal = FindProperty((VolumetricLightBeam x) => x.glareFrontal);
+            glareBehind = FindProperty((VolumetricLightBeam x) => x.glareBehind);
+
+            spotAngleFromLight = FindProperty((VolumetricLightBeam x) => x.spotAngleFromLight);
+            spotAngle = FindProperty((VolumetricLightBeam x) => x.spotAngle);
+
+            coneRadiusStart = FindProperty((VolumetricLightBeam x) => x.coneRadiusStart);
+
+            geomMeshType = FindProperty((VolumetricLightBeam x) => x.geomMeshType);
+            geomCustomSides = FindProperty((VolumetricLightBeam x) => x.geomCustomSides);
+            geomCustomSegments = FindProperty((VolumetricLightBeam x) => x.geomCustomSegments);
+            geomCap = FindProperty((VolumetricLightBeam x) => x.geomCap);
+
+            fallOffEndFromLight = FindProperty((VolumetricLightBeam x) => x.fallOffEndFromLight);
+            fallOffStart = FindProperty((VolumetricLightBeam x) => x.fallOffStart);
+            fallOffEnd = FindProperty((VolumetricLightBeam x) => x.fallOffEnd);
+
+            attenuationEquation = FindProperty((VolumetricLightBeam x) => x.attenuationEquation);
+            attenuationCustomBlending = FindProperty((VolumetricLightBeam x) => x.attenuationCustomBlending);
+
+            depthBlendDistance = FindProperty((VolumetricLightBeam x) => x.depthBlendDistance);
+            cameraClippingDistance = FindProperty((VolumetricLightBeam x) => x.cameraClippingDistance);
+
+            // NOISE
+            noiseMode = FindProperty((VolumetricLightBeam x) => x.noiseMode);
+            noiseIntensity = FindProperty((VolumetricLightBeam x) => x.noiseIntensity);
+            noiseScaleUseGlobal = FindProperty((VolumetricLightBeam x) => x.noiseScaleUseGlobal);
+            noiseScaleLocal = FindProperty((VolumetricLightBeam x) => x.noiseScaleLocal);
+            noiseVelocityUseGlobal = FindProperty((VolumetricLightBeam x) => x.noiseVelocityUseGlobal);
+            noiseVelocityLocal = FindProperty((VolumetricLightBeam x) => x.noiseVelocityLocal);
+
+            trackChangesDuringPlaytime = serializedObject.FindProperty("_TrackChangesDuringPlaytime");
+
+            fadeOutBegin = serializedObject.FindProperty("_FadeOutBegin");
+            fadeOutEnd   = serializedObject.FindProperty("_FadeOutEnd");
+
+            skewingLocalForwardDirection = FindProperty((VolumetricLightBeam x) => x.skewingLocalForwardDirection);
+            clippingPlaneTransform = FindProperty((VolumetricLightBeam x) => x.clippingPlaneTransform);
+            tiltFactor = FindProperty((VolumetricLightBeam x) => x.tiltFactor);
+
+            // 2D
+            sortingLayerID = serializedObject.FindProperty("_SortingLayerID");
+            sortingOrder = serializedObject.FindProperty("_SortingOrder");
+            dimensions = FindProperty((VolumetricLightBeam x) => x.dimensions);
+            m_SortingLayerNames = SortingLayer.layers.Select(l => l.name).ToArray();
         }
 
         static void PropertyThickness(SerializedProperty sp)
@@ -45,8 +105,8 @@ namespace VLB
             sp.FloatSlider(
                 EditorStrings.Beam.SideThickness,
                 0, 1,
-                (value) => Mathf.Clamp01(1 - (value / Consts.Beam.FresnelPowMaxValue)),    // conversion value to slider
-                (value) => (1 - value) * Consts.Beam.FresnelPowMaxValue                    // conversion slider to value
+                (value) => Mathf.Clamp01(1 - (value / Consts.FresnelPowMaxValue)),    // conversion value to slider
+                (value) => (1 - value) * Consts.FresnelPowMaxValue                    // conversion slider to value
                 );
         }
 
@@ -130,7 +190,7 @@ namespace VLB
 
             return new ButtonToggleScope(prop,
                 true,   // disableGroup
-                EditorData.Instance.contentFromSpotLight);
+                EditorStrings.Beam.FromSpotLight);
         }
 
         static ButtonToggleScope ButtonToggleScopeAdvanced(SerializedProperty prop, bool visible)
@@ -160,11 +220,15 @@ namespace VLB
             }
 #endif
 
-            VolumetricLightBeam.AttachedLightType lightType;
-            bool hasLightSpot = m_Targets[0].GetLightSpotAttachedSlow(out lightType) != null;
-            if (lightType == VolumetricLightBeam.AttachedLightType.OtherLight)
+            bool hasLightSpot = false;
+            var light = m_Targets[0].GetComponent<Light>();
+            if (light)
             {
-                EditorGUILayout.HelpBox(EditorStrings.Beam.HelpNoSpotlight, MessageType.Warning);
+                hasLightSpot = light.type == LightType.Spot;
+                if (!hasLightSpot)
+                {
+                    EditorGUILayout.HelpBox(EditorStrings.Beam.HelpNoSpotlight, MessageType.Warning);
+                }
             }
 
             if (FoldableHeader.Begin(this, EditorStrings.Beam.HeaderBasic))
@@ -174,22 +238,14 @@ namespace VLB
                 {
                     if (!hasLightSpot) EditorGUILayout.BeginHorizontal();    // mandatory to have the color picker on the same line (when the button "from light" is not here)
                     {
-                        if (Config.Instance.featureEnabledColorGradient == FeatureEnabledColorGradient.Off)
-                        {
-                            EditorGUILayout.PropertyField(color, EditorStrings.Beam.ColorMode);
-                        }
-                        else
-                        {
-                            using (new LabelWidth(65f))
-                            {
-                                EditorGUILayout.PropertyField(colorMode, EditorStrings.Beam.ColorMode);
-                            }
+                        EditorGUIUtility.fieldWidth = 65.0f;
+                        EditorGUILayout.PropertyField(colorMode, EditorStrings.Beam.ColorMode);
+                        EditorGUIUtility.fieldWidth = 0.0f;
 
-                            if (colorMode.enumValueIndex == (int)ColorMode.Gradient)
-                                EditorGUILayout.PropertyField(colorGradient, EditorStrings.Beam.ColorGradient);
-                            else
-                                EditorGUILayout.PropertyField(color, EditorStrings.Beam.ColorFlat);
-                        }
+                        if (colorMode.enumValueIndex == (int)ColorMode.Gradient)
+                            EditorGUILayout.PropertyField(colorGradient, EditorStrings.Beam.ColorGradient);
+                        else
+                            EditorGUILayout.PropertyField(color, EditorStrings.Beam.ColorFlat);
                     }
                     if (!hasLightSpot) EditorGUILayout.EndHorizontal();
                 }
@@ -233,11 +289,9 @@ namespace VLB
 
                 EditorGUILayout.Separator();
 
-                if (Config.Instance.featureEnabledShaderAccuracyHigh)
-                {
-                    EditorGUILayout.PropertyField(shaderAccuracy, EditorStrings.Beam.ShaderAccuracy);
-                    EditorGUILayout.Separator();
-                }
+                EditorGUILayout.PropertyField(shaderAccuracy, EditorStrings.Beam.ShaderAccuracy);
+
+                EditorGUILayout.Separator();
 
                 trackChangesDuringPlaytime.ToggleLeft(EditorStrings.Beam.TrackChanges);
                 DrawAnimatorWarning();
@@ -263,60 +317,56 @@ namespace VLB
                 if (fallOffEnd.hasMultipleDifferentValues)
                     EditorGUILayout.PropertyField(fallOffStart, EditorStrings.Beam.FallOffStart);
                 else
-                    fallOffStart.FloatSlider(EditorStrings.Beam.FallOffStart, 0f, fallOffEnd.floatValue - Consts.Beam.FallOffDistancesMinThreshold);
+                    fallOffStart.FloatSlider(EditorStrings.Beam.FallOffStart, 0f, fallOffEnd.floatValue - Consts.FallOffDistancesMinThreshold);
 
                 EditorGUILayout.Separator();
 
                 // Tilt
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    EditorGUILayout.PropertyField(tiltFactor, EditorStrings.Beam.TiltFactor);
-                    GlobalToggleButton(ref VolumetricLightBeam.editorShowTiltFactor, EditorStrings.Beam.EditorShowTiltDirection, EditorPrefsStrings.Beam.PrefShowTiltDir, 50f);
-                }
+                EditorGUILayout.PropertyField(tiltFactor, EditorStrings.Beam.TiltFactor);
+                GlobalToggle(ref VolumetricLightBeam.editorShowTiltFactor, EditorStrings.Beam.EditorShowTiltDirection, "VLB_BEAM_SHOWTILTDIR");
 
                 if (m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.isTilted && beam.shaderAccuracy != ShaderAccuracy.High; }))
                     EditorGUILayout.HelpBox(EditorStrings.Beam.HelpTiltedWithShaderAccuracyFast, MessageType.Warning);
             }
             FoldableHeader.End();
 
-            if (Config.Instance.featureEnabledNoise3D)
+            if(FoldableHeader.Begin(this, EditorStrings.Beam.Header3DNoise))
             {
-                if (FoldableHeader.Begin(this, EditorStrings.Beam.Header3DNoise))
+                noiseMode.CustomEnum<NoiseMode>(EditorStrings.Beam.NoiseMode, EditorStrings.Beam.NoiseModeEnumDescriptions);
+
+                bool showNoiseProps = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.isNoiseEnabled; });
+                if (showNoiseProps)
                 {
-                    noiseMode.CustomEnum<NoiseMode>(EditorStrings.Beam.NoiseMode, EditorStrings.Beam.NoiseModeEnumDescriptions);
+                    EditorGUILayout.PropertyField(noiseIntensity, EditorStrings.Beam.NoiseIntensity);
 
-                    bool showNoiseProps = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.isNoiseEnabled; });
-                    if (showNoiseProps)
+                    using (new EditorGUILayout.HorizontalScope())
                     {
-                        EditorGUILayout.PropertyField(noiseIntensity, EditorStrings.Beam.NoiseIntensity);
-
-                        using (new EditorGUILayout.HorizontalScope())
+                        using (new EditorGUI.DisabledGroupScope(noiseScaleUseGlobal.boolValue))
                         {
-                            using (new EditorGUI.DisabledGroupScope(noiseScaleUseGlobal.boolValue))
-                            {
-                                EditorGUILayout.PropertyField(noiseScaleLocal, EditorStrings.Beam.NoiseScale);
-                            }
-                            noiseScaleUseGlobal.ToggleUseGlobalNoise();
+                            EditorGUILayout.PropertyField(noiseScaleLocal, EditorStrings.Beam.NoiseScale);
                         }
-
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            using (new EditorGUI.DisabledGroupScope(noiseVelocityUseGlobal.boolValue))
-                            {
-                                EditorGUILayout.PropertyField(noiseVelocityLocal, EditorStrings.Beam.NoiseVelocity);
-                            }
-                            noiseVelocityUseGlobal.ToggleUseGlobalNoise();
-                        }
-
-                        if (Noise3D.isSupported && !Noise3D.isProperlyLoaded)
-                            EditorGUILayout.HelpBox(EditorStrings.Common.HelpNoiseLoadingFailed, MessageType.Error);
-
-                        if (!Noise3D.isSupported)
-                            EditorGUILayout.HelpBox(Noise3D.isNotSupportedString, MessageType.Info);
+                        noiseScaleUseGlobal.ToggleUseGlobalNoise();
                     }
+
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        using (new EditorGUI.DisabledGroupScope(noiseVelocityUseGlobal.boolValue))
+                        {
+                            EditorGUILayout.PropertyField(noiseVelocityLocal, EditorStrings.Beam.NoiseVelocity);
+                        }
+                        noiseVelocityUseGlobal.ToggleUseGlobalNoise();
+                    }
+
+                    ButtonOpenConfig();
+
+                    if (Noise3D.isSupported && !Noise3D.isProperlyLoaded)
+                        EditorGUILayout.HelpBox(EditorStrings.Common.HelpNoiseLoadingFailed, MessageType.Error);
+
+                    if (!Noise3D.isSupported)
+                        EditorGUILayout.HelpBox(Noise3D.isNotSupportedString, MessageType.Info);
                 }
-                FoldableHeader.End();
             }
+            FoldableHeader.End();
 
             if(FoldableHeader.Begin(this, EditorStrings.Beam.HeaderBlendingDistances))
             {
@@ -339,7 +389,7 @@ namespace VLB
                     EditorGUILayout.PropertyField(coneRadiusStart, EditorStrings.Beam.ConeRadiusStart);
                     EditorGUI.BeginChangeCheck();
                     {
-                        geomCap.ToggleLeft(EditorStrings.Beam.GeomCap, GUILayout.MaxWidth(42.0f));
+                        geomCap.ToggleLeft(EditorStrings.Beam.GeomCap, GUILayout.MaxWidth(40.0f));
                     }
                     if (EditorGUI.EndChangeCheck()) { SetMeshesDirty(); }
                 }
@@ -361,7 +411,6 @@ namespace VLB
                     }
                     if (EditorGUI.EndChangeCheck()) { SetMeshesDirty(); }
 
-                    if (Config.Instance.featureEnabledMeshSkewing)
                     {
                         var vec3 = skewingLocalForwardDirection.vector3Value;
                         var vec2 = Vector2.zero;
@@ -377,22 +426,21 @@ namespace VLB
                         }
                     }
 
-                    if (m_Targets.Count == 1)
-                    {
-                        EditorGUILayout.HelpBox(m_Targets[0].meshStats, MessageType.Info);
-                    }
-
                     EditorGUI.indentLevel--;
                 }
 
-                using (new EditorGUILayout.HorizontalScope())
+                if (m_Targets.Count == 1)
                 {
-                    EditorGUILayout.PropertyField(clippingPlaneTransform, EditorStrings.Beam.ClippingPlane);
+                    EditorGUILayout.HelpBox(m_Targets[0].meshStats, MessageType.Info);
+                }
 
-                    if (m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.clippingPlaneTransform != null; }))
-                    {
-                        GlobalToggleButton(ref VolumetricLightBeam.editorShowClippingPlane, EditorStrings.Beam.EditorShowClippingPlane, EditorStrings.Beam.PrefShowAddClippingPlane, 50f);
-                    }
+                EditorGUILayout.Separator();
+
+                EditorGUILayout.PropertyField(clippingPlaneTransform, EditorStrings.Beam.ClippingPlane);
+
+                if (m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.clippingPlaneTransform != null; }))
+                {
+                    GlobalToggle(ref VolumetricLightBeam.editorShowClippingPlane, EditorStrings.Beam.EditorShowClippingPlane, "VLB_BEAM_SHOWADDCLIPPINGPLANE");
                 }
             }
             FoldableHeader.End();
@@ -437,25 +485,20 @@ namespace VLB
                 {
                     const float kEpsilon = 0.1f;
 
-                    using (new EditorGUILayout.HorizontalScope())
+                    EditorGUI.BeginChangeCheck();
+                    EditorGUILayout.PropertyField(fadeOutBegin, EditorStrings.Beam.FadeOutBegin);
+                    if(EditorGUI.EndChangeCheck())
                     {
-                        EditorGUI.BeginChangeCheck();
-                        EditorGUILayout.PropertyField(fadeOutBegin, EditorStrings.Beam.FadeOutBegin);
-                        if (EditorGUI.EndChangeCheck())
-                        {
-                            setFadeOutBegin(Mathf.Clamp(fadeOutBegin.floatValue, 0, fadeOutEnd.floatValue - kEpsilon));
-                        }
-
-                        using (new LabelWidth(30f))
-                        {
-                            EditorGUI.BeginChangeCheck();
-                            EditorGUILayout.PropertyField(fadeOutEnd, EditorStrings.Beam.FadeOutEnd);
-                            if (EditorGUI.EndChangeCheck())
-                            {
-                                setFadeOutEnd(Mathf.Max(fadeOutBegin.floatValue + kEpsilon, fadeOutEnd.floatValue));
-                            }
-                        }
+                        setFadeOutBegin(Mathf.Clamp(fadeOutBegin.floatValue, 0, fadeOutEnd.floatValue - kEpsilon));
                     }
+
+                    EditorGUI.BeginChangeCheck();
+                    EditorGUILayout.PropertyField(fadeOutEnd, EditorStrings.Beam.FadeOutEnd);
+                    if(EditorGUI.EndChangeCheck())
+                    {
+                        setFadeOutEnd(Mathf.Max(fadeOutBegin.floatValue + kEpsilon, fadeOutEnd.floatValue));
+                    }
+
                     if (Application.isPlaying)
                     {
                         if(Config.Instance.fadeOutCameraTransform == null)
@@ -470,12 +513,16 @@ namespace VLB
             if (FoldableHeader.Begin(this, EditorStrings.Beam.Header2D))
             {
                 dimensions.CustomEnum<Dimensions>(EditorStrings.Beam.Dimensions, EditorStrings.Common.DimensionsEnumDescriptions);
-                DrawSortingLayerAndOrder();
+                DrawSortingLayer();
+                DrawSortingOrder();
             }
             FoldableHeader.End();
 
-            DrawInfos();
-            DrawEditInSceneButton();
+            if (DrawInfos())
+            {
+                DrawLineSeparator();
+            }
+
             DrawCustomActionButtons();
             DrawAdditionalFeatures();
             
@@ -499,33 +546,32 @@ namespace VLB
             foreach (var entity in m_Targets) entity._EditorSetMeshDirty();
         }
 
-        void DrawSortingLayerAndOrder()
+        void DrawSortingLayer()
         {
-            using (new EditorGUILayout.HorizontalScope())
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUI.showMixedValue = sortingLayerID.hasMultipleDifferentValues;
+            int layerIndex = System.Array.IndexOf(m_SortingLayerNames, SortingLayer.IDToName(sortingLayerID.intValue));
+            layerIndex = EditorGUILayout.Popup(EditorStrings.Beam.SortingLayer, layerIndex, m_SortingLayerNames);
+            EditorGUI.showMixedValue = false;
+
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUI.showMixedValue = sortingLayerID.hasMultipleDifferentValues;
-                int layerIndex = System.Array.IndexOf(m_SortingLayerNames, SortingLayer.IDToName(sortingLayerID.intValue));
-                layerIndex = EditorGUILayout.Popup(EditorStrings.Beam.SortingLayer, layerIndex, m_SortingLayerNames);
-                EditorGUI.showMixedValue = false;
-                if (EditorGUI.EndChangeCheck())
-                {
-                    sortingLayerID.intValue = SortingLayer.NameToID(m_SortingLayerNames[layerIndex]);
+                sortingLayerID.intValue = SortingLayer.NameToID(m_SortingLayerNames[layerIndex]);
 
-                    m_Targets.RecordUndoAction("Edit Sorting Layer",
-                        (VolumetricLightBeam beam) => beam.sortingLayerID = sortingLayerID.intValue); // call setters
-                }
+                m_Targets.RecordUndoAction("Edit Sorting Layer",
+                    (VolumetricLightBeam beam) => beam.sortingLayerID = sortingLayerID.intValue ); // call setters
+            }
+        }
 
-                using (new LabelWidth(40f))
-                {
-                    EditorGUI.BeginChangeCheck();
-                    EditorGUILayout.PropertyField(sortingOrder, EditorStrings.Beam.SortingOrder, GUILayout.MaxWidth(90f));
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        m_Targets.RecordUndoAction("Edit Sorting Order",
-                            (VolumetricLightBeam beam) => beam.sortingOrder = sortingOrder.intValue); // call setters
-                    }
-                }
+        void DrawSortingOrder()
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(sortingOrder, EditorStrings.Beam.SortingOrder);
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_Targets.RecordUndoAction("Edit Sorting Order",
+                    (VolumetricLightBeam beam) => beam.sortingOrder = sortingOrder.intValue ); // call setters
             }
         }
 
@@ -537,31 +583,19 @@ namespace VLB
                 EditorGUILayout.HelpBox(EditorStrings.Beam.HelpAnimatorWarning, MessageType.Warning);
         }
 
-        void DrawEditInSceneButton()
-        {
-            EditorGUI.BeginChangeCheck();
-            bool editInScene = EditorPrefs.GetBool(EditorStrings.Beam.PrefEditInScene, false);
-            editInScene = GUILayout.Toggle(editInScene, EditorStrings.Beam.ButtonEditInScene, EditorStyles.miniButton);
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorPrefs.SetBool(EditorStrings.Beam.PrefEditInScene, editInScene);
-                SceneView.RepaintAll();
-            }
-        }
-
         void DrawCustomActionButtons()
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button(EditorStrings.Beam.ButtonResetProperties, EditorStyles.miniButton))
+                if (GUILayout.Button(EditorStrings.Beam.ButtonResetProperties, EditorStyles.miniButtonLeft))
                 {
                     m_Targets.RecordUndoAction("Reset Light Beam Properties",
                         (VolumetricLightBeam beam) => { beam.Reset(); beam.GenerateGeometry(); } );
                 }
 
-                if(m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.geomMeshType == MeshType.Custom; }))
+                if (geomMeshType.intValue == (int)MeshType.Custom)
                 {
-                    if (GUILayout.Button(EditorStrings.Beam.ButtonGenerateGeometry, EditorStyles.miniButton))
+                    if (GUILayout.Button(EditorStrings.Beam.ButtonGenerateGeometry, EditorStyles.miniButtonRight))
                     {
                         foreach (var entity in m_Targets) entity.GenerateGeometry();
                     }
@@ -576,38 +610,36 @@ namespace VLB
 
         void DrawAdditionalFeatures()
         {
-            if (Application.isPlaying) return; // do not support adding additional components at runtime
-
+#if UNITY_5_5_OR_NEWER
             bool showButtonDust         = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.GetComponent<VolumetricDustParticles>() == null; });
-            bool showButtonOcclusion    = Config.Instance.featureEnabledDynamicOcclusion && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.GetComponent<DynamicOcclusionAbstractBase>() == null; });
+#else
+            bool showButtonDust = false;
+#endif
+            bool showButtonOcclusion    = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.GetComponent<DynamicOcclusionAbstractBase>() == null; });
             bool showButtonTriggerZone  = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.GetComponent<TriggerZone>() == null; });
-            bool showButtonEffect       = m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeam beam) => { return beam.GetComponent<EffectAbstractBase>() == null; });
 
-            using (new EditorGUILayout.HorizontalScope())
+            if (showButtonDust || showButtonOcclusion || showButtonTriggerZone)
             {
-                GUIStyle kStyle = GUI.skin.button;
-
-                if (showButtonDust && GUILayout.Button(EditorData.Instance.contentAddDustParticles, kStyle))
-                    AddComponentToTargets<VolumetricDustParticles>();
-
-                if (showButtonOcclusion && GUILayout.Button(EditorData.Instance.contentAddDynamicOcclusion, kStyle))
+                using (new EditorGUILayout.HorizontalScope())
                 {
-                    var menu = new GenericMenu();
-                    menu.AddItem(new GUIContent(EditorStrings.Beam.ButtonAddDynamicOcclusionRaycasting),  false, AddComponentToTargets<DynamicOcclusionRaycasting>);
-                    menu.AddItem(new GUIContent(EditorStrings.Beam.ButtonAddDynamicOcclusionDepthBuffer), false, AddComponentToTargets<DynamicOcclusionDepthBuffer>);
-                    menu.ShowAsContext();
-                }
+                    if (showButtonDust && GUILayout.Button(EditorStrings.Beam.ButtonAddDustParticles, EditorStyles.miniButton))
+                    {
+                        AddComponentToTargets<VolumetricDustParticles>();
+                    }
 
-                if (showButtonEffect && GUILayout.Button(EditorData.Instance.contentAddEffect, kStyle))
-                {
-                    var menu = new GenericMenu();
-                    menu.AddItem(new GUIContent(EditorStrings.Beam.ButtonAddEffectFlicker), false, AddComponentToTargets<EffectFlicker>);
-                    menu.AddItem(new GUIContent(EditorStrings.Beam.ButtonAddEffectPulse),   false, AddComponentToTargets<EffectPulse>);
-                    menu.ShowAsContext();
-                }
+                    if (showButtonOcclusion && GUILayout.Button(EditorStrings.Beam.ButtonAddDynamicOcclusion, EditorStyles.miniButton))
+                    {
+                        var menu = new GenericMenu();
+                        menu.AddItem(new GUIContent("+ Dynamic Occlusion (Raycasting)"),    false, AddComponentToTargets<DynamicOcclusionRaycasting>);
+                        menu.AddItem(new GUIContent("+ Dynamic Occlusion (Depth Texture)"), false, AddComponentToTargets<DynamicOcclusionDepthBuffer>);
+                        menu.ShowAsContext();
+                    }
 
-                if (showButtonTriggerZone && GUILayout.Button(EditorData.Instance.contentAddTriggerZone, kStyle))
-                    AddComponentToTargets<TriggerZone>();
+                    if (showButtonTriggerZone && GUILayout.Button(EditorStrings.Beam.ButtonAddTriggerZone, EditorStyles.miniButton))
+                    {
+                        AddComponentToTargets<TriggerZone>();
+                    }
+                }
             }
         }
 
@@ -674,103 +706,6 @@ namespace VLB
                 }
             }
             return null;
-        }
-
-        void DrawFallOffSliderHandle(VolumetricLightBeam beam, float lineStartOffset, float lineAlpha, Handles.CapFunction capFunction, string recordName, ref float value)
-        {
-            Debug.Assert(beam != null);
-
-            var fwd = beam.beamGlobalForward;
-
-            EditorGUI.BeginChangeCheck();
-            var sliderPos = beam.transform.position + fwd * value;
-            sliderPos = Handles.Slider(sliderPos, fwd, HandleUtility.GetHandleSize(sliderPos) * 0.1f, capFunction, 0.5f);
-
-            var savedCol = Handles.color;
-            {
-                var col = savedCol;
-                col.a = lineAlpha;
-                Handles.color = col;
-                Handles.DrawLine(beam.transform.position + fwd * lineStartOffset, sliderPos);
-                Handles.color = savedCol;
-            }
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, string.Format("Edit Beam '{0}'", recordName));
-
-                var sliderVec = (sliderPos - beam.transform.position);
-                var sliderLength = 0.0f;
-                if (Vector3.Dot(sliderVec, fwd) > 0.0f)
-                    sliderLength = sliderVec.magnitude;
-
-                value = sliderLength;
-                beam.UpdateAfterManualPropertyChange();
-            }
-        }
-
-        void DrawRadiusHandle(VolumetricLightBeam beam, Vector3 pos, string recordName, float value, System.Action<float> setValue)
-        {
-            Debug.Assert(beam != null);
-
-            var handleMatrix = Matrix4x4.TRS(
-                pos,
-                Quaternion.LookRotation(beam.transform.up, beam.beamGlobalForward) * Quaternion.Euler(0.0f, 45.0f, 0.0f), // rotate the circle handle to have both this and the Unity's light handle
-                Vector3.one);
-
-            using (new Handles.DrawingScope(handleMatrix))
-            {
-                var hdl = handleRadius;
-                EditorGUI.BeginChangeCheck();
-                hdl.radius = value;
-                hdl.DrawHandle();
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(beam, string.Format("Edit Beam '{0}'", recordName));
-                    setValue(hdl.radius);
-                    beam.UpdateAfterManualPropertyChange();
-                }
-            }
-        }
-
-        protected virtual void OnSceneGUI()
-        {
-            bool editInScene = EditorPrefs.GetBool(EditorStrings.Beam.PrefEditInScene, false);
-            if (!editInScene)
-                return;
-
-            var beam = target as VolumetricLightBeam;
-            Debug.Assert(beam != null);
-
-            Handles.color = beam.ComputeColorAtDepth(0.0f).ComputeComplementaryColor(true);
-            {
-                DrawRadiusHandle(beam, beam.transform.position, "Truncated Radius", beam.coneRadiusStart, (float v) => beam.coneRadiusStart = v);
-            }
-
-            if (!beam.hasMeshSkewing)
-            {
-                Handles.color = beam.ComputeColorAtDepth(beam.fallOffStart / beam.fallOffEnd).ComputeComplementaryColor(true);
-                {
-                    DrawFallOffSliderHandle(beam, 0.0f, 1.0f, Handles.CylinderHandleCap, "Start Distance", ref beam.fallOffStart);
-                }
-
-                Handles.color = beam.ComputeColorAtDepth(1.0f).ComputeComplementaryColor(true);
-                {
-                    VolumetricLightBeam.AttachedLightType lightType;
-                    var hasSpotLight = beam.GetLightSpotAttachedSlow(out lightType) != null;
-
-                    if (!hasSpotLight || !beam.fallOffEndFromLight)
-                    {
-                        DrawFallOffSliderHandle(beam, beam.fallOffStart, 0.5f, Handles.CubeHandleCap, "Range Limit", ref beam.fallOffEnd);
-                    }
-
-                    if (!hasSpotLight || !beam.spotAngleFromLight)
-                    {
-                        var fallOffEndPos = beam.transform.localToWorldMatrix.MultiplyPoint(beam.beamLocalForward * beam.fallOffEnd);
-                        DrawRadiusHandle(beam, fallOffEndPos, "Spot Angle", beam.coneRadiusEnd, (float v) => beam.coneRadiusEnd = v);
-                    }
-                }
-            }
         }
     }
 }

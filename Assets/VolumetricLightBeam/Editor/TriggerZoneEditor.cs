@@ -9,13 +9,16 @@ namespace VLB
     [CanEditMultipleObjects]
     public class TriggerZoneEditor : EditorCommon
     {
-        SerializedProperty setIsTrigger = null;
-        SerializedProperty rangeMultiplier = null;
+        SerializedProperty setIsTrigger, rangeMultiplier;
         TargetList<VolumetricLightBeam> m_Targets;
 
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            setIsTrigger = FindProperty((TriggerZone x) => x.setIsTrigger);
+            rangeMultiplier = FindProperty((TriggerZone x) => x.rangeMultiplier);
+
             m_Targets = new TargetList<VolumetricLightBeam>(targets);
         }
 

@@ -6,25 +6,19 @@ namespace VLB
 {
     public class DynamicOcclusionAbstractBaseEditor<T> : EditorCommon where T : DynamicOcclusionAbstractBase
     {
-        SerializedProperty updateRate = null;
-        SerializedProperty waitXFrames = null;
+        SerializedProperty updateRate, waitXFrames;
         protected TargetList<T> m_Targets;
 
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            updateRate = FindProperty((DynamicOcclusionDepthBuffer x) => x.updateRate);
+            waitXFrames = FindProperty((DynamicOcclusionDepthBuffer x) => x.waitXFrames);
+
             m_Targets = new TargetList<T>(targets);
         }
 
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            if (!Config.Instance.featureEnabledDynamicOcclusion)
-            {
-                EditorGUILayout.HelpBox(EditorStrings.DynOcclusion.HelpFeatureDisabled, MessageType.Warning);
-            }
-        }
 
         protected void DisplayCommonInspector()
         {
