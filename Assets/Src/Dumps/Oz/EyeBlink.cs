@@ -43,15 +43,28 @@ namespace Oz.Timeline
             else
             {
                 var actorObj = dicector.GetGenericBinding(_parentTrack);
-                var actor = actorObj.GetComponent<Actor>();
-                var facial = danceManager.GetCharacter(actor.Postion).Facial;
-
-                behaviour = new()
+                var actor = actorObj?.GetComponent<Actor>();
+                if (actor == null) actor = actorObj?.GetComponentInParent<Actor>();
+                if (actor == null)
                 {
-                    Asset = this,
-                    BlinkCurve = blinkCurve,
-                    Characters = new FacialBehaviour[] { facial },
-                };
+                    Debug.Log("Cannot found actor binding with: " + _parentTrack.name);
+                    behaviour = new()
+                    {
+                        Asset = this,
+                        BlinkCurve = blinkCurve,
+                        Characters = Array.Empty<FacialBehaviour>()
+                    };
+                }
+                else
+                {
+                    var facial = danceManager.GetCharacter(actor.Postion).Facial;
+                    behaviour = new()
+                    {
+                        Asset = this,
+                        BlinkCurve = blinkCurve,
+                        Characters = new FacialBehaviour[] { facial },
+                    };
+                }
             }
 
             return ScriptPlayable<EyeBlinkPlayableBehaviour>.Create(graph, behaviour);

@@ -40,11 +40,11 @@ namespace LapisPlayer
 
 #if UNITY_EDITOR
             var chs = CharactersStore.Instance.GetCharacters();
-            UiManager_OnActorChange(0, chs[0], chs[0].actors[0], uiManager);
-            UiManager_OnActorChange(1, chs[0], chs[0].actors[0], uiManager);
-            UiManager_OnActorChange(2, chs[0], chs[0].actors[0], uiManager);
-            UiManager_OnActorChange(3, chs[0], chs[0].actors[0], uiManager);
-            UiManager_OnActorChange(4, chs[0], chs[0].actors[0], uiManager);
+            UiManager_OnActorChange(0, chs[0], chs[0].actors[5], uiManager);
+            UiManager_OnActorChange(1, chs[0], chs[0].actors[5], uiManager);
+            UiManager_OnActorChange(2, chs[0], chs[0].actors[5], uiManager);
+            UiManager_OnActorChange(3, chs[0], chs[0].actors[5], uiManager);
+            UiManager_OnActorChange(4, chs[0], chs[0].actors[5], uiManager);
 
             var camare = GameObject.Find("DevCamera");
             var testObj = GameObject.Find("TestObj");
@@ -100,16 +100,13 @@ namespace LapisPlayer
             if (state == DanceState.Play)
             {
                 var activeChara = characters.Where(c => c != null).ToArray();
-                await _battleDanceManager.SetBattleDance(dance, activeChara);
+                bool setSuccess = await _battleDanceManager.SetBattleDance(dance, activeChara);
 
-                if (_battleDanceManager.Ready)
-                {
-                    ApplyLookats();
-                    sender.DancePlayingChangeSuccess(state);
+                if (!setSuccess) return;
 
-                    // 载入资源耗时可能导致音画不同步,载入后延迟开始播放可缓解该问题
-                    StartCoroutine(DelayStartPlay(1));
-                }
+                ApplyLookats();
+                sender.DancePlayingChangeSuccess(state);
+                StartCoroutine(DelayStartPlay(2));
             }
             else if (state == DanceState.Stop)
             {
@@ -119,18 +116,22 @@ namespace LapisPlayer
             }
             else
             {
-                if (_battleDanceManager.Ready)
-                {
-                    _battleDanceManager.Pause();
-                    sender.DancePlayingChangeSuccess(state);
-                }
+                _battleDanceManager.Pause();
             }
         }
 
         private IEnumerator DelayStartPlay(float delayTime)
         {
             yield return new WaitForSeconds(delayTime);
-            _battleDanceManager.Play();
+
+            if (_battleDanceManager.Ready())
+            {
+                _battleDanceManager.Play();
+            }
+            else
+            {
+                Debug.LogError("BattleDanceManager ready failed");
+            }
         }
 
         private void Update()

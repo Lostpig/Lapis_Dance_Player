@@ -27,12 +27,12 @@ namespace VLB
         /// RGBA plain color, if colorMode is Flat (takes account of the alpha value).
         /// </summary>
 #if UNITY_2018_1_OR_NEWER
-        [ColorUsageAttribute(false, true)]
+        [ColorUsage(false, true)]
 #else
         [ColorUsageAttribute(false, true, 0f, 8f, 0.125f, 3f)]
 #endif
-        [FormerlySerializedAs("colorValue")]
-        public Color color = Consts.FlatColor;
+        // [FormerlySerializedAs("colorValue")]
+        [SerializeField] public Color color = Consts.FlatColor;
 
         /// <summary>
         /// Gradient color applied along the beam, if colorMode is Gradient (takes account of the color and alpha variations).
@@ -51,8 +51,8 @@ namespace VLB
         public bool intensityModeAdvanced = false;
 
 
-        [SerializeField][Range(Consts.IntensityMin, Consts.IntensityMax)] float alphaInside = Consts.IntensityDefault;
-        [SerializeField][Range(Consts.IntensityMin, Consts.IntensityMax)] float alphaOutside = Consts.IntensityDefault;
+        [SerializeField][Range(Consts.IntensityMin, Consts.IntensityMax)] public float alphaInside = Consts.IntensityDefault;
+        [SerializeField][Range(Consts.IntensityMin, Consts.IntensityMax)] public float alphaOutside = Consts.IntensityDefault;
         [SerializeField] float Intensity = Consts.IntensityDefault;
 
         public float intensityInside { get => alphaInside; set => alphaInside = value; }
@@ -72,13 +72,15 @@ namespace VLB
         /// <summary>
         /// Get the spotAngle value from the light (when attached to a Spotlight) or not
         /// </summary>
-        [FormerlySerializedAs("angleFromLight")]
-        public bool spotAngleFromLight = true;
+
+        [SerializeField] public bool spotAngleFromLight = true;
 
         /// <summary>
         /// Spot Angle (in degrees). This doesn't take account of the radiusStart, and is not necessarily the same than the cone angle.
         /// </summary>
-        [Range(Consts.SpotAngleMin, Consts.SpotAngleMax)] public float spotAngle = Consts.SpotAngleDefault;
+        [Range(Consts.SpotAngleMin, Consts.SpotAngleMax)]
+        [SerializeField] 
+        public float spotAngle = Consts.SpotAngleDefault;
 
         /// <summary>
         /// Cone Angle (in degrees). This takes account of the radiusStart, and is not necessarily the same than the spot angle.
@@ -89,8 +91,7 @@ namespace VLB
         /// Start radius of the cone geometry.
         /// 0 will generate a perfect cone geometry. Higher values will generate truncated cones.
         /// </summary>
-        [FormerlySerializedAs("radiusStart")]
-        public float coneRadiusStart = Consts.ConeRadiusStart;
+        [SerializeField] public float coneRadiusStart = Consts.ConeRadiusStart;
 
         /// <summary>
         /// End radius of the cone geometry
@@ -131,18 +132,18 @@ namespace VLB
         /// Higher values give better looking results, but require more memory and graphic performance.
         /// This value is only used when geomMeshType is Custom.
         /// </summary>
-        [FormerlySerializedAs("geomSides")]
-        public int geomCustomSides = Consts.GeomSidesDefault;
+        // [FormerlySerializedAs("geomSides")]
+        [SerializeField] public int geomSides = Consts.GeomSidesDefault;
 
         /// <summary>
         /// Returns the effective number of Sides used by this beam.
         /// Could come from the shared mesh, or the custom mesh
         /// </summary>
-        public int geomSides
-        {
-            get { return geomMeshType == MeshType.Custom ? geomCustomSides : Config.Instance.sharedMeshSides; }
-            set { geomCustomSides = value; Debug.LogWarning("The setter VLB.VolumetricLightBeam.geomSides is OBSOLETE and has been renamed to geomCustomSides."); }
-        }
+        // public int geomSides
+        // {
+        //     get { return geomMeshType == MeshType.Custom ? geomCustomSides : Config.Instance.sharedMeshSides; }
+        //     set { geomCustomSides = value; Debug.LogWarning("The setter VLB.VolumetricLightBeam.geomSides is OBSOLETE and has been renamed to geomCustomSides."); }
+        // }
 
         /// <summary>
         /// Set a custom Segments for the cone geometry.
@@ -197,21 +198,21 @@ namespace VLB
         /// <summary>
         /// Show the cone cap (only visible from inside)
         /// </summary>
-        public bool geomCap = Consts.GeomCap;
+        [SerializeField] public bool geomCap = Consts.GeomCap;
 
         /// <summary>
         /// Get the fallOffEnd value from the light (when attached to a Spotlight) or not
         /// </summary>
-        [FormerlySerializedAs("fadeEndFromLight")]
-        public bool fallOffEndFromLight = true;
+        // [FormerlySerializedAs("fadeEndFromLight")]
+        [SerializeField] public bool fadeEndFromLight = true;
 
-        [System.Obsolete("Use 'fallOffEndFromLight' instead")]
-        public bool fadeEndFromLight { get { return fallOffEndFromLight; } set { fallOffEndFromLight = value; } }
+        // [System.Obsolete("Use 'fallOffEndFromLight' instead")]
+        // public bool fadeEndFromLight { get { return fallOffEndFromLight; } set { fallOffEndFromLight = value; } }
 
         /// <summary>
         /// Light attenuation formula used to compute fading between 'fallOffStart' and 'fallOffEnd'
         /// </summary>
-        public AttenuationEquation attenuationEquation = Consts.AttenuationEquationDefault;
+        [SerializeField] public AttenuationEquation attenuationEquation = Consts.AttenuationEquationDefault;
 
         /// <summary>
         /// Custom blending mix between linear and quadratic attenuation formulas.
@@ -220,7 +221,9 @@ namespace VLB
         /// 0.5 = Mix between 50% Linear and 50% Quadratic
         /// 1.0 = 100% Quadratic
         /// </summary>
-        [Range(0f, 1f)] public float attenuationCustomBlending = Consts.AttenuationCustomBlending;
+        [Range(0f, 1f)]
+        [SerializeField]
+        public float attenuationCustomBlending = Consts.AttenuationCustomBlending;
 
         /// <summary>
         /// Proper lerp value between linear and quadratic attenuation, used by the shader.
@@ -237,8 +240,8 @@ namespace VLB
         /// Distance from the light source (in units) the beam will start to fade out.
         /// </summary>
         /// 
-        [SerializeField] float fadeStart = Consts.FallOffStart;
-        [SerializeField] float fadeEnd = Consts.FallOffEnd;
+        [SerializeField] public float fadeStart = Consts.FallOffStart;
+        [SerializeField] public float fadeEnd = Consts.FallOffEnd;
 
         public float fallOffStart { get => fadeStart; set => fadeStart = value; }
         public float fallOffEnd { get => fadeEnd; set => fadeEnd = value; }
@@ -251,26 +254,27 @@ namespace VLB
         /// 0 = hard intersection
         /// Higher values produce soft intersection when the beam intersects other opaque geometry.
         /// </summary>
-        public float depthBlendDistance = Consts.DepthBlendDistance;
+        [SerializeField] public float depthBlendDistance = Consts.DepthBlendDistance;
 
         /// <summary>
         /// Distance from the camera the beam will fade.
         /// 0 = hard intersection
         /// Higher values produce soft intersection when the camera is near the cone triangles.
         /// </summary>
+        [SerializeField] 
         public float cameraClippingDistance = Consts.CameraClippingDistance;
 
         /// <summary>
         /// Boost intensity factor when looking at the beam from the inside directly at the source.
         /// </summary>
         [Range(0f, 1f)]
-        public float glareFrontal = Consts.GlareFrontal;
+        [SerializeField] public float glareFrontal = Consts.GlareFrontal;
 
         /// <summary>
         /// Boost intensity factor when looking at the beam from behind.
         /// </summary>
         [Range(0f, 1f)]
-        public float glareBehind = Consts.GlareBehind;
+        [SerializeField] public float glareBehind = Consts.GlareBehind;
 
         /// <summary>
         /// Modulate the thickness of the beam when looking at it from the side.
@@ -771,14 +775,14 @@ namespace VLB
 
             coneRadiusStart = Consts.ConeRadiusStart;
             geomMeshType = Consts.GeomMeshType;
-            geomCustomSides = Consts.GeomSidesDefault;
+            geomSides = Consts.GeomSidesDefault;
             geomCustomSegments = Consts.GeomSegmentsDefault;
             geomCap = Consts.GeomCap;
 
             attenuationEquation = Consts.AttenuationEquationDefault;
             attenuationCustomBlending = Consts.AttenuationCustomBlending;
 
-            fallOffEndFromLight = true;
+            fadeEndFromLight = true;
             fallOffStart = Consts.FallOffStart;
             fallOffEnd = Consts.FallOffEnd;
 
@@ -862,7 +866,7 @@ namespace VLB
             if (lightSpot && lightSpot.type == LightType.Spot)
             {
                 if (intensityFromLight) { intensityModeAdvanced = false; intensityGlobal = lightSpot.intensity; }
-                if (fallOffEndFromLight) fallOffEnd = lightSpot.range;
+                if (fadeEndFromLight) fallOffEnd = lightSpot.range;
                 if (spotAngleFromLight) spotAngle = lightSpot.spotAngle;
                 if (colorFromLight)
                 {
@@ -888,7 +892,7 @@ namespace VLB
             depthBlendDistance = Mathf.Max(depthBlendDistance, 0f);
             cameraClippingDistance = Mathf.Max(cameraClippingDistance, 0f);
 
-            geomCustomSides = Mathf.Clamp(geomCustomSides, Consts.GeomSidesMin, Consts.GeomSidesMax);
+            geomSides = Mathf.Clamp(geomSides, Consts.GeomSidesMin, Consts.GeomSidesMax);
             geomCustomSegments = Mathf.Clamp(geomCustomSegments, Consts.GeomSegmentsMin, Consts.GeomSegmentsMax);
 
             fresnelPow = Mathf.Max(0f, fresnelPow);

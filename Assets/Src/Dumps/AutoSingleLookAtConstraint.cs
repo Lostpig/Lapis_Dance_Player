@@ -23,10 +23,14 @@ public class AutoSingleLookAtConstraint : MonoBehaviour
     public void DoLookAt() {
         var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
         var chara = danceManager.GetCharacter(positionIndex - 1);
-        var lookAt = Utility.FindNodeByRecursion(chara.SkeletonRoot, lookAtName);
 
-        var s = _lookAtConstraint.GetSource(0);
-        s.sourceTransform = lookAt.transform;
-        _lookAtConstraint.SetSource(0, s);
+        if (chara != null)
+        {
+            var lookAt = Utility.FindNodeByRecursion(chara.SkeletonRoot, lookAtName);
+
+            var s = _lookAtConstraint.GetSource(0);
+            s.sourceTransform = lookAt.transform;
+            _lookAtConstraint.SetSource(0, s);
+        }
     }
 }

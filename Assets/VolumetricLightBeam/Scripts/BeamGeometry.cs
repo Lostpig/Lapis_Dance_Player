@@ -242,7 +242,7 @@ namespace VLB
             {
                 case MeshType.Custom:
                     {
-                        coneMesh = MeshGenerator.GenerateConeZ_Radius(1f, 1f, 1f, m_Master.geomCustomSides, m_Master.geomCustomSegments, m_Master.geomCap, Config.Instance.requiresDoubleSidedMesh);
+                        coneMesh = MeshGenerator.GenerateConeZ_Radius(1f, 1f, 1f, m_Master.geomSides, m_Master.geomCustomSegments, m_Master.geomCap, Config.Instance.requiresDoubleSidedMesh);
                         coneMesh.hideFlags = Consts.ProceduralObjectsHideFlags;
                         meshFilter.mesh = coneMesh;
                         break;

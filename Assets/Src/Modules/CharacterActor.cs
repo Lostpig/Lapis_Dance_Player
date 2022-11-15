@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Animations.SpringBones;
 using Unity.Animations.SpringBones.GameObjectExtensions;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace LapisPlayer
@@ -36,8 +37,9 @@ namespace LapisPlayer
                 }
                 var springBone = node.AddComponent<SpringBone>();
                 springBone.radius = bone.radius;
-                springBone.dragForce = bone.dragForce * 0.8f;
-                springBone.stiffnessForce = Math.Min(bone.stiffnessForce * 16000f, 2000f);
+                springBone.springForce = bone.externalForce;
+                springBone.dragForce = bone.dragForce * 0.75f;
+                springBone.stiffnessForce = Math.Min(bone.stiffnessForce * 16000f, 2500f);
 
                 if (!string.IsNullOrEmpty(bone.sibilingPath))
                 {
@@ -218,6 +220,7 @@ namespace LapisPlayer
         RuntimeAnimatorController _baseController;
         FacialBehaviour _faceBehaviour;
         bool _isCommonActor = false;
+        bool _physicalBinding = false;
 
         private List<AvatarPart> _parts = new();
         public List<AvatarPart> Parts => _parts;
@@ -285,6 +288,7 @@ namespace LapisPlayer
             _heelBehaviour.ApplySettings(bodySetting.HeelSetting);
 
             Root.transform.localScale = new Vector3(Scales.ScaleRatio, Scales.ScaleRatio, Scales.ScaleRatio);
+
             // 添加了这段反而显示不正常
             // 不确定 scaleSetting.ListScaleData 是如何生效的
             /* foreach (var scl in scaleSetting.ListScaleData)
@@ -293,7 +297,7 @@ namespace LapisPlayer
                 sclBone.transform.localScale = scl.Scale;
             } */
 
-            BindPhysicalBones();
+            // BindPhysicalBones();
         }
         private void BuildAvatarPart(AvatarSetting setting, string rename = "")
         {
@@ -340,19 +344,23 @@ namespace LapisPlayer
                 SetExpression(eFaceExpression.USUALLY, MouthState.CLOSE);
             }
         }
-        public void PlayBaseAnimation()
+        public void PlayBaseAnimation(string stateName = "Body@Idle")
         {
-            SkeletonRoot.GetComponent<Animator>().Play("Body@Idle");
+            SkeletonRoot.GetComponent<Animator>().Play(stateName);
         }
         public void StopBaseAnimation()
         {
-            SkeletonRoot.GetComponent<Animator>().Play("Body@Idle1");
+            SkeletonRoot.GetComponent<Animator>().StopPlayback();
         }
 
-        public void SetBaseAnimationClip(AnimationClip clip)
+        public void SetBaseAnimationController(AnimatorOverrideController controller)
+        {
+            SkeletonRoot.GetComponent<Animator>().runtimeAnimatorController = controller;
+        }
+        public void SetBaseAnimationClip(AnimationClip clip, string stateName = "Body@Idle")
         {
             var ctrlInstance = new AnimatorOverrideController(_baseController);
-            ctrlInstance["Body@Idle"] = clip;
+            ctrlInstance[stateName] = clip;
             SkeletonRoot.GetComponent<Animator>().runtimeAnimatorController = ctrlInstance;
         }
         public void SetPose(string poseName)
@@ -378,8 +386,20 @@ namespace LapisPlayer
             return _faceBehaviour.Facial.GetAllExpressions();
         }
 
-        private void BindPhysicalBones()
+        public void SetPosition (Vector3 position)
         {
+            Root.transform.position = new Vector3(position.x, position.y + Heel.tweakFootHeight, position.z);
+        }
+        public void SetLocalPosition(Vector3 localPosition)
+        {
+            var position = Root.transform.parent.TransformPoint(localPosition);
+            SetPosition(position);
+            // Root.transform.localPosition = new Vector3(localPosition.x, localPosition.y + Heel.tweakFootHeight, localPosition.z);
+        }
+        public void BindPhysicalBones()
+        {
+            if (_physicalBinding) return;
+
             if (ConfigManager.Instance.PhysicalType == 1)
             {
                 BindDynamicBone();
@@ -388,6 +408,8 @@ namespace LapisPlayer
             {
                 BindSpringBone();
             }
+
+            _physicalBinding = true;
         }
         // TODO
         // DynamicBone / SpringBone 都会有穿模问题
@@ -466,20 +488,6 @@ namespace LapisPlayer
 
                 dict.Add(item, sklItem);
                 MergeReference(sklItem, item, ref dict);
-            }
-        }
-        private void MovePartItems(Transform skl, Transform partRoot)
-        {
-            var count = partRoot.childCount;
-            Transform[] items = new Transform[count];
-            for (int i = 0; i < count; i++)
-            {
-                items[i] = partRoot.GetChild(i);
-            }
-            foreach (var item in items)
-            {
-                if (item.name == "Reference") continue;
-                item.SetParent(skl);
             }
         }
         private void ReplaceMeshBones(SkinnedMeshRenderer mesh, ref Dictionary<Transform, Transform> dict)

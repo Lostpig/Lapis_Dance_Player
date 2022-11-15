@@ -2,6 +2,7 @@
 using System;
 using UnityEngine.Networking;
 using UnityEngine;
+using System.Collections;
 
 namespace LapisPlayer
 {
@@ -27,12 +28,33 @@ namespace LapisPlayer
                 _ => (".wav", AudioType.WAV),
             };
         }
-
-        public async Task<AudioClip> LoadAudioClip(string soundBank, string eventHash)
+        
+        public IEnumerator PlayAudioClip (string fileName, AudioType audioType, AudioSource source)
         {
-            var (ext, audioType) = GetFileExt();
+            string filePath = ConfigManager.Instance.SoundBanks + "/" + fileName;
+            string fullPath = "file:///" + filePath;
+            AudioClip clip = null;
 
-            string filePath = ConfigManager.Instance.SoundBanks + "/" + soundBank + "/" + eventHash + ext;
+            using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(fullPath, audioType);
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log($"Audio path: " + filePath);
+                Debug.Log($"{www.error}");
+            }
+            else
+            {
+                clip = DownloadHandlerAudioClip.GetContent(www);
+            }
+
+            source.clip = clip;
+            source.Play();
+        }
+
+        public async Task<AudioClip> LoadAudioClip(string fileName, AudioType audioType)
+        {
+            string filePath = ConfigManager.Instance.SoundBanks + "/" + fileName;
             string fullPath = "file:///" + filePath;
             AudioClip clip = null;
             float startTime = Time.time;
@@ -51,7 +73,11 @@ namespace LapisPlayer
                     }
                 }
 
-                if (www.result == UnityWebRequest.Result.ProtocolError) Debug.Log($"{www.error}");
+                if (www.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.Log($"Audio path: " + filePath);
+                    Debug.Log($"{www.error}");
+                }
                 else
                 {
                     clip = DownloadHandlerAudioClip.GetContent(www);
@@ -63,6 +89,11 @@ namespace LapisPlayer
             }
 
             return clip;
+        }
+        public Task<AudioClip> LoadAudioClip(string soundBank, string eventHash)
+        {
+            var (ext, audioType) = GetFileExt();
+            return LoadAudioClip(soundBank + "/" + eventHash + ext, audioType);
         }
     }
 }

@@ -26,15 +26,15 @@ public class SeanPostProcessSetting
 public class PiplineSetting : EffectSetting<PiplineSetting>
 {
     // Fields
-    public float ratio; // 0x18
-    public InterpFloat resolutionScale; // 0x20
-    private PiplineType _piplineType; // 0x28
-    public InterpVector2 CameraClipping; // 0x30
-    public InterpBool AllowHDR; // 0x38
-    public InterpBool AllowMSAA; // 0x40
-    private AntiAilasing _AntiAilas; // 0x48
-    public DepthTextureMode depthTextureMode; // 0x4c
-    public MRTDataTexture MRTTexture; // 0x50
+    [SerializeField] public float ratio; // 0x18
+    [SerializeField] public InterpFloat resolutionScale; // 0x20
+    [SerializeField] private PiplineType _piplineType; // 0x28
+    [SerializeField] public InterpVector2 CameraClipping; // 0x30
+    [SerializeField] public InterpBool AllowHDR; // 0x38
+    [SerializeField] public InterpBool AllowMSAA; // 0x40
+    [SerializeField] private AntiAilasing _AntiAilas; // 0x48
+    [SerializeField] public DepthTextureMode depthTextureMode; // 0x4c
+    [SerializeField] public MRTDataTexture MRTTexture; // 0x50
 
     // Properties
     public PiplineType piplineType { get; set; }

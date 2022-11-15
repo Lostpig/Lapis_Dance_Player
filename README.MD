@@ -2,23 +2,24 @@
 ### Lapis Re:LiGHTs 模型查看器
 
 ---
+感谢[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23-github-io.pages.dev/lapis-datamine-notes/lapis-datamine-notes) 
+运行所需要使用的manifest.json和AssetBundles都来自[@bromine0x23](https://github.com/bromine0x23)的资源站
+
 ### 注意点
 必须用OpenGL模式运行，否则着色器会出错，导致渲染错误  
 
 ### 所需资源
 依赖游戏的 AssetBundles, manifest.json, SoundBank  
   
-manifest.json: 需要将游戏的manifest.xml解密,并转为json  
+manifest.json: 需要将游戏的manifest.xml解密，并转为json  
 
 AssetBundles: 游戏的部分AssetBundle是加密的,需要提前解密;AssetBundles的目录结构不可修改  
 > 在unity editor里可以直接用游戏的AssetBundle运行，editor可无视平台限制读取AB包  
 > 但是build为windows平台可执行程序后，由于原AB包的target platform是Android  
 > 所以需要使用[AssetTool.Net](https://github.com/nesrak1/AssetsTools.NET)修改原AssetBundle文件后才能读取  
 
-SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结构为`原bnk文件名/(wwise number).wav`,如`MUSIC_0001/413274000.wav`  
+SoundBank: 已放弃集成wwise,需要提取出音频文件,提取后的目录结构为`原bnk文件名/(wwise number).ogg`,如`MUSIC_0001/413274000.ogg`  
 > 如果提取为其他格式，可以在`SoundBankLoader.LoadAudioClip`里修改相关代码  
-  
-解包/提取方面的更多详情请参考[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23.github.io/lapis-datamine-notes/lapis-datamine-notes.html)  
   
 ---
 
@@ -87,6 +88,32 @@ SoundBank: 目前不支持wwise,需要提取出wav文件,提取后的目录结�
   ]
 }
 ```
+
+#### Config/stage.json 场景配置文件
+```js
+{
+  "stages": [
+    {
+      "id": "BG301",                              // id,唯一值
+      "name": "supernova 舞台",                   // 名称,随意设置
+      "prefab": "SceneAssets/Scene_stage/BG301/Prefab/BG301", // 场景资源路径
+      "height": 0.01                              // 地面修正高度
+    }
+  ]
+}
+```
+
+#### Config/mainscene.json 主界面配置
+```js
+{
+  "stage": "BG108",             // 主界面场景ID,需要与stage.json中的场景id匹配
+  "p1": "Alpha/r001",           // P1位置角色actor标识，格式为"{character.name}/{actor.name}"，需要与character.json中的匹配
+  "p2": "Alpha/r001",           // P2位置角色，同上
+  "p3": "Alpha/r001",           // P3位置角色，同上
+  "bgms": []                    // 主界面可用BGM列表
+}
+```
+
 
 ---
 

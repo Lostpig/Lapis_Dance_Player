@@ -63,7 +63,6 @@ namespace LapisPlayer
             characterSetting.ShortName = charaToken.Value<string>("shortName");
             characterSetting.Label = charaToken.Value<string>("label");
 
-
             var actors = charaToken["actors"].Children().ToList();
             characterSetting.actors = actors.Select(actor =>
             {

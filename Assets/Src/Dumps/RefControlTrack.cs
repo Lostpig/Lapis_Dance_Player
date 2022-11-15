@@ -36,11 +36,13 @@ namespace BaseTimeLine
         public ControlItem[] Items;
         GameObject[] _gos;
         bool[] _readys;
+        bool[] _active;
 
         public override void OnBehaviourPlay(Playable playable, FrameData info)
         {
             _gos = new GameObject[Items.Length];
             _readys = new bool[Items.Length];
+            _active = new bool[Items.Length];
 
             for (int i = 0; i < Items.Length; i++)
             {
@@ -54,11 +56,12 @@ namespace BaseTimeLine
                 {
                     _readys[i] = false;
                 }
+                _active[i] = false;
             }
         }
         public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            var time = playable.GetTime() / playable.GetDuration() + 0.004;
+            var time = playable.GetTime() / playable.GetDuration() + 0.05;
             // Debug.Log(time);
 
             for (int i = 0; i < Items.Length; i++)
@@ -76,13 +79,17 @@ namespace BaseTimeLine
 
             if (time >= item.LifeTime.end)
             {
+                Debug.Log("Ref Off:" + go.name);
+
                 go.SetActive(!item.On);
                 _readys[index] = false;
             }
-            else if (time >= item.LifeTime.start && !item.apply)
+            else if (time >= item.LifeTime.start && !_active[index])
             {
+                Debug.Log("Ref On:" + go.name);
+
                 go.SetActive(item.On);
-                item.apply = true;
+                _active[index] = true;
             }
         }
     }

@@ -1,8 +1,11 @@
 ﻿using Cinemachine;
+using Oz.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.TextCore.Text;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -10,8 +13,9 @@ namespace LapisPlayer
 {
     public class BattleDanceManager : IDanceManager
     {
-        public bool Ready { get; private set; }
         DanceState _state = DanceState.Stop;
+        public DanceState State => _state;
+
         GameObject _stage;
         GameObject _timeline;
         PlayableDirector _director;
@@ -26,13 +30,13 @@ namespace LapisPlayer
         DanceSetting _danceSetting;
         StageData _stageSetting;
 
-        public async Task SetBattleDance(string danceKey, string[] actorKeys)
+        public async Task<bool> SetBattleDance(string danceKey, string[] actorKeys)
         {
             _danceSetting = DanceStore.Instance.GetDance(danceKey);
             if (_danceSetting.CharacterCount > actorKeys.Length)
             {
                 Debug.LogError("Create BattleDance failed, character count less than " + _danceSetting.CharacterCount);
-                return;
+                return false;
             }
             positions = _danceSetting.CharacterCount switch
             {
@@ -43,29 +47,40 @@ namespace LapisPlayer
                 _ => new int[] { 0 },
             };
 
-            LoadTimeline();
+            try
+            {
+                LoadTimeline();
 
-            LoadStage();
-            BindingCharacters(actorKeys);
+                LoadStage();
+                BindingCharacters(actorKeys);
 
-            await BindingAudio();
-            BindingCamare();
+                await BindingAudio();
+                BindingCamare();
 
-            SetClipTimes();
-            // SolveBugs(danceSetting);
+                SetClipTimes();
 
-            _director.time = 0.005;
-            Ready = true;
+                ApplySceneSetting();
+
+                _director.time = 0.01;
+                _director.Evaluate();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                return false;
+            }
         }
         public void Clear()
         {
             GameObject.Destroy(_stage);
             GameObject.Destroy(_timeline);
 
+            _stage = null;
+            _timeline = null;
             _characters = null;
             _director = null;
-
-            Ready = false;
         }
 
         private void LoadTimeline()
@@ -86,7 +101,7 @@ namespace LapisPlayer
             }
 
             var refObjs = _timeline.GetComponentsInChildren<ReferenceObject>(true);
-            foreach(var refObj in refObjs)
+            foreach (var refObj in refObjs)
             {
                 ReferenceStore.Instance.AddReference(refObj);
             }
@@ -156,14 +171,17 @@ namespace LapisPlayer
                 Utility.ActiveToTop(posObj);
 
                 chara.Root.transform.SetParent(posObj.transform);
-                SetByStage(chara.Root);
+                SetByStage(chara);
 
                 chara.Root.name = "Actor " + posStr;
                 chara.SkeletonRoot.name = "Model " + posStr;
 
                 chara.Root.AddComponent<Actor>().BindPosition(pos);
 
+                chara.SetPose("Stand");
+                chara.PlayBaseAnimation();
                 chara.SetPlaying(true);
+
                 _characters[pos] = chara;
             }
         }
@@ -261,14 +279,43 @@ namespace LapisPlayer
                 }
             }
 
+            // 特殊处理
+            // Ray - Beautiful World 的时间轴衔接不起来，不如直接放到最后
+            if (_danceSetting.ID == "MUSIC_0028")
+            {
+                _lastClipStart = 0;
+                _lastClipEnd = _director.duration;
+            }
+
             Debug.Log("Set dance track loop start: " + _lastClipStart + ", end: " + _lastClipEnd);
         }
-        public void SetLoopTime (double start, double end)
+        public void SetLoopTime(double start, double end)
         {
             _lastClipStart = start;
             _lastClipEnd = end;
         }
 
+        public bool Ready()
+        {
+            if (_stage == null || _timeline == null || _director == null || _characters == null)
+            {
+                return false;
+            }
+
+            int activeCount = 0;
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                if (_characters[i] != null)
+                {
+                    _characters[i].BindPhysicalBones();
+                    activeCount++;
+                }
+            }
+
+            if (activeCount < _danceSetting.CharacterCount) return false;
+
+            return true;
+        }
         public void Play()
         {
             if (_state == DanceState.Play) return;
@@ -313,24 +360,57 @@ namespace LapisPlayer
             }
         }
 
-
-        private void SetByStage(GameObject charaGo)
+        private void SetByStage(CharacterActor actor)
         {
             if (_stageSetting.ID == "BG2004")
             {
-                charaGo.transform.localPosition = new Vector3(0, 0, 7.5f);
-                charaGo.transform.localRotation = Quaternion.Euler(new Vector3(-90, 90, -90));
+                actor.SetLocalPosition(new Vector3(0, 0, 7.5f));
+                actor.Root.transform.localRotation = Quaternion.Euler(new Vector3(-90, 90, -90));
             }
             else if (_stageSetting.ID == "BG307")
             {
-                charaGo.transform.localPosition = new Vector3(0, 1.055f, 0);
-                charaGo.transform.localRotation = Quaternion.identity;
+                actor.SetLocalPosition(new Vector3(0, 1.055f, 0));
+                actor.Root.transform.localRotation = Quaternion.identity;
             }
             else
             {
-                charaGo.transform.localPosition = Vector3.zero;
-                charaGo.transform.localRotation = Quaternion.identity;
+                actor.SetLocalPosition(Vector3.zero);
+                actor.Root.transform.localRotation = Quaternion.identity;
             }
+
+            // 花为乙女舞台有个升降,跟随ShadowPos随动能解决问题...
+            // 虽然不应该是这么实现的,不过找不到其他相关控制的数据了
+            if (_stageSetting.ID == "BG304")
+            {
+                var topLight = Utility.FindNodeByRecursion(_stage, "TopLight");
+                var shadowPos = Utility.FindNodeByRecursion(_stage, "ShadowPos");
+                var hc = shadowPos.AddComponent<HeightControlBehaviour>();
+                hc.Initialize(topLight.transform);
+
+                var lightSpots = _stage.GetComponentsInChildren<LightSpotHorizontal>();
+                foreach (var lightSpot in lightSpots)
+                {
+                    lightSpot.shadowPos = shadowPos.transform;
+                }
+            }
+        }
+        private void ApplySceneSetting()
+        {
+            var sceneEnv = _stage.GetComponent<SceneEnvironment>();
+
+            // 镜头参数控制
+            var CameraClipping = sceneEnv.SettingsProfile.setting.DataSource.CameraClipping;
+            if (CameraClipping.Override)
+            {
+                var cams = _timeline.GetComponentsInChildren<CinemachineVirtualCamera>();
+                foreach (var cam in cams)
+                {
+                    cam.m_Lens.NearClipPlane = CameraClipping.value.x;
+                    cam.m_Lens.FarClipPlane = CameraClipping.value.y;
+                }
+            }
+
+            // TODO 其他渲染、灯光、阴影、着色器设置等...
         }
     }
 }

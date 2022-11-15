@@ -114,6 +114,7 @@ namespace LapisPlayer
             character.Root.transform.SetParent(_timelineRoot.transform);
             _characters[characterPos] = character;
             character.PlayBaseAnimation();
+            character.BindPhysicalBones();
         }
         public CharacterActor GetCharacter(int characterPos)
         {
@@ -203,9 +204,7 @@ namespace LapisPlayer
                 var chara = _characters[i];
                 if (chara == null) continue;
 
-                // float y = (1 - chara.Scales.ScaleRatio) / 4f + chara.Heel.tweakFootHeight;
-                float y = chara.Heel.tweakFootHeight;
-                chara.Root.transform.localPosition = new Vector3(xpos[idx], y, zpos[idx]);
+                chara.SetLocalPosition(new Vector3(xpos[idx], 0, zpos[idx]));
                 idx++;
             }
         }

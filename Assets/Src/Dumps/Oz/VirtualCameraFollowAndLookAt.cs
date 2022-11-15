@@ -27,8 +27,17 @@ namespace Oz.Timeline
             if (lookAtName == "HeadFix") lookAtName = "Head_Point";
             if (followName == "NeckFix") followName = "Bip001_Neck";
             if (lookAtName == "NeckFix") lookAtName = "Bip001_Neck";
+            if (followName == "KneeFix") followName = "Bip001_L_Calf";
             if (lookAtName == "KneeFix") lookAtName = "Bip001_L_Calf";
-            if (lookAtName == "KneeFix") lookAtName = "Bip001_L_Calf";
+
+            if (string.IsNullOrEmpty(followName) && !string.IsNullOrEmpty(lookAtName))
+            {
+                followName = lookAtName;
+            }
+            if (string.IsNullOrEmpty(lookAtName) && !string.IsNullOrEmpty(followName))
+            {
+                lookAtName = followName;
+            }
         }
         public void ApplyLookAt(ICinemachineCamera cinemachineCamera)
         {
@@ -46,6 +55,8 @@ namespace Oz.Timeline
                 Debug.Log("ApplyLookAt Failed: positionIndex = " + positionIndex + ", self = " + name);
                 return;
             }
+
+
 
             var follow = Utility.FindNodeByRecursion(character.SkeletonRoot, followName);
             var lookAt = Utility.FindNodeByRecursion(character.SkeletonRoot, lookAtName);

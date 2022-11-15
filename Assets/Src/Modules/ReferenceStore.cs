@@ -25,6 +25,7 @@ namespace LapisPlayer
                 if (ro != alive)
                 {
                     Debug.LogError("Reference error: different object has same guid = " + ro.GUID);
+                    guidDict[ro.GUID] = ro;
                 }
                 return;
             }

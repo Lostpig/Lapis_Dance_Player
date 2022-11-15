@@ -45,8 +45,8 @@ namespace VLB
 
             intensityFromLight = FindProperty((VolumetricLightBeam x) => x.intensityFromLight);
             intensityModeAdvanced = FindProperty((VolumetricLightBeam x) => x.intensityModeAdvanced);
-            intensityInside = FindProperty((VolumetricLightBeam x) => x.intensityInside);
-            intensityOutside = FindProperty((VolumetricLightBeam x) => x.intensityOutside);
+            intensityInside = FindProperty((VolumetricLightBeam x) => x.alphaInside);
+            intensityOutside = FindProperty((VolumetricLightBeam x) => x.alphaOutside);
 
             blendingMode = FindProperty((VolumetricLightBeam x) => x.blendingMode);
             shaderAccuracy = FindProperty((VolumetricLightBeam x) => x.shaderAccuracy);
@@ -62,13 +62,13 @@ namespace VLB
             coneRadiusStart = FindProperty((VolumetricLightBeam x) => x.coneRadiusStart);
 
             geomMeshType = FindProperty((VolumetricLightBeam x) => x.geomMeshType);
-            geomCustomSides = FindProperty((VolumetricLightBeam x) => x.geomCustomSides);
+            geomCustomSides = FindProperty((VolumetricLightBeam x) => x.geomSides);
             geomCustomSegments = FindProperty((VolumetricLightBeam x) => x.geomCustomSegments);
             geomCap = FindProperty((VolumetricLightBeam x) => x.geomCap);
 
-            fallOffEndFromLight = FindProperty((VolumetricLightBeam x) => x.fallOffEndFromLight);
-            fallOffStart = FindProperty((VolumetricLightBeam x) => x.fallOffStart);
-            fallOffEnd = FindProperty((VolumetricLightBeam x) => x.fallOffEnd);
+            fallOffEndFromLight = FindProperty((VolumetricLightBeam x) => x.fadeEndFromLight);
+            fallOffStart = FindProperty((VolumetricLightBeam x) => x.fadeStart);
+            fallOffEnd = FindProperty((VolumetricLightBeam x) => x.fadeEnd);
 
             attenuationEquation = FindProperty((VolumetricLightBeam x) => x.attenuationEquation);
             attenuationCustomBlending = FindProperty((VolumetricLightBeam x) => x.attenuationCustomBlending);

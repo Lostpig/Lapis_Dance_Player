@@ -54,25 +54,16 @@ namespace Oz.Timeline
             var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
             var facial = danceManager.GetCharacter(actor.Postion).Facial;
 
-            VowelPlayableBehaviour behaviour = new()
-            {
-                sobj = this.sobj,
-                facial = facial
-            };
-            return ScriptPlayable<VowelPlayableBehaviour>.Create(graph, behaviour);
-        }
-    }
-
-    public class VowelPlayableBehaviour : PlayableBehaviour
-    {
-        public VowelScriptObject sobj;
-        public FacialBehaviour facial;
-        public override void OnBehaviourPlay(Playable playable, FrameData info)
-        {
+            facial.Vowel.Clear();
             foreach (var clip in sobj.ClipInfos)
             {
                 facial.Vowel.AppendVowelAnimationIndex(clip.Index, 1, clip.Duration, clip.EaseInDuration, clip.EaseOutDuration, (float)clip.Start);
             }
+
+            VowelPlayableBehaviour behaviour = new();
+            return ScriptPlayable<VowelPlayableBehaviour>.Create(graph, behaviour);
         }
     }
+
+    public class VowelPlayableBehaviour : PlayableBehaviour { }
 }

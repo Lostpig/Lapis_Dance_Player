@@ -22,13 +22,13 @@ namespace Oz.Graphics
         // Properties
         public bool ApplyOnEnable { get; set; }
         public bool ResetOnDisable { get; set; }
-        public BatchSettings BatchSettings { get; }
-        public RenderingSettings RenderingSettings { get; }
-        public ShadowSettings ShadowSettings { get; }
-        public ShaderSettings ShaderSettings { get; }
-        public SettingsProfile SettingsProfile { get; }
+        public BatchSettings BatchSettings { get => m_BatchSettings; }
+        public RenderingSettings RenderingSettings { get => m_RenderingSettings; }
+        public ShadowSettings ShadowSettings { get => m_ShadowSettings; }
+        public ShaderSettings ShaderSettings { get => m_ShaderSettings; }
+        public SettingsProfile SettingsProfile { get => m_SettingsProfile; }
         // public SeanPostProcessLayer PostProcessLayer { get; }
-        public LightSettings LightSettings { get; }
+        public LightSettings LightSettings { get => m_LightSettings; }
 
 
         // private void Awake() { }
@@ -39,7 +39,7 @@ namespace Oz.Graphics
                 var shadows = GetGeometricShadowCastInScene();
                 foreach (var s in shadows)
                 {
-                    s.ApplyShadow(m_ShadowSettings);
+                    s.ApplyShadow(m_ShadowSettings, m_BatchSettings.StaticRoot);
                 }
             }
         }
@@ -62,8 +62,8 @@ namespace Oz.Graphics
         public GameObject m_DynamicRoot; // 0x20
 
         public bool AutoBatching { get; }
-        public GameObject StaticRoot { get; }
-        public GameObject DynamicRoot { get; }
+        public GameObject StaticRoot { get => m_StaticRoot; }
+        public GameObject DynamicRoot { get => m_DynamicRoot; }
         public void ApplyToScene() { }
     }
 
@@ -84,17 +84,17 @@ namespace Oz.Graphics
         private float m_LinearFogEnd; // 0x68
 
         // Properties
-        public AmbientMode AmbientMode { get; }
-        public Color AmbientGroundColor { get; }
-        public Color AmbientEquatorColor { get; }
-        public Color AmbientSkyColor { get; }
-        public float AmbientIntensity { get; }
-        public bool Fog { get; }
-        public FogMode FogMode { get; }
-        public Color FogColor { get; }
-        public float FogDensity { get; }
-        public float LinearFogStart { get; }
-        public float LinearFogEnd { get; }
+        public AmbientMode AmbientMode { get => m_AmbientMode; }
+        public Color AmbientGroundColor => m_AmbientGroundColor;
+        public Color AmbientEquatorColor => m_AmbientEquatorColor;
+        public Color AmbientSkyColor => m_AmbientSkyColor;
+        public float AmbientIntensity => m_AmbientIntensity;
+        public bool Fog => m_Fog;
+        public FogMode FogMode => m_FogMode;
+        public Color FogColor => m_FogColor;
+        public float FogDensity => m_FogDensity;
+        public float LinearFogStart => m_LinearFogStart;
+        public float LinearFogEnd => m_LinearFogEnd;
 
         public void ApplyToScene() { }
         public void Reset() { }

@@ -4,5 +4,5 @@ using UnityEngine;
 [Serializable]
 public class SettingsProfile : ScriptableObject
 {
-    public SeanPostProcessSetting setting; // 0x18
+    [SerializeField] public SeanPostProcessSetting setting; // 0x18
 }
