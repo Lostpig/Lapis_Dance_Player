@@ -1497,10 +1497,24 @@
       ]
     },
     {
+      "name": "all_021",
+      "body": "actors/avatars/all/ava_all_021/ava_all_suit_021/ava_all_suit_021",
+      "eqiups": [
+        "actors/avatars/all/ava_all_021/ava_all_hat_021/ava_{0}_hat_021"
+      ]
+    },
+    {
       "name": "all_022",
       "body": "actors/avatars/all/ava_all_022/ava_all_suit_022/ava_all_suit_022",
       "eqiups": [
         "actors/avatars/all/ava_all_022/ava_all_hat_022/ava_{0}_hat_022"
+      ]
+    },
+    {
+      "name": "all_023",
+      "body": "actors/avatars/all/ava_all_023/ava_all_suit_023/ava_all_suit_023",
+      "eqiups": [
+        "actors/avatars/all/ava_all_023/ava_all_hat_023/ava_{0}_hat_023"
       ]
     },
     {

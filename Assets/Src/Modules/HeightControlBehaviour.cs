@@ -11,13 +11,14 @@ namespace LapisPlayer
     {
         Transform _target;
 
-        public void Initialize (Transform target)
+        public void Initialize(Transform target)
         {
             _target = target;
         }
         private void Update()
         {
-            _target.position = transform.position;
+            var originPos = _target.position;
+            _target.position = new Vector3(originPos.x, transform.position.y, originPos.z);
         }
     }
 }

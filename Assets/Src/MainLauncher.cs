@@ -13,10 +13,6 @@ namespace LapisPlayer
 
         private void Start()
         {
-            QualitySettings.SetQualityLevel(ConfigManager.Instance.QualityLevel);
-            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-            Screen.fullScreen = ConfigManager.Instance.FullScreen;
-
             bgmSource = gameObject.AddComponent<AudioSource>();
             bgmSource.loop = true;
 
@@ -28,7 +24,7 @@ namespace LapisPlayer
             PlayBGM(MainSceneConfig.Instance.Bgms[0]);
         }
 
-        private void InitButtons ()
+        private void InitButtons()
         {
             var uiCanvas = GameObject.Find("UICanvas");
 
@@ -40,7 +36,7 @@ namespace LapisPlayer
             btnBattleDance.GetComponent<Button>().onClick.AddListener(ToBattleDance);
             btnExit.GetComponent<Button>().onClick.AddListener(ToExit);
         }
-        private void ToDance ()
+        private void ToDance()
         {
             SceneManager.LoadScene("DanceScene");
             SceneManager.UnloadSceneAsync("MainScene");
@@ -97,7 +93,7 @@ namespace LapisPlayer
         {
             bgmListView.SetActive(!bgmListView.activeSelf);
         }
-        private void PlayBGM (string bgmPath)
+        private void PlayBGM(string bgmPath)
         {
             StartCoroutine(SoundBankLoader.Instance.PlayAudioClip(bgmPath, AudioType.OGGVORBIS, bgmSource));
             bgmListView.SetActive(false);

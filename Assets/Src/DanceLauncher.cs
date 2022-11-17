@@ -4,10 +4,12 @@ using UnityEngine.SceneManagement;
 
 namespace LapisPlayer
 {
-    public class Launcher : MonoBehaviour
+    public class DanceLauncher : MonoBehaviour
     {
         DanceManager _danceManager;
         GameObject _stage;
+        CameraController _camCtrl;
+
         private async void Start()
         {
             var defaultDance = DanceStore.Instance.GetDance("MUSIC_0001");
@@ -15,8 +17,8 @@ namespace LapisPlayer
             await _danceManager.InitializeDance(defaultDance);
 
             var camare = GameObject.Find("Main Camera");
-            var camCtrl = camare.AddComponent<CameraController>();
-            camCtrl.Initialize(_danceManager.Root.transform);
+            _camCtrl = camare.AddComponent<CameraController>();
+            _camCtrl.SetCharactersPos(_danceManager.Root.transform);
 
             var uiManager = new UIManager();
             uiManager.Initialize();
@@ -91,6 +93,8 @@ namespace LapisPlayer
         private async void UiManager_OnDanceChange(DanceSetting dance, UIManager sender)
         {
             await _danceManager.InitializeDance(dance);
+            _camCtrl.SetCharactersPos(_danceManager.Root.transform);
+
             sender.DanceChangeSuccess(dance);
         }
 

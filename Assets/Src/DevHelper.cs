@@ -1,5 +1,6 @@
 using UnityEngine;
 using LapisPlayer;
+using Oz.Timeline;
 
 public class DevHelper : MonoBehaviour
 {
@@ -18,15 +19,11 @@ public class DevHelper : MonoBehaviour
     [ContextMenu("Load Battle Song")]
     public void LoadBattleSong()
     {
-        GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"battle/song/MUSIC_0012/CM Timeline");
-        var obj = GameObject.Instantiate(timelinePrefab);
+        GameObject timelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"battle/song/MUSIC_0026/CM Timeline");
+        GameObject.Instantiate(timelinePrefab);
 
-        // var ctrl = AssetBundleLoader.Instance.LoadAsset<RuntimeAnimatorController>($"battle/common/animations/CM View");
-        // var anis = obj.GetComponentsInChildren<Animator>();
-        // foreach(var ani in anis)
-        // {
-        //     ani.runtimeAnimatorController = ctrl;
-        // }
+        GameObject arTtimelinePrefab = AssetBundleLoader.Instance.LoadAsset<GameObject>($"ar/song/MUSIC_0026/CM_Timeline_AR");
+        GameObject.Instantiate(arTtimelinePrefab);
     }
 
     [ContextMenu("Load Character")]

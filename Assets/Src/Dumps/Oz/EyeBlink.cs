@@ -14,7 +14,11 @@ namespace Oz.Timeline
     public class EyeBlinkPlayableAsset : PlayableAsset
     {
         public AnimationCurve blinkCurve; // 0x28
-        public new double duration => _duration;
+        public new double duration
+        {
+            get => _duration;
+            set => _duration = value;
+        } 
         private double _duration = 0;
         private EyeBlinkTrack _parentTrack;
 
@@ -43,8 +47,8 @@ namespace Oz.Timeline
             else
             {
                 var actorObj = dicector.GetGenericBinding(_parentTrack);
-                var actor = actorObj?.GetComponent<Actor>();
-                if (actor == null) actor = actorObj?.GetComponentInParent<Actor>();
+                var actor = actorObj?.GetComponent<ActorBehaviour>();
+                if (actor == null) actor = actorObj?.GetComponentInParent<ActorBehaviour>();
                 if (actor == null)
                 {
                     Debug.Log("Cannot found actor binding with: " + _parentTrack.name);

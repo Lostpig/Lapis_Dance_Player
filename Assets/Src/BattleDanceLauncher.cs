@@ -49,7 +49,6 @@ namespace LapisPlayer
             var camare = GameObject.Find("DevCamera");
             var testObj = GameObject.Find("TestObj");
             var camCtrl = camare.AddComponent<CameraController>();
-            camCtrl.Initialize(testObj.transform);
 #endif
         }
 
@@ -141,7 +140,7 @@ namespace LapisPlayer
 
 #if UNITY_EDITOR
         [ContextMenu("Set Loop Time")]
-        public void LoadBattleSong()
+        public void SetLoopTime()
         {
             _battleDanceManager.SetLoopTime(loopStart, loopEnd);
         }

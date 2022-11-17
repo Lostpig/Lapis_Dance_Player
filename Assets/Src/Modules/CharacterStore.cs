@@ -13,7 +13,6 @@ namespace LapisPlayer
         public string Body { get; set; }
         public string[] Equips { get; set; }
     }
-
     public class CharacterSetting
     {
         public string Name { get; set; }

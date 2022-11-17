@@ -2,8 +2,8 @@
 ### Lapis Re:LiGHTs 模型查看器
 
 ---
-感谢[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23-github-io.pages.dev/lapis-datamine-notes/lapis-datamine-notes) 
-运行所需要使用的manifest.json和AssetBundles都来自[@bromine0x23](https://github.com/bromine0x23)的资源站
+感谢[@bromine0x23](https://github.com/bromine0x23)的[Lapis Re:LiGHTs 资源挖掘备忘](https://bromine0x23.github.io/lapis-datamine-notes/lapis-datamine-notes.html)  
+运行所需要使用的manifest.json和AssetBundles都来自[@bromine0x23](https://github.com/bromine0x23)的资源站[https://bromine0x23.github.io/](https://bromine0x23.github.io/)
 
 ### 注意点
 必须用OpenGL模式运行，否则着色器会出错，导致渲染错误  
@@ -40,8 +40,9 @@ SoundBank: 已放弃集成wwise,需要提取出音频文件,提取后的目录�
 #### Config/character.json 角色模型配置文件
 > 一个完整的角色模型由 头部，身体 + 各个配件组成  
 > 其中一个角色的头部是固定的，在该角色的human.bdl中  
-> 身体分为两种，一种是通用模型，读取后要根据human.bdl的ScaleSettings信息调整比例再与头部组合  
-> 一种是专用模型，读取后可直接与头部组合  
+> 身体分为两种：  
+> + 通用模型,需要根据human.bdl的ScaleSettings信息调整比例;且非为_r(巨)和_l(贫),依据角色的isLoli字段判断使用哪种
+> + 角色专用模型,读取后可直接使用  
 ```js
 {
   "characters": [                           // 各个角色专用服装模型

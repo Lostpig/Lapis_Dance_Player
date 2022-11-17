@@ -7,20 +7,6 @@ using System.Linq;
 
 namespace LapisPlayer
 {
-    interface IDanceManager
-    {
-        public bool IsARMode { get; }
-        public CharacterActor GetCharacter(int position);
-        public CharacterActor[] GetActiveCharacters();
-    }
-
-    public enum DanceState
-    {
-        Stop,
-        Play,
-        Pause,
-    }
-
     public class DanceManager: IDanceManager
     {
         CharacterActor[] _characters = new CharacterActor[5];

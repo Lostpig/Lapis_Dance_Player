@@ -1,27 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
+using System.Linq;
+using Oz.Timeline;
 
 namespace LapisPlayer
 {
-    public class VoewlChangeRecord
+    public class VowelClipItem
     {
-        public bool active;
-        public float[] perSecondChange;
-        public float[] values;
-        public float startTime;
-        public float endTime;
-        public float weight;
+        public int Vowel;
+        public float Weight;
+        public float Duration;
+        public float MixIn;
+        public float MixOut;
+        public float Start;
     }
 
     public class VowelManager
     {
+        const int CutPerSecond = 60;
+        const float CutTime = 1f / CutPerSecond;
+
         VowelSetting _setting;
         Dictionary<int, VowelData> _vowelMap;
         Dictionary<int, int> blendIndexToArrIndex;
         int[] _mouthBlendArr;
         SkinnedMeshRenderer faceMesh;
-        SortedList<float, VoewlChangeRecord> vowelList;
-        float[] updateValues;
 
         public VowelManager(VowelSetting setting, GameObject face)
         {
@@ -30,7 +34,6 @@ namespace LapisPlayer
             faceMesh = faceGEO.GetComponent<SkinnedMeshRenderer>();
 
             _vowelMap = new();
-            vowelList = new();
 
             _mouthBlendArr = CreateMouthBlends();
             blendIndexToArrIndex = new();
@@ -38,8 +41,6 @@ namespace LapisPlayer
             {
                 blendIndexToArrIndex.Add(_mouthBlendArr[i], i);
             }
-            updateValues = new float[_mouthBlendArr.Length];
-
             CreateVowelMap(setting);
         }
         public int[] CreateMouthBlends()
@@ -65,139 +66,190 @@ namespace LapisPlayer
             });
         }
 
-        public void AppendVowel(int vowel, float start, float weight, float duration, float mixIn, float mixOut)
+        float[][] clipTimeCuts;
+        float trackDuration = 0;
+        public void BindWithVowelCilipInfo(VowelClipInfo[] clips)
         {
-            float contentDuration = duration - mixIn - mixOut;
-            var voewlData = _vowelMap[vowel];
+            float end = 0;
 
-            if (mixIn > 0)
+            VowelClipItem[] items = clips.Select(c =>
             {
-                var targetValues = new float[_mouthBlendArr.Length];
+                var t = (float)(c.Start + c.Duration);
+                if (t > end) end = t;
+
+                return new VowelClipItem()
+                {
+                    Start = (float)c.Start,
+                    Duration = (float)c.Duration,
+                    MixIn = (float)c.EaseInDuration,
+                    MixOut = (float)c.EaseOutDuration,
+                    Vowel = (int)c.Index - 1,
+                    Weight = 1
+                };
+            }).ToArray();
+
+            BindClips(items, end);
+        }
+        public void BindWithLipSyncAsset(LipsyncAsset[] assets)
+        {
+            float end = 0;
+
+            VowelClipItem[] items = assets.Select(ass =>
+            {
+                var t = (float)(ass.Clip.start + ass.Clip.duration);
+                if (t > end) end = t;
+
+                return new VowelClipItem()
+                {
+                    Start = (float)ass.Clip.start,
+                    Duration = (float)ass.Clip.duration,
+                    MixIn = (float)ass.Clip.mixInDuration,
+                    MixOut = (float)ass.Clip.mixOutDuration,
+                    Vowel = (int)ass.Index - 1,
+                    Weight = ass.Weight
+                };
+            }).ToArray();
+
+            BindClips(items, end);
+        }
+
+        public void BindClips(VowelClipItem[] items, float trackTime)
+        {
+            int cutCount = (int)Math.Ceiling(trackTime) * CutPerSecond;
+            float[][] timeCuts = new float[cutCount][];
+            float[] weights = new float[cutCount];
+
+            for (int i = 0; i < cutCount; i++)
+            {
+                timeCuts[i] = new float[_mouthBlendArr.Length];
+            }
+
+            foreach (var item in items)
+            {
+                float contentDuration = item.Duration - item.MixIn - item.MixOut;
+                var voewlData = _vowelMap[item.Vowel];
+
+                if (item.MixIn >= 0.01)
+                {
+                    SetMixIn(item, ref timeCuts, ref weights);
+                }
+                SetCutContent(item, ref timeCuts, ref weights);
+                if (item.MixOut >= 0.01)
+                {
+                    SetMixOut(item, ref timeCuts, ref weights);
+                }
+            }
+
+            clipTimeCuts = timeCuts;
+            trackDuration = trackTime;
+        }
+        private void SetMixIn(VowelClipItem item, ref float[][] timeCuts, ref float[] weights)
+        {
+            float start = item.Start;
+            float end = start + item.MixIn;
+            float duration = end - start;
+
+            int cutStart = (int)Math.Ceiling(start * CutPerSecond);
+            int cutEnd = (int)Math.Ceiling(end * CutPerSecond);
+
+            var voewlData = _vowelMap[item.Vowel];
+            for (int i = cutStart; i < cutEnd; i++)
+            {
+                if (i >= weights.Length)
+                {
+                    Debug.Log("Now Overflow");
+                }
+
+                var cutPrec = (i * CutTime - start) / duration;
+                var originWeight = weights[i];
+
                 foreach (var bd in voewlData.BlendData)
                 {
                     var arrIdx = blendIndexToArrIndex[bd.ShapeIndex];
-                    targetValues[arrIdx] = bd.BlendValue;
+                    var appendValue = bd.BlendValue * cutPrec;
+                    var originValue = timeCuts[i][arrIdx];
+
+                    var mergeValue = ((originValue * originWeight) + (appendValue * item.Weight)) / (originWeight + item.Weight);
+                    timeCuts[i][arrIdx] = mergeValue;
                 }
+                weights[i] += item.Weight;
+            }
+        }
+        private void SetCutContent(VowelClipItem item, ref float[][] timeCuts, ref float[] weights)
+        {
+            float start = item.Start + item.MixIn;
+            float end = item.Start + item.Duration - item.MixOut;
 
-                var mixInRecord = new VoewlChangeRecord()
+            int cutStart = (int)Math.Ceiling(start * CutPerSecond);
+            int cutEnd = (int)Math.Ceiling(end * CutPerSecond);
+
+            var voewlData = _vowelMap[item.Vowel];
+            for (int i = cutStart; i < cutEnd; i++)
+            {
+                var originWeight = weights[i];
+
+                foreach (var bd in voewlData.BlendData)
                 {
-                    active = false,
-                    values = targetValues,
-                    perSecondChange = new float[_mouthBlendArr.Length],
-                    startTime = start,
-                    endTime = start + mixIn,
-                    weight = weight
-                };
-                if (!vowelList.ContainsKey(mixInRecord.startTime))
-                {
-                    vowelList.Add(mixInRecord.startTime, mixInRecord);
+                    var arrIdx = blendIndexToArrIndex[bd.ShapeIndex];
+                    var appendValue = bd.BlendValue;
+                    var originValue = timeCuts[i][arrIdx];
+
+                    var mergeValue = ((originValue * originWeight) + (appendValue * item.Weight)) / (originWeight + item.Weight);
+                    timeCuts[i][arrIdx] = mergeValue;
                 }
+                weights[i] += item.Weight;
             }
-            if (mixOut > 0)
+        }
+        private void SetMixOut(VowelClipItem item, ref float[][] timeCuts, ref float[] weights)
+        {
+            float start = item.Start + item.Duration - item.MixOut;
+            float end = item.Start + item.Duration;
+            float duration = end - start;
+
+            int cutStart = (int)Math.Ceiling(start * CutPerSecond);
+            int cutEnd = (int)Math.Ceiling(end * CutPerSecond);
+
+            var voewlData = _vowelMap[item.Vowel];
+            for (int i = cutStart; i < cutEnd; i++)
             {
-                var targetValues = new float[_mouthBlendArr.Length];
-                var mixOutRecord = new VoewlChangeRecord()
+                var cutPrec = (i * CutTime - start) / duration;
+                var originWeight = weights[i];
+
+                foreach (var bd in voewlData.BlendData)
                 {
-                    active = false,
-                    values = targetValues,
-                    perSecondChange = new float[_mouthBlendArr.Length],
-                    startTime = start + mixIn + contentDuration,
-                    endTime = start + duration,
-                    weight = weight
-                };
-                if (!vowelList.ContainsKey(mixOutRecord.startTime))
-                {
-                    vowelList.Add(mixOutRecord.startTime, mixOutRecord);
+                    var arrIdx = blendIndexToArrIndex[bd.ShapeIndex];
+                    var appendValue = bd.BlendValue * (1f - cutPrec);
+                    var originValue = timeCuts[i][arrIdx];
+
+                    var mergeValue = ((originValue * originWeight) + (appendValue * item.Weight)) / (originWeight + item.Weight);
+                    timeCuts[i][arrIdx] = mergeValue;
                 }
-            }
-
-            var values = new float[_mouthBlendArr.Length];
-            foreach (var bd in voewlData.BlendData)
-            {
-                var arrIdx = blendIndexToArrIndex[bd.ShapeIndex];
-                values[arrIdx] = bd.BlendValue;
-            }
-
-            var contentRecord = new VoewlChangeRecord()
-            {
-                active = false,
-                values = values,
-                perSecondChange = new float[_mouthBlendArr.Length],
-                startTime = start + mixIn,
-                endTime = start + mixIn + contentDuration,
-                weight = weight
-            };
-            if (!vowelList.ContainsKey(contentRecord.startTime))
-            {
-                vowelList.Add(contentRecord.startTime, contentRecord);
+                weights[i] += item.Weight;
             }
         }
-        public void AppendVowelAnimationIndex(AnimationIndex aIndex, float weight, double duration, double mixIn, double mixOut, float start)
-        {
-            if (aIndex == AnimationIndex.None) return;
-            var vowel = ((int)aIndex) - 1;
-            AppendVowel(vowel, start, weight, (float)duration, (float)mixIn, (float)mixOut);
-        }
-        public void Clear()
-        {
-            vowelList.Clear();
-        }
 
-
-        public void ActiveRecord(VoewlChangeRecord record, float now)
-        {
-            for (int i = 0; i < record.values.Length; i++)
-            {
-                var current = updateValues[i];
-                var target = record.values[i];
-
-                record.perSecondChange[i] = (target - current) / (record.endTime - now);
-            }
-            record.active = true;
-        }
-
-        private float LastUpdateTime = 0;
         public void Update(float now)
         {
-            if (LastUpdateTime == 0)
+            if (now >= trackDuration)
             {
-                LastUpdateTime = now;
+                for (int i = 0; i < _mouthBlendArr.Length; i++)
+                {
+                    faceMesh.SetBlendShapeWeight(_mouthBlendArr[i], 0);
+                }
                 return;
             }
-            var elapsed = now - LastUpdateTime;
-            LastUpdateTime = now;
-            if (elapsed < 0) return;
-            if (vowelList.Count == 0) return;
 
-            float sumWeight = 0;
-            float[] changes = new float[updateValues.Length];
+            int prevCut = (int)(now * CutPerSecond - 0.5f);
+            int nextCut = (int)(now * CutPerSecond + 0.5f);
+            float ran = now - (prevCut * CutTime);
 
-            bool hasActiveVowel = false;
-            for (int i = 0; i < vowelList.Count; i++)
+            for (int i = 0; i < _mouthBlendArr.Length; i++)
             {
-                var curr = vowelList.Values[i];
-                if (curr.startTime > now) break;
-                if (curr.endTime < now) continue;
+                var prevVal = clipTimeCuts[prevCut][i];
+                var nextVal = clipTimeCuts[nextCut][i];
+                var val = prevVal + (nextVal - prevVal) * ran;
 
-                hasActiveVowel = true;
-                if (!curr.active) ActiveRecord(curr, now);
-                for (int j = 0; j < changes.Length; j++)
-                {
-                    changes[j] += curr.perSecondChange[j] * elapsed * curr.weight;
-                }
-                sumWeight += curr.weight;
-            }
-
-            if (hasActiveVowel)
-            {
-                for (int i = 0; i < updateValues.Length; i++)
-                {
-                    var val = updateValues[i] + (changes[i] / sumWeight);
-                    val = val > 100 ? 100f : val < 0 ? 0 : val;
-                    faceMesh.SetBlendShapeWeight(_mouthBlendArr[i], val);
-
-                    updateValues[i] = val;
-                }
+                faceMesh.SetBlendShapeWeight(_mouthBlendArr[i], val);
             }
         }
     }

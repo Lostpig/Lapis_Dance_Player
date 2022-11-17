@@ -1,7 +1,9 @@
 ﻿using Cinemachine;
 using Oz.Graphics;
+using Oz.Timeline;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -60,6 +62,7 @@ namespace LapisPlayer
                 SetClipTimes();
 
                 ApplySceneSetting();
+                ApplyDanceAppend();
 
                 _director.time = 0.01;
                 _director.Evaluate();
@@ -176,7 +179,7 @@ namespace LapisPlayer
                 chara.Root.name = "Actor " + posStr;
                 chara.SkeletonRoot.name = "Model " + posStr;
 
-                chara.Root.AddComponent<Actor>().BindPosition(pos);
+                chara.Root.AddComponent<ActorBehaviour>().BindPosition(pos);
 
                 chara.SetPose("Stand");
                 chara.PlayBaseAnimation();
@@ -377,22 +380,6 @@ namespace LapisPlayer
                 actor.SetLocalPosition(Vector3.zero);
                 actor.Root.transform.localRotation = Quaternion.identity;
             }
-
-            // 花为乙女舞台有个升降,跟随ShadowPos随动能解决问题...
-            // 虽然不应该是这么实现的,不过找不到其他相关控制的数据了
-            if (_stageSetting.ID == "BG304")
-            {
-                var topLight = Utility.FindNodeByRecursion(_stage, "TopLight");
-                var shadowPos = Utility.FindNodeByRecursion(_stage, "ShadowPos");
-                var hc = shadowPos.AddComponent<HeightControlBehaviour>();
-                hc.Initialize(topLight.transform);
-
-                var lightSpots = _stage.GetComponentsInChildren<LightSpotHorizontal>();
-                foreach (var lightSpot in lightSpots)
-                {
-                    lightSpot.shadowPos = shadowPos.transform;
-                }
-            }
         }
         private void ApplySceneSetting()
         {
@@ -400,17 +387,75 @@ namespace LapisPlayer
 
             // 镜头参数控制
             var CameraClipping = sceneEnv.SettingsProfile.setting.DataSource.CameraClipping;
+            float near = CameraClipping.value.x;
+            float far = CameraClipping.value.y;
+
+            // 特殊处理解决镜头穿模问题
+            if (_stageSetting.ID == "BG2004")
+            {
+                near = 0.6f;
+            }
+
             if (CameraClipping.Override)
             {
                 var cams = _timeline.GetComponentsInChildren<CinemachineVirtualCamera>();
                 foreach (var cam in cams)
                 {
-                    cam.m_Lens.NearClipPlane = CameraClipping.value.x;
-                    cam.m_Lens.FarClipPlane = CameraClipping.value.y;
+                    cam.m_Lens.NearClipPlane = near;
+                    cam.m_Lens.FarClipPlane = far;
                 }
             }
 
             // TODO 其他渲染、灯光、阴影、着色器设置等...
+
+            // 特殊处理
+            // 花为乙女舞台有个升降,跟随Naraku节点随动能解决问题...
+            // 虽然不应该是这么实现的,不过找不到其他相关控制的数据了
+            if (_stageSetting.ID == "BG304")
+            {
+                var positionObj = Utility.FindNodeByRecursion(_stage, "Naraku");
+                var hc = positionObj.AddComponent<HeightControlBehaviour>();
+
+                var topLight = Utility.FindNodeByRecursion(_stage, "TopLight");
+                hc.Initialize(topLight.transform);
+
+                var lightSpots = _stage.GetComponentsInChildren<LightSpotHorizontal>();
+                foreach (var lightSpot in lightSpots)
+                {
+                    lightSpot.shadowPos = positionObj.transform;
+                }
+            }
         }
+        private void ApplyDanceAppend ()
+        {
+            // 特殊处理
+            // MUSIC_0026 的眨眼track是空的，但是ar版里有，挪过来
+            if (_danceSetting.ID == "MUSIC_0026")
+            {
+                var arTimeline = AssetBundleLoader.Instance.LoadAsset<TimelineAsset>("ar/song/MUSIC_0026/timeline/CM_Timeline_AR");
+                var arEyeBlinkGroup = arTimeline.GetRootTracks().First(t => t.name == "Eyes Blink Group") as GroupTrack;
+                var arEyeBlinkTrack = arEyeBlinkGroup.GetChildTracks().First() as EyeBlinkTrack;
+
+                var eyeBlinkGroup = FindRootTrack<GroupTrack>("Eyes Blink Group");
+                foreach (var track in eyeBlinkGroup.GetChildTracks())
+                {
+                    foreach (var clip in arEyeBlinkTrack.GetClips())
+                    {
+                        var ebAsset = clip.asset as EyeBlinkPlayableAsset;
+
+                        var tclip = track.CreateClip<EyeBlinkPlayableAsset>();
+                        tclip.start = clip.start;
+                        tclip.duration = clip.duration;
+
+                        var asset = new EyeBlinkPlayableAsset();
+                        asset.Initialize(track as EyeBlinkTrack, tclip.duration);
+                        asset.blinkCurve = ebAsset.blinkCurve;
+
+                        tclip.asset = asset;
+                    }
+                }
+            }
+        }
+    
     }
 }

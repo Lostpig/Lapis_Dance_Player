@@ -2,6 +2,8 @@
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using LapisPlayer;
+using System.Linq;
+using Timeline;
 
 namespace Oz.Timeline
 {
@@ -39,20 +41,16 @@ namespace Oz.Timeline
 
         public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
         {
+#if UNITY_EDITOR
+            Debug.Log("LipSyncTrack2 created");
+#endif
+
             var facials = go.GetComponentsInChildren<FacialBehaviour>();
+
+            var assets = GetClips().Where(clip => clip.asset is LipsyncAsset).Select(clip => clip.asset as LipsyncAsset).ToArray();
             foreach (var facial in facials)
             {
-                facial.Vowel.Clear();
-            }
-            foreach (var clip in GetClips())
-            {
-                if (clip.asset is LipsyncAsset lsa)
-                {
-                    foreach (var facial in facials)
-                    {
-                        facial.Vowel.AppendVowelAnimationIndex(lsa.Index, lsa.Weight, clip.duration, clip.mixInDuration, clip.mixOutDuration, (float)clip.start);
-                    }
-                }
+                facial.Vowel.BindWithLipSyncAsset(assets);
             }
 
             var updateBehaviour = new VowelUpdateBehaviour();

@@ -28,7 +28,7 @@ namespace Oz.Timeline
             var updateBehaviour = new VowelUpdateBehaviour();
             if (model != null)
             {
-                var actor = model.transform.parent.gameObject.GetComponent<Actor>();
+                var actor = model.transform.parent.gameObject.GetComponent<ActorBehaviour>();
                 var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
                 var facial = danceManager.GetCharacter(actor.Postion).Facial;
                 updateBehaviour.Facials = new FacialBehaviour[] { facial };
@@ -48,17 +48,16 @@ namespace Oz.Timeline
         public VowelPlayableTrack parent;
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
+#if UNITY_EDITOR
+            Debug.Log("VowelPlayable created");
+#endif
             PlayableDirector dicector = owner.GetComponent<PlayableDirector>();
             var model = dicector.GetGenericBinding(parent) as GameObject;
-            var actor = model.transform.parent.gameObject.GetComponent<Actor>();
+            var actor = model.transform.parent.gameObject.GetComponent<ActorBehaviour>();
             var danceManager = PlayerGlobal.Instance.GetSingleton<IDanceManager>();
             var facial = danceManager.GetCharacter(actor.Postion).Facial;
 
-            facial.Vowel.Clear();
-            foreach (var clip in sobj.ClipInfos)
-            {
-                facial.Vowel.AppendVowelAnimationIndex(clip.Index, 1, clip.Duration, clip.EaseInDuration, clip.EaseOutDuration, (float)clip.Start);
-            }
+            facial.Vowel.BindWithVowelCilipInfo(sobj.ClipInfos.ToArray());
 
             VowelPlayableBehaviour behaviour = new();
             return ScriptPlayable<VowelPlayableBehaviour>.Create(graph, behaviour);
